@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="Upcoming"/>
+
+    <item
+        android:id="@+id/nav_previous"
+        android:icon="@drawable/ic_history_black_24dp"
+        android:title="Previous"/>
+
+    <item
+        android:id="@+id/nav_cancelled"
+        android:icon="@drawable/ic_cancel_black_24dp"
+        android:title="Cancelled"/>
+
+    <item
+            android:id="@+id/nav_new_booking"
+            android:icon="@drawable/ic_fiber_new_black_24dp"
+            android:title="New"/>
+</menu>

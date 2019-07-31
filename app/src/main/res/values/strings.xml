@@ -1,0 +1,256 @@
+<resources>
+    <string name="app_name" formatted="true" translatable="true">leaps</string>
+    <string name="make_an_order">Make an order</string>
+    <string name="Add_Buildings">Add Buildings</string>
+    <string name="Bookings">Bookings</string>
+    <string name="Booking_Details">Booking Details</string>
+    <string name="Buildings">Select Buildings</string>
+    <string name="Select_Room">Select Room</string>
+    <string name="Confirm_Details">Confirm Details</string>
+    <string name="Blocked_Rooms">Blocked Rooms</string>
+    <string name="Building_Dashboard">Building Dashboard</string>
+    <string name="Add_Room">Add Room</string>
+    <string name="Conference_Rooms">Conference Rooms</string>
+    <string name="dialog_title">Items available in a shop</string>
+    <string name="ok_label">OK</string>
+    <string name="dismiss_label">Dismiss</string>
+    <string name="clear_all_label">Clear all</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login">Sign in</string>
+
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <string name="title_activity_check_box_recycler">CheckBoxRecycler</string>
+    <string name="Registration">Registration</string>
+    <string name="Block">Block Room</string>
+    <string name="details_invalid">Details are Invalid!!!</string>
+    <string name="ok">OK</string>
+    <string name="server_error">Some Internal server Error!</string>
+    <string name="server_not_found">Server not found!! Please try again after some time</string>
+    <string name="error">Error!</string>
+    <string name="restart_app">Plese Restart the application..</string>
+    <string name="progress_message">Loading…</string>
+    <string name="progress_message_processing">Processing…</string>
+    <string name="cancel">Cancel</string>
+    <string name="sign_out">Successfully signed out</string>
+    <string name="select_capacity">Please Select Capacity</string>
+    <string name="enter_room_name">Please Enter Room name</string>
+    <string name="room_add_success">Room added Successfully</string>
+    <string name="yes">YES</string>
+    <string name="no">No</string>
+    <string name="invalid_from_time">Invalid From Time</string>
+    <string name="invalid_to_time">Invalid To Time</string>
+    <string name="invalid_date">Invalid Date</string>
+    <string name="invalid_capacity">Invalid capacity</string>
+    <string name="invalid">Invalid</string>
+    <string name="time_validation_message">Start time must be less than end time</string>
+    <string name="invalid_fromtime">Start time must be greater than the current time</string>
+    <string name="status">Status</string>
+    <string name="room_not_available">No Room Available</string>
+    <string name="invalid_fromDate_or_toDate">To-Date must be greator than From-Date</string>
+    <string name="invalid_from_date">Invalid From Date</string>
+    <string name="invalid_to_date">Invalid To Date</string>
+    <string name="select_days">Please select week days</string>
+    <string name="clear_all">Clear All</string>
+    <string name="booked_successfully">Successfully Booked.</string>
+    <string name="select_members">Select Members</string>
+    <string name="invalid_purpose">Invalid Purpose!</string>
+    <string name="add_members">Add Members!</string>
+    <string name="room_added">Room Successfully added</string>
+    <string name="blockingStatus">Blocking Status</string>
+    <string name="room_is_blocked">Room is Blocked</string>
+    <string name="please_enter_totime">Enter the To-Time</string>
+    <string name="please_enter_date">Enter the Date</string>
+    <string name="enter_purpose">Enter purpose of Blocking</string>
+    <string name="check">Check</string>
+    <string name="please_enter_fromtime">Enter the From-Time</string>
+    <string name="show_dates">Show Dates</string>
+    <string name="dates_of_meeting">Dates Of Meeting.</string>
+    <string name="cancelled_by_hr">Cancelled by HR! Please check your email</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="room_hint">Room Name (1st Floor)</string>
+    <string name="ADD">ADD</string>
+    <string name="employee_name">Employee Name</string>
+    <string name="building_name">Building Name</string>
+    <string name="room_name">Room Name</string>
+    <string name="date">Date</string>
+    <string name="from">From</string>
+    <string name="purpose">Purpose</string>
+    <string name="submit">SUBMIT</string>
+    <string name="enter_name_to_search">Enter Name to search</string>
+    <string name="no_upcoming_events_n_let_s_change_that">No upcoming events. Let\'s change that!</string>
+    <string name="location">Location</string>
+    <string name="update">Update Timings</string>
+    <string name="update_button">Update</string>
+    <string name="internal_server_error">Unable to connect to server!</string>
+    <string name="missing_building_name">Enter the Building name</string>
+    <string name="missing_building_place">Enter the Building place</string>
+    <string name="sure_cancel_meeting">Are you sure you want to cancel the meeting?</string>
+    <string name="cancelled_successful">Booking Cancelled Successfully</string>
+    <string name="meeting_members">Meeting Members</string>
+    <string name="input_date_format_for_booking_dashboard">yyyy-MM-dd</string>
+    <string name="ount_date_format_for_booking_dashboard">dd MMMM yyyy</string>
+    <string name="asdfghjk">MMMM</string>
+    <string name="room_unblocked">Room unblocked</string>
+    <string name="booking_updated">Successfully updated</string>
+    <string name="select_week_days">Select Week Days</string>
+    <string name="select_day">Select Days</string>
+    <string name="from_time">From-Time</string>
+    <string name="to_time">To-Time</string>
+    <string name="from_date">From-Date</string>
+    <string name="to_date">To-Date</string>
+    <string name="invalid_conference_room">Invalid Room</string>
+    <string name="internal_server">Internal Server Error!</string>
+    <string name="field_cant_be_empty">Field can\'t be empty</string>
+    <string name="building_added">Building Added Successfully</string>
+    <string name="empty_building_list">Building List is Empty!</string>
+    <string name="registered_successfully">Registered Successfully!</string>
+    <string name="select_participipants">Select Participants</string>
+    <string name="room_capacity">Room Capacity</string>
+    <string name="select_room_capacity">Select Room Capacity</string>
+    <string name="server_client_id">861287179604-0bl5rqopv0mip6ssob9bis5iqpb7e2nh.apps.googleusercontent.com</string>
+    <string name="server_client_id_partial">894152946032-m2lup4qoo1g2g72emg5t2ge6hg5go755.apps.googleusercontent.com</string>
+    <string name="start_time">Start-Time</string>
+    <string name="end_time">End-Time</string>
+    <string name="start_date">Start-Date</string>
+    <string name="end_date">End-Date</string>
+    <string name="reason">Purpose</string>
+    <string name="block">Block</string>
+    <string name="not_set">Not Set</string>
+    <string name="token">Token</string>
+    <string name="user_id">UserId</string>
+    <string name="preference">myPref</string>
+    <string name="session_expired">Session Expired!</string>
+    <string name="session_expired_messgae">Login again to continue...</string>
+    <string name="invalid_token">Invalid Token</string>
+    <string name="invalid_building_name">Invalid Building Name</string>
+    <string name="invalid_building_place">Invalid Building Place</string>
+    <string name="invalid_emp_id">Please enter in NL-XXX</string>
+    <string name="invalid_purpose_name">Invalid Purpose Name</string>
+    <string name="refresh_token">refresh_token</string>
+    <string name="access_token">access_token</string>
+    <string name="select_building">Select Building</string>
+
+    <string-array name="role">
+        <item>Select Role</item>
+        <item>Intern</item>
+        <item>SDE-1</item>
+        <item>SDE-2</item>
+        <item>SDE-3</item>
+        <item>HR</item>
+        <item>Project Manager</item>
+        <item>Principal Engineer</item>
+        <item>CEO</item>
+        <item>CTO</item>
+        <item>COO</item>
+    </string-array>
+
+    <string-array name="capacity">
+        <item>"Select Room Capacity"</item>
+        <item>2</item>
+        <item>4</item>
+        <item>6</item>
+        <item>8</item>
+        <item>10</item>
+        <item>12</item>
+        <item>14</item>
+        <item>16</item>
+    </string-array>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="successfully_sign_out">Successfully Signed Out</string>
+    <string name="room_capacity_must_be_more_than_0">Room Capacity must be more than 0</string>
+    <string name="wrong_email">Enter correct email!</string>
+    <string name="slot_unavailable">This slot is unavailable!</string>
+    <string name="not_found">Not Found</string>
+    <string name="no_booking_available">No booking available</string>
+    <string name="something_went_wrong">Something went wrong!</string>
+    <string name="status_of_internet">status_of_internet</string>
+    <string name="please_check_internet_connection">Please check network connection!</string>
+    <string name="permission_required">Permission Required</string>
+    <string name="do_not_share">DO NOT SHARE</string>
+    <string name="block_room">block room</string>
+    <string name="unblock_room_confirmation_message">Are you sure you want to unblock the Room?</string>
+    <string name="parameter_missing">Some parameters are missing</string>
+    <string name="unavailable">Unavailable</string>
+    <string name="messgae_for_day_selector_when_nothing_selected">No dates founds for selected days!</string>
+    <string name="invalid_details">Details are Invalid!!!</string>
+    <string name="get_new_passcode">Get new passcode</string>
+    <string name="select_room">Select Room</string>
+    <string name="no_room_in_building">No Room in the Buildings</string>
+    <string name="book">Book</string>
+    <string name="already_selected">Already Selected!</string>
+    <string name="book_confirmation_message">Are you sure want to book room?</string>
+    <string name="suggestion_message">No room available in this building. Have look on suggestions</string>
+    <string name="organizer">(organiser)</string>
+    <string name="sign_in_error">Google Sign In Error</string>
+    <string name="poor_internet_connection">Poor internet connection!</string>
+    <string name="already_part_of_meeting">You are already a part of this meeting!</string>
+    <string name="not_modified_message">Previous meeting time and new meeting time is same!</string>
+    <string name="building_name_hint">Main Building</string>
+    <string name="building_place_hint">Koramangala</string>
+    <string name="building_details_updated">Building Details Updated</string>
+    <string name="room_details_updated">Room Details Updated</string>
+    <string name="room_name_conflict_message">Room already exist with this name</string>
+    <string name="whiteboard_marker">WhiteBoard-Marker</string>
+    <string name="extension_board">Extension-Board</string>
+    <string name="speaker">Speaker</string>
+    <string name="monitor">Monitor</string>
+    <string name="projector">Projector</string>
+    <string name="amenities">Amenities</string>
+    <string name="room_location_hint">Prithvi(1st floor), Main Building</string>
+    <string name="date_hint">30 June, 2019</string>
+    <string name="start_end_time_hint">07:30 - 08:30</string>
+    <string name="unblock_label">Unblock</string>
+    <string name="block_purpose_hint">Ac Under Maintenance</string>
+    <string name="search">Search</string>
+    <string name="message_for_no_rooms_available">Sorry No Rooms available.Have look on Suggestions</string>
+    <string name="rajas_1st_floor_10_people">Rajas(1st floor) [10 people]</string>
+    <string name="connection_error">Connection error</string>
+    <string name="check_your_network_settings_and_try_again">Check your network settings and try again</string>
+    <string name="selected_days_list_can_t_be_empty">please select days</string>
+    <string name="add_email">Add Email</string>
+    <string name="name">Name</string>
+    <string name="email_hint">prateek.patidar@gmail.com</string>
+    <string name="welcome_to_nineleaps">Welcome to Nineleaps</string>
+    <string name="uber_client_meeting">Uber Client Meeting</string>
+    <string name="logout">Logout</string>
+    <string name="logout_message">Are you sure that you want to log out?</string>
+    <string name="you_are_an_attendee">you are an attendee</string>
+    <string name="pending_for_approval">Pending for approval</string>
+    <string name="edit">EDIT</string>
+    <string name="please_add_building">Please Add Building</string>
+    <string name="empty_employee_list">Empty EmployeeList</string>
+    <string name="Block_Room">block_room</string>
+    <string name="Roll_Id">Roll Id</string>
+    <string name="UnBlockRoom">UnBlockRoom</string>
+    <string name="recurring_booking">Recurring_Booking</string>
+    <string name="singleBooking">SingleBooking</string>
+    <string name="single_cancellation">Single_Cancellation</string>
+    <string name="recurring_cancellation">Recurring_Cancellation</string>
+    <string name="update_log">UPDATE</string>
+    <string name="no_rooms_available">No Rooms Available</string>
+    <string name="suggestion_rooms">No Room Available.Have look on suggestions</string>
+    <string name="sign_in_result">signInResult:failed code=</string>
+    <string name="google_id_token">GoogleIdToken</string>
+    <string name="successfull_deletion">Successfully Deleted</string>
+    <string name="yyyy_mm_dd">yyyy-MM-dd</string>
+    <string name="room_capacity_label">5 People</string>
+    <string name="select_floor">Select Floor</string>
+
+</resources>

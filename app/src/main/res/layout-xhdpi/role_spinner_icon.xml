@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:paddingBottom="@dimen/dp_5"
+              android:layout_height="match_parent">
+
+    <ImageView
+            android:layout_width="@dimen/dp_23"
+            android:layout_height="@dimen/dp_23"
+            android:id="@+id/icon"
+            android:paddingTop="@dimen/dp_4"
+            android:src="@drawable/arrow_pointing_to_right"/>
+
+    <TextView
+            android:id="@+id/spinner_text"
+            android:paddingLeft="@dimen/dp_14"
+            android:paddingTop="@dimen/dp_4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+</LinearLayout>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        package="com.nineleaps.conferenceroombooking">
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_PROFILE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <application
+            android:name=".BaseApplication"
+            android:allowBackup="true"
+            android:icon="@drawable/new_app_logo"
+            android:label="@string/app_name"
+            android:networkSecurityConfig="@xml/network_security_config"
+            android:roundIcon="@drawable/new_app_logo"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme"
+            tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+
+        <meta-data
+                android:name="io.fabric.ApiKey"
+                android:value="dfb427f6e30bbedadb01b9ab540f56eb9aeaa4ce"/>
+
+        <service
+                android:name=".NotificationService"
+                android:enabled="true"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <activity
+                android:name=".checkConnection.NoInternetConnectionActivity"
+                android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"/>
+        <activity
+                android:name=".splashScreen.ui.SplashScreen"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+                android:name=".recurringMeeting.ui.ManagerSelectMeetingMembers"
+                android:launchMode="singleTop"
+                android:parentActivityName=".recurringMeeting.ui.RecurringBookingInputDetails"
+                android:screenOrientation="portrait">
+        </activity>
+        <activity
+                android:name=".booking.ui.SelectMeetingMembersActivity"
+                android:launchMode="singleTop"
+                android:parentActivityName=".bookingDashboard.ui.UserBookingsDashboardActivity"
+                android:screenOrientation="portrait">
+        </activity>
+        <activity
+                android:name=".updateBooking.ui.UpdateBookingActivity"
+                android:launchMode="singleTop"
+                android:parentActivityName=".bookingDashboard.ui.UserBookingsDashboardActivity"
+                android:screenOrientation="portrait">
+        </activity>
+        <activity
+                android:name=".recurringMeeting.ui.RecurringBookingInputDetails"
+                android:launchMode="singleTop"
+                android:parentActivityName=".bookingDashboard.ui.UserBookingsDashboardActivity">
+        </activity>
+        <activity
+                android:name=".bookingDashboard.ui.UserBookingsDashboardActivity"
+                android:label="Booking"
+                android:launchMode="singleTop"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+                android:name=".SignIn"
+                android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+                android:name=".addBuilding.ui.AddingBuilding"
+                android:label="Add Building"
+                android:launchMode="singleTop"
+                android:parentActivityName=".manageBuildings.ui.BuildingDashboard"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+                android:name=".addConferenceRoom.ui.AddingConference"
+                android:label="Add Conference Room"
+                android:parentActivityName=".ConferenceRoomDashboard.ui.ConferenceDashBoard"
+                android:screenOrientation="portrait">
+        </activity>
+        <activity
+                android:name=".manageBuildings.ui.BuildingDashboard"
+                android:parentActivityName=".bookingDashboard.ui.UserBookingsDashboardActivity"
+                android:screenOrientation="portrait">
+        </activity>
+        <activity
+                android:name=".blockDashboard.ui.BlockedDashboard"
+                android:parentActivityName=".bookingDashboard.ui.UserBookingsDashboardActivity"
+                android:screenOrientation="portrait"/>
+        <activity
+                android:name=".blockRoom.ui.BlockConferenceRoomActivity"
+                android:launchMode="singleTop"
+                android:parentActivityName=".blockDashboard.ui.BlockedDashboard"
+                android:screenOrientation="portrait"/>
+        <activity
+                android:name=".ConferenceRoomDashboard.ui.ConferenceDashBoard"
+                android:launchMode="singleTop"
+                android:parentActivityName=".manageBuildings.ui.BuildingDashboard"
+                android:screenOrientation="portrait">
+        </activity>
+        <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts"/>
+    </application>
+
+</manifest>

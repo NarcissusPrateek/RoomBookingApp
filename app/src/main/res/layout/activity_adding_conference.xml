@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <androidx.cardview.widget.CardView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_margin="@dimen/dp_8"
+            android:padding="@dimen/dp_8"
+            app:cardCornerRadius="@dimen/card_corner_radius_dp_5"
+            app:cardUseCompatPadding="true"
+            tools:context=".Activity.AddingConference">
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:descendantFocusability="beforeDescendants"
+                android:layout_margin="@dimen/dp_16">
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/room_name_layout_name"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:focusableInTouchMode="true"
+                    android:padding="@dimen/dp_8"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="30"
+                    app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/conference_Name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_room_black_24dp"
+                        android:drawablePadding="@dimen/drawable_padding_5dp"
+                        android:ems="10"
+                        android:hint="@string/room_hint"
+                        android:maxLength="30"
+                        android:maxLines="1"
+                        android:textColor="@color/textColorGray"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                    android:id="@+id/room_information_layout"
+                    android:weightSum="3"
+                    android:layout_below="@id/room_name_layout_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/room_capacity_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/room_name_layout_name"
+                        android:background="@color/white"
+                        android:focusableInTouchMode="true"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="3"
+                        app:errorEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/conference_capacity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_room_black_24dp"
+                            android:drawablePadding="@dimen/drawable_padding_5dp"
+                            android:ems="10"
+                            android:hint="@string/room_capacity"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:maxLines="1"
+                            android:textColor="@color/textColorGray"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Spinner
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_below="@id/room_name_layout_name"
+                        android:layout_height="40dp"
+                        android:id="@+id/conference_room_floor"
+                        android:background="@drawable/spinner_rect"
+                />
+            </LinearLayout>
+
+
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ba160c"
+                    android:layout_below="@id/room_information_layout"
+                    android:layout_marginStart="@dimen/dp_170"
+                    android:id="@+id/floor_error"
+                    android:visibility="invisible"/>
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:layout_below="@id/room_information_layout"
+                    android:id="@+id/permission_required"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/dp_1"
+                    android:checked="false"
+                    android:textSize="@dimen/sp_18"
+                    android:textColor="@color/textColorGray"
+                    android:text="@string/permission_required"/>
+
+            <TextView
+                    android:id="@+id/aminities"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:text="@string/amenities"
+                    android:layout_below="@id/permission_required"
+                    android:textSize="@dimen/sp_20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/aminities_list"
+                    android:layout_below="@id/aminities"
+                    android:layout_margin="@dimen/dp_8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                <CheckBox
+                        android:id="@+id/projector_check_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/projector"
+                        android:paddingStart="@dimen/dp_12"
+                        android:textSize="@dimen/sp_18"
+                        android:textColor="@color/textColorGray"
+                />
+                <CheckBox
+                        android:id="@+id/monitor_check_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/dp_12"
+                        android:text="@string/monitor"
+                        android:textSize="@dimen/sp_18"
+                        android:textColor="@color/textColorGray"/>
+
+                <CheckBox
+                        android:id="@+id/speaker_check_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/speaker"
+                        android:paddingStart="@dimen/dp_12"
+                        android:textSize="@dimen/sp_18"
+                        android:textColor="@color/textColorGray"/>
+                <CheckBox
+                        android:id="@+id/extension_board_check_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/extension_board"
+                        android:paddingStart="@dimen/dp_12"
+                        android:textSize="@dimen/sp_18"
+                        android:textColor="@color/textColorGray"/>
+                <CheckBox
+                        android:id="@+id/whiteboard_marker_check_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/whiteboard_marker"
+                        android:paddingStart="@dimen/dp_12"
+                        android:textSize="@dimen/sp_18"
+                        android:textColor="@color/textColorGray"/>
+
+            </LinearLayout>
+
+            <Button android:id="@+id/add_conference_room"
+                    android:layout_below="@id/aminities_list"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ADD"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@android:color/white"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.core.widget.NestedScrollView>
+

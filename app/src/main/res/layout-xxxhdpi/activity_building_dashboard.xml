@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/recycler_view_background"
+        tools:context=".manageBuildings.ui.BuildingDashboard">
+
+    <ProgressBar
+            android:id="@+id/building_dashboard_progress_bar"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+    <ImageView
+        android:id="@+id/empty_view_blocked"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:src="@drawable/empty_state2"
+        />
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:id="@+id/buidingRecyclerView"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:textColor="@color/black"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/building_dashboard_list"
+            android:layout_height="match_parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <com.github.clans.fab.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_10"
+            app:fab_colorPressed="@color/colorPrimary1"
+            app:menu_colorPressed="@color/colorPrimary"
+            app:fab_colorNormal="@color/colorPrimary"
+            android:src="@drawable/ic_add_white_24dp"
+            android:id="@+id/button_add_building"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+
+    />
+</RelativeLayout>

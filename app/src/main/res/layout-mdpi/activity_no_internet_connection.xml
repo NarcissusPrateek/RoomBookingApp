@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <ImageView
+            android:layout_marginTop="@dimen/dp_94"
+            android:id="@+id/no_internet_image"
+            android:layout_gravity="center"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/cable"
+            android:layout_width="@dimen/check_internet_image_view_dp_150"
+            android:layout_height="@dimen/check_internet_image_view_dp_290"/>
+
+    <TextView
+            android:layout_below="@+id/no_internet_image"
+            android:id="@+id/no_internet_message"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:text="@string/connection_error"
+            android:textSize="@dimen/sp_20"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+            android:layout_below="@+id/no_internet_message"
+            android:id="@+id/no_internet_message2"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:text="@string/check_your_network_settings_and_try_again"
+            android:textSize="@dimen/sp_16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    <Button
+            android:id="@+id/retry_button"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_below="@+id/no_internet_message2"
+            android:text="Retry"
+            android:layout_centerHorizontal="true"
+            android:layout_width="@dimen/retry_button_dp_190"
+            android:layout_height="wrap_content"/>
+</RelativeLayout>
