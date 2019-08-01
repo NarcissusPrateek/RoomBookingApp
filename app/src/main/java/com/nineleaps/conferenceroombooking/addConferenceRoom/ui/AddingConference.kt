@@ -64,8 +64,6 @@ class AddingConference : AppCompatActivity() {
     private lateinit var mAddConferenceRoomViewModel: AddConferenceRoomViewModel
     private var mConferenceRoom = AddConferenceRoom()
     private lateinit var progressDialog: ProgressDialog
-    private var floorList: List<String> = listOf("Select Floor", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th")
-    private var roomFloor = Constants.SELECT_FLOOR
     private var flag = false
     var roomId = 0
     private var mEditRoomDetails = EditRoomDetails()
@@ -78,6 +76,38 @@ class AddingConference : AppCompatActivity() {
         observeData()
     }
 
+    private fun softKeyboard() {
+        conferenceRoomEditText.requestFocus()
+
+        add_conference_card_view.setOnClickListener {
+            HideSoftKeyboard.hideKeyboard(this)
+        }
+        add_conference_linear_layout.setOnClickListener {
+            HideSoftKeyboard.hideKeyboard(this)
+        }
+        add_conference_nestedScroll.setOnClickListener {
+            HideSoftKeyboard.hideKeyboard(this)
+        }
+        permission_required.setOnClickListener {
+            HideSoftKeyboard.hideKeyboard(this)
+        }
+        projector_check_box.setOnClickListener {
+            HideSoftKeyboard.hideKeyboard(this)
+        }
+        monitor_check_box.setOnClickListener {
+            HideSoftKeyboard.hideKeyboard(this)
+        }
+        speaker_check_box.setOnClickListener {
+            HideSoftKeyboard.hideKeyboard(this)
+        }
+        extension_board_check_box.setOnClickListener {
+            HideSoftKeyboard.hideKeyboard(this)
+        }
+        whiteboard_marker_check_box.setOnClickListener {
+            HideSoftKeyboard.hideKeyboard(this)
+        }
+    }
+
     /**
      * initialize all lateinit variables
      */
@@ -87,24 +117,10 @@ class AddingConference : AppCompatActivity() {
         initTextChangeListener()
         initLateInitializerVariables()
         initRoomRepository()
-        intsetfloorSpinner()
+        softKeyboard()
     }
 
-    private fun intsetfloorSpinner() {
-        val adapter = ArrayAdapter<String>(this, R.layout.spinner_icon, R.id.spinner_text, floorList)
-        conference_room_floor.adapter = adapter
-        conference_room_floor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                roomFloor = getString(R.string.select_floor)
-            }
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                roomFloor = floorList[position]
-
-            }
-
-        }
-    }
 
     private fun initTextChangeListener() {
         textChangeListenerOnRoomName()
@@ -197,6 +213,7 @@ class AddingConference : AppCompatActivity() {
      */
     @OnClick(R.id.add_conference_room)
     fun addRoomButton() {
+        HideSoftKeyboard.hideKeyboard(this)
         if (validateInputs()) {
             if (NetworkState.appIsConnectedToInternet(this)) {
                 addDataToObject(mConferenceRoom)
@@ -239,7 +256,7 @@ class AddingConference : AppCompatActivity() {
             val bundle: Bundle? = intent.extras
             mConferenceRoom.bId = bundle!!.get(Constants.EXTRA_BUILDING_ID)!!.toString().toInt()
         }
-        mConferenceRoom.roomName = conferenceRoomEditText.text.toString().trim() + "" + "(" + roomFloor + " floor)"
+        mConferenceRoom.roomName = conferenceRoomEditText.text.toString().trim()
         mConferenceRoom.capacity = roomCapacity.text.toString().toInt()
         mConferenceRoom.monitor = monitor.isChecked
         mConferenceRoom.speaker = speaker.isChecked
@@ -284,23 +301,10 @@ class AddingConference : AppCompatActivity() {
     }
 
     /**
-     * validate building spinner
-     */
-    private fun validateFloorSpinner(): Boolean {
-        return if (roomFloor == getString(R.string.select_floor)) {
-            floor_error.visibility = View.VISIBLE
-            false
-        } else {
-            floor_error.visibility = View.INVISIBLE
-            true
-        }
-    }
-
-    /**
      * validate all input fields
      */
     private fun validateInputs(): Boolean {
-        if (!validateRoomName() or !validateRoomCapacity() or !validateFloorSpinner()) {
+        if (!validateRoomName() or !validateRoomCapacity()) {
             return false
         }
         return true

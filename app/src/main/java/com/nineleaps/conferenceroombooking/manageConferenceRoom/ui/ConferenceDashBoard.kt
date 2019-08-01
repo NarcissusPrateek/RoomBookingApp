@@ -1,6 +1,7 @@
 package com.nineleaps.conferenceroombooking.ConferenceRoomDashboard.ui
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -39,9 +40,8 @@ class ConferenceDashBoard : AppCompatActivity() {
 
     @BindView(R.id.conference_list)
     lateinit var recyclerView: RecyclerView
-    @BindView(R.id.conference_room_dashboard_progress_bar)
-    lateinit var mProgressBar: ProgressBar
     var buildingId: Int = 0
+    lateinit var mProgressDialog: ProgressDialog
     private lateinit var mManageConferenceRoomViewModel: ManageConferenceRoomViewModel
     private lateinit var conferenceRoomAdapter: ConferenceRecyclerAdapter
     private var mConferenceList = ArrayList<ConferenceList>()
@@ -58,6 +58,7 @@ class ConferenceDashBoard : AppCompatActivity() {
         initComponentForManageRoomRepo()
         initLateInitalizerVariables()
         initManageRoomRepo()
+        mProgressDialog = GetProgress.getProgressDialog(getString(R.string.progress_message_processing),this)
         if (NetworkState.appIsConnectedToInternet(this)) {
             getConference(buildingId)
         } else {
@@ -104,9 +105,8 @@ class ConferenceDashBoard : AppCompatActivity() {
 
     private fun observeData() {
         mManageConferenceRoomViewModel.returnConferenceRoomList().observe(this, Observer {
-            mProgressBar.visibility = View.GONE
-            empty_view_blocked1.visibility = View.GONE
-            mConferenceList.clear()
+            mProgressDialog.dismiss()
+                        mConferenceList.clear()
             when {
                 it.isNotEmpty() -> mConferenceList.addAll(it)
                 else -> {
@@ -118,7 +118,7 @@ class ConferenceDashBoard : AppCompatActivity() {
             setAdapter()
         })
         mManageConferenceRoomViewModel.returnFailureForConferenceRoom().observe(this, Observer {
-            mProgressBar.visibility = View.GONE
+            mProgressDialog.dismiss()
             when (it) {
                 Constants.INVALID_TOKEN -> ShowDialogForSessionExpired.signOut(this, ConferenceDashBoard())
                 else -> {
@@ -129,12 +129,12 @@ class ConferenceDashBoard : AppCompatActivity() {
         })
 
         mManageConferenceRoomViewModel.returnSuccessForDeleteRoom().observe(this, Observer {
-            mProgressBar.visibility = View.GONE
+            mProgressDialog.dismiss()
             Toasty.success(this, getString(R.string.successfull_deletion)).show()
         })
 
         mManageConferenceRoomViewModel.returnFailureForDeleteRoom().observe(this, Observer {
-            mProgressBar.visibility = View.GONE
+            mProgressDialog.dismiss()
             if (it == getString(R.string.invalid_token)) {
                 ShowDialogForSessionExpired.showAlert(this, UserBookingsDashboardActivity())
             } else {
@@ -217,7 +217,7 @@ class ConferenceDashBoard : AppCompatActivity() {
         /**
          * getting Progress Dialog
          */
-        mProgressBar.visibility = View.VISIBLE
+        mProgressDialog.show()
         mManageConferenceRoomViewModel.getConferenceRoomList(buildingId, GetPreference.getTokenFromPreference(this))
     }
 }

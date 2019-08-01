@@ -77,6 +77,7 @@ class AddingBuilding : AppCompatActivity() {
     }
 
     private fun softKeyBoard() {
+        buildingNameEditText.requestFocus()
         add_building_card_view.setOnClickListener {
                 HideSoftKeyboard.hideKeyboard(this)
             }
