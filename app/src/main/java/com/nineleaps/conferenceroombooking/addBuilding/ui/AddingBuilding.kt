@@ -2,19 +2,27 @@ package com.nineleaps.conferenceroombooking.addBuilding.ui
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.Html.fromHtml
 import android.text.TextWatcher
+import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import butterknife.Optional
 import com.nineleaps.conferenceroombooking.BaseApplication
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
 import com.nineleaps.conferenceroombooking.R
@@ -54,6 +62,8 @@ class AddingBuilding : AppCompatActivity() {
         getDataFromIntent()
         observeData()
     }
+
+
     /**
      * initialize all lateinit variables
      */
@@ -63,6 +73,16 @@ class AddingBuilding : AppCompatActivity() {
         initLateInitializerVariables()
         initAddingBuildingRepository()
         initTextChangeListener()
+        softKeyBoard()
+    }
+
+    private fun softKeyBoard() {
+        add_building_card_view.setOnClickListener {
+                HideSoftKeyboard.hideKeyboard(this)
+            }
+        add_building_layout.setOnClickListener {
+            HideSoftKeyboard.hideKeyboard(this)
+        }
     }
 
 
@@ -128,6 +148,7 @@ class AddingBuilding : AppCompatActivity() {
      */
     @OnClick(R.id.button_add_building)
     fun getBuildingDetails() {
+        HideSoftKeyboard.hideKeyboard(this)
         if (validateInputs()) {
             if (NetworkState.appIsConnectedToInternet(this)) {
                 if(flag) {

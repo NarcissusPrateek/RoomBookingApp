@@ -1,7 +1,6 @@
 package com.nineleaps.conferenceroombooking.Helper
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -26,7 +25,7 @@ class ConferenceRecyclerAdapter(private val conferencceList: List<ConferenceList
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.conferencelist = conferencceList[position]
         holder.conferenceName.text = conferencceList[position].roomName + " [${conferencceList[position].capacity} people]"
-        //holder.roomCapacity.text = " [${conferencceList[position].capacity} people]"
+     //   holder.roomCapacity.text = " [${conferencceList[position].capacity} people]"
         if(conferencceList[position].permission!! == 1) {
             holder.permissionTextView.visibility = View.VISIBLE
         } else {
@@ -60,7 +59,6 @@ class ConferenceRecyclerAdapter(private val conferencceList: List<ConferenceList
             }
         }
         holder.editRoom.setOnClickListener {
-            Log.i("-----","edit")
                 listener.editRoom(position)
         }
         holder.deleteRoom.setOnClickListener {
@@ -78,7 +76,7 @@ class ConferenceRecyclerAdapter(private val conferencceList: List<ConferenceList
         var amenity5: TextView = itemView.findViewById(R.id.dashboard_ani_5)
         var deleteRoom: TextView = itemView.findViewById(R.id.delete_room_text_view)
         var editRoom: TextView = itemView.findViewById(R.id.edit_room_text_view)
-        //var roomCapacity: TextView = itemView.findViewById(R.id.room_capacity_text_view)
+       // var roomCapacity: TextView = itemView.findViewById(R.id.room_capacity_text_view)
         var conferencelist: ConferenceList? = null
     }
 

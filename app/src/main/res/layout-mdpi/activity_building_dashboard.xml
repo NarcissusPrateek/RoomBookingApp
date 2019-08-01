@@ -12,8 +12,10 @@
             android:id="@+id/building_dashboard_progress_bar"
             android:visibility="gone"
             android:layout_width="wrap_content"
+            android:elevation="@dimen/dp_24"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
     <ImageView
         android:id="@+id/empty_view_blocked"
         android:layout_width="match_parent"
