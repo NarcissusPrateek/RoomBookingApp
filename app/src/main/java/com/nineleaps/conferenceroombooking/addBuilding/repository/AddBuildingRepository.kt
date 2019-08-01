@@ -3,6 +3,7 @@ package com.nineleaps.conferenceroombooking.addBuilding.repository
 import com.nineleaps.conferenceroombooking.model.AddBuilding
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
+import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -19,7 +20,7 @@ class AddBuildingRepository @Inject constructor(){
      * make API call and calls the methods of interface
      */
     fun addBuildingDetails(mAddBuilding: AddBuilding, token: String, listener: ResponseListener) {
-        val addBuildingRequestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.addBuilding(token, mAddBuilding)!!
+        val addBuildingRequestCall: Call<ResponseBody> = RestClient1.getWebServiceData()?.addBuilding(mAddBuilding)!!
         addBuildingRequestCall.enqueue(object : Callback<ResponseBody> {
             // Negative response
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

@@ -44,6 +44,13 @@ interface ConferenceService {
         @Query("deviceId") deviceId: String
     ): Call<SignIn>
 
+    @POST("api/validateRefreshToken")
+    fun getNewToken(
+        @Body mRefreshToken: RefreshToken
+    ): Call<RefreshToken>
+
+
+
     @GET("api/CheckEmployeeRole")
     fun getRole(
         @Header("Authorization") token: String,
@@ -56,13 +63,6 @@ interface ConferenceService {
         @Header("Authorization") token: String,
         @Body bookingDashboardInput: BookingDashboardInput
     ): Call<DashboardDetails>
-
-    @POST("api/UserLogin")
-    fun addEmployee(
-        @Header("Authorization") token: String,
-        @Header("UserId") userId: String,
-        @Body newEmoployee: Employee
-    ): Call<ResponseBody>
 
     @POST("api/BookRoom")
     fun addBookingDetails(
@@ -111,7 +111,7 @@ interface ConferenceService {
 
     @POST("api/AddBuilding")
     fun addBuilding(
-        @Header("Authorization") token: String,
+        //@Header("Authorization") token: String,
         @Body newBuilding: AddBuilding
     ): Call<ResponseBody>
 

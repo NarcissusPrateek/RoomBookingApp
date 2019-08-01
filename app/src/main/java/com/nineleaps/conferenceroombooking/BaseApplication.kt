@@ -12,6 +12,11 @@ import com.nineleaps.conferenceroombooking.utils.Constants
 
 
 class BaseApplication: Application(){
+
+    companion object {
+        var appContext: Context? = null
+    }
+
     private var mAppComponent: AppComponent? = null
 
     private val appModule: AppModule
@@ -19,6 +24,7 @@ class BaseApplication: Application(){
 
     override fun onCreate() {
         super.onCreate()
+        appContext = applicationContext
         init()
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener(OnCompleteListener { task ->
@@ -41,7 +47,9 @@ class BaseApplication: Application(){
     }
 
 
-override fun attachBaseContext(context: Context) {
+
+
+    override fun attachBaseContext(context: Context) {
     super.attachBaseContext(context)
     MultiDex.install(this)
 }

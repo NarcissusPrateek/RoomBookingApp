@@ -30,7 +30,6 @@
                     android:id="@+id/edit_text_building_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
                     android:backgroundTintMode="@color/white"
                     android:maxLines="1"
                     android:drawableStart="@drawable/ic_building_black_24dp"

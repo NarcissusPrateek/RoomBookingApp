@@ -183,7 +183,7 @@ class AddingBuilding : AppCompatActivity() {
         })
         mAddBuildingViewModel.returnFailureForAddBuilding().observe(this, Observer {
             progressDialog.dismiss()
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE) {
                 ShowDialogForSessionExpired.showAlert(this, AddingBuilding())
             } else {
                 ShowToast.show(this, it as Int)
@@ -197,7 +197,7 @@ class AddingBuilding : AppCompatActivity() {
         })
         mAddBuildingViewModel.returnFailureForUpdateBuilding().observe(this, Observer {
             progressDialog.dismiss()
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE) {
                 ShowDialogForSessionExpired.showAlert(this, AddingBuilding())
             } else {
                 ShowToast.show(this, it as Int)
@@ -260,7 +260,7 @@ class AddingBuilding : AppCompatActivity() {
          * Get the progress dialog from GetProgress Helper class
          */
         progressDialog.show()
-        mAddBuildingViewModel.addBuildingDetails(mBuilding, GetPreference.getTokenFromPreference(this))
+        mAddBuildingViewModel.addBuildingDetails(mBuilding,GetPreference.getTokenFromPreference(this))
     }
 
     private fun updateBuildingDetails(mUpdateBuildingDetails: AddBuilding) {

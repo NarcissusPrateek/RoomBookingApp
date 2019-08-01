@@ -8,5 +8,8 @@ data class SignIn(
         var token: String? = null,
 
         @SerializedName("statusCode")
-        var statusCode: String? = null
+        var statusCode: String? = null,
+
+        @SerializedName("refreshToken")
+        var refreshToken: String? = null
 )

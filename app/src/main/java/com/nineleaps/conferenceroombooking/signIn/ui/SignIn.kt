@@ -204,6 +204,7 @@ class SignIn : AppCompatActivity() {
         editor.putInt(Constants.ROLE_CODE,code.toInt())
         editor.apply()
         saveCustomToken(it.token)
+        GetPreference.setJWTToken(this, it.refreshToken!!, it.token!!)
         intentToNextActivity(code.toInt())
     }
     /**
