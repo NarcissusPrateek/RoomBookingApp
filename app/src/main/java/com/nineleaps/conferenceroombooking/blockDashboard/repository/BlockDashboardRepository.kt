@@ -3,6 +3,7 @@ package com.nineleaps.conferenceroombooking.blockDashboard.repository
 import com.nineleaps.conferenceroombooking.Blocked
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
+import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -13,8 +14,8 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 class BlockDashboardRepository @Inject constructor(){
-    fun getBlockedList(token: String, listener: ResponseListener) {
-        val requestCall: Call<List<Blocked>> = RestClient.getWebServiceData()?.getBlockedConference(token)!!
+    fun getBlockedList(listener: ResponseListener) {
+        val requestCall: Call<List<Blocked>> = RestClient1.getWebServiceData()?.getBlockedConference()!!
         requestCall.enqueue(object : Callback<List<Blocked>> {
             override fun onFailure(call: Call<List<Blocked>>, t: Throwable) {
                 when(t) {
@@ -43,8 +44,8 @@ class BlockDashboardRepository @Inject constructor(){
     /**
      * make request to server for unblock room
      */
-    fun unblockRoom(token: String, bookingId: Int, listener: ResponseListener) {
-        val requestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.unBlockingConferenceRoom(token, bookingId)!!
+    fun unblockRoom(bookingId: Int, listener: ResponseListener) {
+        val requestCall: Call<ResponseBody> = RestClient1.getWebServiceData()?.unBlockingConferenceRoom(bookingId)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 when(t) {

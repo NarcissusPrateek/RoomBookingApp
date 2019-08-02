@@ -3,6 +3,7 @@ package com.nineleaps.conferenceroombooking.ConferenceRoomDashboard.repository
 import com.nineleaps.conferenceroombooking.Models.ConferenceList
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
+import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -19,7 +20,7 @@ class ManageConferenceRoomRepository @Inject constructor() {
          * api call using retorfit
          */
         val requestCall: Call<List<ConferenceList>> =
-            RestClient.getWebServiceData()?.conferenceList(token, buildingId)!!
+            RestClient1.getWebServiceData()?.conferenceList(buildingId)!!
         requestCall.enqueue(object : Callback<List<ConferenceList>> {
             override fun onFailure(call: Call<List<ConferenceList>>, t: Throwable) {
                 when (t) {
@@ -51,7 +52,7 @@ class ManageConferenceRoomRepository @Inject constructor() {
      * for negative response, we will call onFailure method with response code from server
      */
     fun deleteBuilding(token: String, id: Int, listener: ResponseListener) {
-        val requestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.deleteRoom(token, id)!!
+        val requestCall: Call<ResponseBody> = RestClient1.getWebServiceData()?.deleteRoom(id)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 when (t) {

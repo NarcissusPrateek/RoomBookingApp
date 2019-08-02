@@ -5,6 +5,7 @@ import com.nineleaps.conferenceroombooking.model.BlockRoom
 import com.nineleaps.conferenceroombooking.model.BlockingConfirmation
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
+import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -18,12 +19,12 @@ class BlockRoomRepository @Inject constructor(){
     /**
      *  function will make API call
      */
-    fun blockRoom(mRoom: BlockRoom, token: String, listener: ResponseListener) {
+    fun blockRoom(mRoom: BlockRoom, listener: ResponseListener) {
 
         /**
          * make API call usnig retrofit
          */
-        val requestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.blockconference(token, mRoom)!!
+        val requestCall: Call<ResponseBody> = RestClient1.getWebServiceData()?.blockconference(mRoom)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 when(t) {
@@ -59,12 +60,12 @@ class BlockRoomRepository @Inject constructor(){
      * function will initialize the MutableLivedata Object and than make API Call
      * Passing the Context and model and call API, In return sends the status of LiveData
      */
-    fun getRoomList(buildingId: Int, token: String, listener: ResponseListener) {
+    fun getRoomList(buildingId: Int, listener: ResponseListener) {
 
         /**
          *  api call using retrofit
          */
-        val requestCall: Call<List<ConferenceList>> = RestClient.getWebServiceData()?.conferenceList(token, buildingId)!!
+        val requestCall: Call<List<ConferenceList>> = RestClient1.getWebServiceData()?.conferenceList(buildingId)!!
         requestCall.enqueue(object : Callback<List<ConferenceList>> {
             override fun onFailure(call: Call<List<ConferenceList>>, t: Throwable) {
                 when(t) {
@@ -97,11 +98,11 @@ class BlockRoomRepository @Inject constructor(){
      * ---------------------------------------------------------------------------------------------------------------------------
      */
 
-    fun blockingStatus(mRoom: BlockRoom, token: String, listener: ResponseListener) {
+    fun blockingStatus(mRoom: BlockRoom, listener: ResponseListener) {
         /**
          * API call using retrofit
          */
-        val requestCall: Call<BlockingConfirmation> = RestClient.getWebServiceData()?.blockConfirmation(token, mRoom)!!
+        val requestCall: Call<BlockingConfirmation> = RestClient1.getWebServiceData()?.blockConfirmation(mRoom)!!
         requestCall.enqueue(object : Callback<BlockingConfirmation> {
             override fun onFailure(call: Call<BlockingConfirmation>, t: Throwable) {
                 when(t) {

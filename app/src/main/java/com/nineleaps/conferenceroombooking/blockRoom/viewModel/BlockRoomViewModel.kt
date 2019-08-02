@@ -53,8 +53,8 @@ class BlockRoomViewModel : ViewModel() {
      * function will initialize the repository object and calls the method of repository which will make the api call
      * and function will return the value for MutableLivedata
      */
-    fun blockRoom(mRoom: BlockRoom, token: String) {
-        mBlockRoomRepository!!.blockRoom(mRoom, token, object : ResponseListener {
+    fun blockRoom(mRoom: BlockRoom) {
+        mBlockRoomRepository!!.blockRoom(mRoom, object : ResponseListener {
             override fun onSuccess(success: Any) {
                 mSuccessForBlockRoom.value = success as Int
             }
@@ -82,8 +82,8 @@ class BlockRoomViewModel : ViewModel() {
      * function will initialize the repository object and calls the method of repository which will make the api call
      * and function will return the value for MutableLivedata
      */
-    fun getRoomList(buildingId: Int, token: String) {
-        mBlockRoomRepository!!.getRoomList(buildingId, token, object :
+    fun getRoomList(buildingId: Int) {
+        mBlockRoomRepository!!.getRoomList(buildingId, object :
             ResponseListener {
             override fun onSuccess(success: Any) {
                 mConferenceRoomList.value = success as List<ConferenceList>
@@ -113,8 +113,8 @@ class BlockRoomViewModel : ViewModel() {
      * function will initialize the repository object and calls the method of repository which will make the api call
      * and function will return the value for MutableLivedata
      */
-    fun blockingStatus(mRoom: BlockRoom, token: String) {
-        mBlockRoomRepository!!.blockingStatus(mRoom, token, object :
+    fun blockingStatus(mRoom: BlockRoom) {
+        mBlockRoomRepository!!.blockingStatus(mRoom, object :
             ResponseListener {
             override fun onSuccess(success: Any) {
                 mConfirmation.value = success as BlockingConfirmation

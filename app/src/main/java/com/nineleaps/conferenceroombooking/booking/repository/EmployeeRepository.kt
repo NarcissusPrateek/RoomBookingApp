@@ -3,6 +3,7 @@ package com.nineleaps.conferenceroombooking.booking.repository
 import com.nineleaps.conferenceroombooking.model.EmployeeList
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
+import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,7 +18,7 @@ class EmployeeRepository @Inject constructor(){
      * function will call the api which will return some data
      */
     fun getEmployeeList(token: String, email: String, listener: ResponseListener) {
-        val requestCall: Call<List<EmployeeList>> = RestClient.getWebServiceData()?.getEmployees(token, email)!!
+        val requestCall: Call<List<EmployeeList>> = RestClient1.getWebServiceData()?.getEmployees(email)!!
         requestCall.enqueue(object : Callback<List<EmployeeList>> {
             override fun onFailure(call: Call<List<EmployeeList>>, t: Throwable) {
                 when(t) {

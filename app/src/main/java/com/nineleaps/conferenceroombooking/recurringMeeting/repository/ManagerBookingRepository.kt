@@ -3,6 +3,7 @@ package com.nineleaps.conferenceroombooking.recurringMeeting.repository
 import com.nineleaps.conferenceroombooking.model.ManagerBooking
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
+import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -22,7 +23,7 @@ class ManagerBookingRepository @Inject constructor() {
          * api call using retrofit
          */
         val requestCall: Call<ResponseBody> =
-            RestClient.getWebServiceData()?.addManagerBookingDetails(token, mBooking)!!
+            RestClient1.getWebServiceData()?.addManagerBookingDetails(mBooking)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 when (t) {

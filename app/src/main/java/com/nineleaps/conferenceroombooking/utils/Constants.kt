@@ -45,6 +45,8 @@ class Constants {
 
         const val SOME_EXCEPTION = 400
 
+        const val FORBIDDEN = 403
+
         const val UNPROCESSABLE = 422
 
         const val REFRESH_TOKEN = "REFRESH_TOKEN"

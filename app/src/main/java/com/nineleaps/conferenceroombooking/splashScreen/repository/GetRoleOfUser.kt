@@ -2,6 +2,7 @@ package com.nineleaps.conferenceroombooking.splashScreen.repository
 
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
+import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,7 +20,7 @@ class GetRoleOfUser @Inject constructor(){
         /**
          * api call using retrofit
          */
-        val requestCall: Call<Int> = RestClient.getWebServiceData()?.getRole(token, email)!!
+        val requestCall: Call<Int> = RestClient1.getWebServiceData()?.getRole(email)!!
         requestCall.enqueue(object : Callback<Int> {
             override fun onFailure(call: Call<Int>, t: Throwable) {
                 when(t) {

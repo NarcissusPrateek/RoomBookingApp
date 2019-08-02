@@ -2,7 +2,7 @@ package com.nineleaps.conferenceroombooking.addConferenceRoom.repository
 
 import com.nineleaps.conferenceroombooking.AddConferenceRoom
 import com.nineleaps.conferenceroombooking.services.ResponseListener
-import com.nineleaps.conferenceroombooking.services.RestClient
+import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -15,10 +15,10 @@ import javax.inject.Inject
 
 class AddConferenceRepository @Inject constructor() {
     //Passing the Context and model and call API, In return sends the status of LiveData
-    fun addConferenceDetails(mConferenceRoom: AddConferenceRoom, token: String, listener: ResponseListener) {
+    fun addConferenceDetails(mConferenceRoom: AddConferenceRoom, listener: ResponseListener) {
         //Retrofit Call
         val addConferenceRequestCall: Call<ResponseBody> =
-            RestClient.getWebServiceData()?.addConference(token, mConferenceRoom)!!
+            RestClient1.getWebServiceData()?.addConference(mConferenceRoom)!!
 
         addConferenceRequestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -47,10 +47,10 @@ class AddConferenceRepository @Inject constructor() {
 
     // ------------------------------------------------update Room Details --------------------------------------
     //Passing the Context and model and call API, In return sends the status of LiveData
-    fun updateConferenceDetails(mConferenceRoom: AddConferenceRoom, token: String, listener: ResponseListener) {
+    fun updateConferenceDetails(mConferenceRoom: AddConferenceRoom, listener: ResponseListener) {
         //Retrofit Call
         val addConferenceRequestCall: Call<ResponseBody> =
-            RestClient.getWebServiceData()?.updateConference(token, mConferenceRoom)!!
+            RestClient1.getWebServiceData()?.updateConference(mConferenceRoom)!!
         addConferenceRequestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 when (t) {

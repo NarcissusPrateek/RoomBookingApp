@@ -4,6 +4,7 @@ import com.example.conferenceroomapp.model.ManagerConference
 import com.nineleaps.conferenceroombooking.model.RoomDetails
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
+import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,7 +23,7 @@ class ManagerConferenceRoomRepository @Inject constructor() {
          * api call using retrofit
          */
         val requestCall: Call<List<RoomDetails>> =
-            RestClient.getWebServiceData()?.getMangerConferenceRoomList(token, mRoom)!!
+            RestClient1.getWebServiceData()?.getMangerConferenceRoomList(mRoom)!!
         requestCall.enqueue(object : Callback<List<RoomDetails>> {
             override fun onFailure(call: Call<List<RoomDetails>>, t: Throwable) {
                 listener.onFailure(Constants.INTERNAL_SERVER_ERROR)
@@ -49,7 +50,7 @@ class ManagerConferenceRoomRepository @Inject constructor() {
          * api call using Retrofit
          */
         val requestCall: Call<List<RoomDetails>> =
-            RestClient.getWebServiceData()?.getSuggestedRoomsForRecurring(token, mInputDetailsForRoom)!!
+            RestClient1.getWebServiceData()?.getSuggestedRoomsForRecurring(mInputDetailsForRoom)!!
         requestCall.enqueue(object : Callback<List<RoomDetails>> {
             override fun onFailure(call: Call<List<RoomDetails>>, t: Throwable) {
                 when (t) {

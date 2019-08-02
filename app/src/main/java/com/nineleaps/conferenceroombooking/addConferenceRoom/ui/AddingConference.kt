@@ -235,7 +235,7 @@ class AddingConference : AppCompatActivity() {
     // make api call with updated data to update room details
     private fun updateRoomDetails() {
         progressDialog.show()
-        mAddConferenceRoomViewModel.updateConferenceDetails(GetPreference.getTokenFromPreference(this), mConferenceRoom)
+        mAddConferenceRoomViewModel.updateConferenceDetails(mConferenceRoom)
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -315,7 +315,7 @@ class AddingConference : AppCompatActivity() {
      */
     private fun addRoom() {
         progressDialog.show()
-        mAddConferenceRoomViewModel.addConferenceDetails(GetPreference.getTokenFromPreference(this), mConferenceRoom)
+        mAddConferenceRoomViewModel.addConferenceDetails(mConferenceRoom)
     }
 
     /**

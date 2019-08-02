@@ -3,6 +3,7 @@ package com.nineleaps.conferenceroombooking.booking.repository
 import com.nineleaps.conferenceroombooking.model.Booking
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
+import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -22,7 +23,7 @@ class BookingRepository @Inject constructor(){
         /**
          * api call using retorfit
          */
-        val requestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.addBookingDetails(token, mBooking)!!
+        val requestCall: Call<ResponseBody> = RestClient1.getWebServiceData()?.addBookingDetails(mBooking)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

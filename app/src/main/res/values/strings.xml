@@ -252,5 +252,6 @@
     <string name="yyyy_mm_dd">yyyy-MM-dd</string>
     <string name="room_capacity_label">5 People</string>
     <string name="select_floor">Select Floor</string>
+    <string name="authorization">Authorization</string>
 
 </resources>

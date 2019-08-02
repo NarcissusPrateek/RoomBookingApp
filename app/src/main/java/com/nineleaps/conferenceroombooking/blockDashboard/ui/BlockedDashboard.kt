@@ -125,7 +125,7 @@ class BlockedDashboard : AppCompatActivity() {
      */
     private fun refreshOnPull() {
         refreshLayout.setOnRefreshListener {
-            mBlockedDashboardViewModel.getBlockedList(GetPreference.getTokenFromPreference(this))
+            mBlockedDashboardViewModel.getBlockedList()
         }
     }
 
@@ -165,7 +165,7 @@ class BlockedDashboard : AppCompatActivity() {
         mBlockedDashboardViewModel.returnSuccessCodeForUnBlockRoom().observe(this, Observer {
             progressDialog.dismiss()
             Toasty.success(this,getString(R.string.room_unblocked), Toast.LENGTH_SHORT, true).show()
-            mBlockedDashboardViewModel.getBlockedList(GetPreference.getTokenFromPreference(this))
+            mBlockedDashboardViewModel.getBlockedList()
         })
         mBlockedDashboardViewModel.returnFailureCodeForUnBlockRoom().observe(this, Observer {
             progressDialog.dismiss()
@@ -259,7 +259,7 @@ class BlockedDashboard : AppCompatActivity() {
      */
     private fun loadBlocking() {
         mProgressBar.visibility = View.VISIBLE
-        mBlockedDashboardViewModel.getBlockedList(GetPreference.getTokenFromPreference(this))
+        mBlockedDashboardViewModel.getBlockedList()
     }
 
     /**
@@ -267,6 +267,6 @@ class BlockedDashboard : AppCompatActivity() {
      */
     private fun unblockRoom(mBookingId: Int) {
         progressDialog.show()
-        mBlockedDashboardViewModel.unBlockRoom(GetPreference.getTokenFromPreference(this), mBookingId)
+        mBlockedDashboardViewModel.unBlockRoom(mBookingId)
     }
 }

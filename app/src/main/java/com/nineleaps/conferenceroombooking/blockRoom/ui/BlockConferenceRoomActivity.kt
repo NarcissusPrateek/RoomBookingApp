@@ -290,7 +290,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
      */
     private fun blocking(room: BlockRoom) {
         progressDialog.show()
-        mBlockRoomViewModel.blockingStatus(room, GetPreference.getTokenFromPreference(this))
+        mBlockRoomViewModel.blockingStatus(room)
     }
 
     /**
@@ -298,7 +298,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
      */
     private fun blockConfirmed(mRoom: BlockRoom) {
         progressDialog.show()
-        mBlockRoomViewModel.blockRoom(mRoom, GetPreference.getTokenFromPreference(this))
+        mBlockRoomViewModel.blockRoom(mRoom)
     }
 
     /**
@@ -306,7 +306,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
      */
     fun conferenceRoomListFromBackend(buildingId: Int) {
         mProgressDialog.visibility = View.VISIBLE
-        mBlockRoomViewModel.getRoomList(buildingId, GetPreference.getTokenFromPreference(this))
+        mBlockRoomViewModel.getRoomList(buildingId)
     }
 
     /**
