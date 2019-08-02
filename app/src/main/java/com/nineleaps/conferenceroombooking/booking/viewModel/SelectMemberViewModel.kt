@@ -26,8 +26,8 @@ class SelectMemberViewModel: ViewModel() {
     /**
      * for Employee List
      */
-    fun getEmployeeList(token: String, email: String) {
-        mEmployeeRepository!!.getEmployeeList(token, email, object: ResponseListener {
+    fun getEmployeeList(email: String) {
+        mEmployeeRepository!!.getEmployeeList(email, object: ResponseListener {
             override fun onFailure(failure: Any) {
                 mErrorCodeFromServerForEmployees.value = failure
             }

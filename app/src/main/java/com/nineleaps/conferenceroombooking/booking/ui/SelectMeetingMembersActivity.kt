@@ -202,7 +202,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
      */
     private fun addBooking() {
         progressDialog.show()
-        mBookingViewModel.addBookingDetails(mBooking, GetPreference.getTokenFromPreference(this))
+        mBookingViewModel.addBookingDetails(mBooking)
     }
 
     /**
@@ -241,7 +241,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
     // call function of ViewModel which will make API call
     private fun getViewModel() {
         mProgressBar.visibility = View.VISIBLE
-        mSelectMemberViewModel.getEmployeeList(GetPreference.getTokenFromPreference(this), acct.email!!)
+        mSelectMemberViewModel.getEmployeeList(acct.email!!)
     }
 
     @OnClick(R.id.next_activity)

@@ -19,7 +19,7 @@ class ConferenceRoomRepository @Inject constructor() {
      * function will initialize the MutableLivedata Object and than make API Call
      * Passing the Context and model and call API, In return sends the status of LiveData
      */
-    fun getConferenceRoomList(token: String, mInputDetailsForRoom: InputDetailsForRoom, listener: ResponseListener) {
+    fun getConferenceRoomList(mInputDetailsForRoom: InputDetailsForRoom, listener: ResponseListener) {
         /**
          * api call using Retrofit
          */
@@ -55,7 +55,7 @@ class ConferenceRoomRepository @Inject constructor() {
      * function will initialize the MutableLivedata Object and than make API Call
      * Passing the Context and model and call API, In return sends the status of LiveData
      */
-    fun getSuggestedRooms(token: String, mInputDetailsForRoom: InputDetailsForRoom, listener: ResponseListener) {
+    fun getSuggestedRooms(mInputDetailsForRoom: InputDetailsForRoom, listener: ResponseListener) {
         /**
          * api call using Retrofit
          */

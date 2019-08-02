@@ -155,12 +155,12 @@ class InputDetailsForBookingFragment : Fragment() {
      */
     private fun getViewModelForBuildingList() {
         mProgressBar.visibility = View.VISIBLE
-        mBuildingsViewModel.getBuildingList(GetPreference.getTokenFromPreference(activity!!))
+        mBuildingsViewModel.getBuildingList()
     }
 
     private fun getViewModelForConferenceRoomList(mInputDetailsForRoom: InputDetailsForRoom) {
         mProgressBar.visibility = View.VISIBLE
-        mConferenceRoomViewModel.getConferenceRoomList(GetPreference.getTokenFromPreference(activity!!), mInputDetailsForRoom)
+        mConferenceRoomViewModel.getConferenceRoomList(mInputDetailsForRoom)
     }
 
     private fun setAdapter(mListOfRooms: List<RoomDetails>) {
@@ -277,7 +277,7 @@ class InputDetailsForBookingFragment : Fragment() {
     }
     private fun makeCallToApiForSuggestedRooms() {
         mSuggestedRoomApiIsCallled = true
-        mConferenceRoomViewModel.getSuggestedConferenceRoomList(GetPreference.getTokenFromPreference(activity!!), mInputDetailsForRoom)
+        mConferenceRoomViewModel.getSuggestedConferenceRoomList(mInputDetailsForRoom)
     }
 
     private fun setBuildingSpinner(mBuildingList: List<Building>) {

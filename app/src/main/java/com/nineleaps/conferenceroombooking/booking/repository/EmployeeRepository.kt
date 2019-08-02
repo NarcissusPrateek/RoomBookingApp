@@ -17,7 +17,7 @@ class EmployeeRepository @Inject constructor(){
     /**
      * function will call the api which will return some data
      */
-    fun getEmployeeList(token: String, email: String, listener: ResponseListener) {
+    fun getEmployeeList(email: String, listener: ResponseListener) {
         val requestCall: Call<List<EmployeeList>> = RestClient1.getWebServiceData()?.getEmployees(email)!!
         requestCall.enqueue(object : Callback<List<EmployeeList>> {
             override fun onFailure(call: Call<List<EmployeeList>>, t: Throwable) {
