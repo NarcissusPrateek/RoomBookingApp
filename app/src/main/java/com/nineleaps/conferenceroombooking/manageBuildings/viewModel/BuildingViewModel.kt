@@ -36,8 +36,8 @@ class BuildingViewModel : ViewModel() {
      * function will initialize the repository object and calls the method of repository which will make the api call
      * and function will update the values of MutableLiveData objects according to the response from server
      */
-    fun getBuildingList(token: String) {
-        mBuildingsRepository?.getBuildingList(token, object: ResponseListener {
+    fun getBuildingList() {
+        mBuildingsRepository?.getBuildingList(object: ResponseListener {
             override fun onFailure(failure: Any) {
                     errorCodeFromServer.value = failure
             }
@@ -62,8 +62,8 @@ class BuildingViewModel : ViewModel() {
         return errorCodeFromServer
     }
 
-    fun deleteBuilding(token: String,id:Int) {
-        mBuildingsRepository?.deleteBuilding(token,id, object: ResponseListener {
+    fun deleteBuilding(id:Int) {
+        mBuildingsRepository?.deleteBuilding(id, object: ResponseListener {
             override fun onFailure(failure: Any) {
                 mFailureForDeleteBuilding.value = failure
             }

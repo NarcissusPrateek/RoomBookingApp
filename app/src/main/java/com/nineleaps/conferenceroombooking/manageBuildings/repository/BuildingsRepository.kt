@@ -20,7 +20,7 @@ class BuildingsRepository @Inject constructor(){
      * if the response is positive than we will call onSuccess method with response data from server
      * for negative response, we will call onFailure method with response code from server
      */
-    fun getBuildingList(token: String, listener: ResponseListener) {
+    fun getBuildingList(listener: ResponseListener) {
         val requestCall: Call<List<Building>> = RestClient1.getWebServiceData()?.getBuildingList()!!
         requestCall.enqueue(object : Callback<List<Building>> {
             override fun onFailure(call: Call<List<Building>>, t: Throwable) {
@@ -66,7 +66,7 @@ class BuildingsRepository @Inject constructor(){
      * if the response is positive than we will call onSuccess method with response data from server
      * for negative response, we will call onFailure method with response code from server
      */
-    fun deleteBuilding(token: String, id:Int,listener: ResponseListener){
+    fun deleteBuilding(id:Int,listener: ResponseListener){
         val requestCall: Call<ResponseBody> = RestClient1.getWebServiceData()?.deleteBuilding(id)!!
         requestCall.enqueue(object :Callback<ResponseBody>{
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

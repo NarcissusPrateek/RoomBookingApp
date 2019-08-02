@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class ManageConferenceRoomRepository @Inject constructor() {
 
-    fun getConferenceRoomList(buildingId: Int, token: String, listener: ResponseListener) {
+    fun getConferenceRoomList(buildingId: Int, listener: ResponseListener) {
         /**
          * api call using retorfit
          */
@@ -51,7 +51,7 @@ class ManageConferenceRoomRepository @Inject constructor() {
      * if the response is positive than we will call onSuccess method with response data from server
      * for negative response, we will call onFailure method with response code from server
      */
-    fun deleteBuilding(token: String, id: Int, listener: ResponseListener) {
+    fun deleteBuilding(id: Int, listener: ResponseListener) {
         val requestCall: Call<ResponseBody> = RestClient1.getWebServiceData()?.deleteRoom(id)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

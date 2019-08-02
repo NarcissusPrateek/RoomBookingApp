@@ -18,7 +18,7 @@ class UpdateBookingRepository @Inject constructor() {
      * function will make an API call to make request for the updation of booking
      * and call the interface method with data from server
      */
-    fun updateBookingDetails(mUpdateBooking: UpdateBooking, token: String, listener: ResponseListener) {
+    fun updateBookingDetails(mUpdateBooking: UpdateBooking, listener: ResponseListener) {
         val requestCall: Call<ResponseBody> = RestClient1.getWebServiceData()?.update(mUpdateBooking)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

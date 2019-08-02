@@ -168,7 +168,7 @@ class UpdateBookingActivity : AppCompatActivity() {
 
     private fun updateMeetingDetails() {
         progressDialog.show()
-        mUpdateBookingViewModel.updateBookingDetails(mUpdateBooking, GetPreference.getTokenFromPreference(this))
+        mUpdateBookingViewModel.updateBookingDetails(mUpdateBooking)
     }
 
     /**

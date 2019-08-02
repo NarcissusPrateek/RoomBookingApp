@@ -168,7 +168,7 @@ class ConferenceDashBoard : AppCompatActivity() {
     private fun showAlertDialogForDelete(roomId: Int?) {
         val dialog = GetAleretDialog.getDialog(this, "Delete", "Are you sure you wnat to delete the Room")
         dialog.setPositiveButton(R.string.ok) { _, _ ->
-            mManageConferenceRoomViewModel.deleteConferenceRoom(GetPreference.getTokenFromPreference(this), roomId!!)
+            mManageConferenceRoomViewModel.deleteConferenceRoom(roomId!!)
             getConference(buildingId)
         }
         dialog.setNegativeButton(R.string.cancel) { _, _ ->
@@ -218,7 +218,7 @@ class ConferenceDashBoard : AppCompatActivity() {
          * getting Progress Dialog
          */
         mProgressDialog.show()
-        mManageConferenceRoomViewModel.getConferenceRoomList(buildingId, GetPreference.getTokenFromPreference(this))
+        mManageConferenceRoomViewModel.getConferenceRoomList(buildingId)
     }
 }
 
