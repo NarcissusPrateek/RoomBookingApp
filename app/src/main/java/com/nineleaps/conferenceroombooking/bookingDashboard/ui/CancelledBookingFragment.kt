@@ -106,7 +106,6 @@ class CancelledBookingFragment : Fragment() {
     private fun getViewModel() {
         mProgressBar.visibility = View.VISIBLE
         mBookingDashBoardViewModel.getBookingList(
-            GetPreference.getTokenFromPreference(activity!!),
             mBookingDashboardInput
         )
     }
@@ -131,7 +130,6 @@ class CancelledBookingFragment : Fragment() {
                     pagination++
                     mBookingDashboardInput.pageNumber = pagination
                     mBookingDashBoardViewModel.getBookingList(
-                        GetPreference.getTokenFromPreference(activity!!),
                         mBookingDashboardInput
                     )
                 }
@@ -148,7 +146,6 @@ class CancelledBookingFragment : Fragment() {
             pagination = 1
             mBookingDashboardInput.pageNumber = pagination
             mBookingDashBoardViewModel.getBookingList(
-                GetPreference.getTokenFromPreference(activity!!),
                 mBookingDashboardInput
             )
         }

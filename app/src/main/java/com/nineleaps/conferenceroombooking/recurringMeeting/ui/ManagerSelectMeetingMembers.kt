@@ -153,7 +153,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
 
     private fun getViewModel() {
         mProgressBar.visibility = View.VISIBLE
-        mSelectMemberViewModel.getEmployeeList(GetPreference.getTokenFromPreference(this), acct.email!!)
+        mSelectMemberViewModel.getEmployeeList(acct.email!!)
     }
 
     /**
@@ -274,7 +274,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
      */
     private fun addBooking() {
         progressDialog.show()
-        mManagerBookingViewModel.addBookingDetails(mManagerBooking, GetPreference.getTokenFromPreference(this))
+        mManagerBookingViewModel.addBookingDetails(mManagerBooking)
     }
 
     fun addChip(name: String, email: String) {

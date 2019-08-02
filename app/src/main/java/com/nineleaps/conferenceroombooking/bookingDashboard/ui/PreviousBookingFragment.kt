@@ -106,7 +106,9 @@ class PreviousBookingFragment : Fragment() {
     private fun getViewModel() {
         mProgressBar.visibility = View.VISIBLE
         //progressDialog.show()
-        mBookingDashBoardViewModel.getBookingList(GetPreference.getTokenFromPreference(activity!!), mBookingDashboardInput)
+        mBookingDashBoardViewModel.getBookingList(
+            mBookingDashboardInput
+        )
     }
 
     private fun initRecyclerView() {
@@ -129,7 +131,9 @@ class PreviousBookingFragment : Fragment() {
                     pagination++
                     previous_progress_bar.visibility = View.VISIBLE
                     mBookingDashboardInput.pageNumber = pagination
-                    mBookingDashBoardViewModel.getBookingList(GetPreference.getTokenFromPreference(activity!!), mBookingDashboardInput)
+                    mBookingDashBoardViewModel.getBookingList(
+                        mBookingDashboardInput
+                    )
                 }
             }
         })
@@ -143,7 +147,9 @@ class PreviousBookingFragment : Fragment() {
             finalList.clear()
             pagination = 1
             mBookingDashboardInput.pageNumber = pagination
-            mBookingDashBoardViewModel.getBookingList(GetPreference.getTokenFromPreference(activity!!), mBookingDashboardInput)
+            mBookingDashBoardViewModel.getBookingList(
+                mBookingDashboardInput
+            )
         }
     }
 

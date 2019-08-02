@@ -20,7 +20,7 @@ class BookingDashboardRepository @Inject constructor() {
      * function will make api call for making a booking
      * and call the interface method with data from server
      */
-    fun getBookingList(token: String, mBookingDashboardInput: BookingDashboardInput, listener: ResponseListener) {
+    fun getBookingList(mBookingDashboardInput: BookingDashboardInput, listener: ResponseListener) {
         /**
          * API call using retrofit
          */
@@ -55,7 +55,7 @@ class BookingDashboardRepository @Inject constructor() {
     /**
      * function will make the API Call and call the interface method with data from server
      */
-    fun cancelBooking(token: String, meetingId: Int, listener: ResponseListener) {
+    fun cancelBooking(meetingId: Int, listener: ResponseListener) {
         /**
          * api call using retrofit
          */
@@ -88,7 +88,7 @@ class BookingDashboardRepository @Inject constructor() {
     /**
      * function will make the API Call and call the interface method with data from srver
      */
-    fun recurringCancelBooking(token: String, meetId: Int, recurringMeetingId: String, listener: ResponseListener) {
+    fun recurringCancelBooking(meetId: Int, recurringMeetingId: String, listener: ResponseListener) {
         /**
          * api call using rerofit
          */
@@ -119,7 +119,7 @@ class BookingDashboardRepository @Inject constructor() {
         })
     }
 
-    fun getPasscode(token: String, generateNewPasscode: Boolean, emailId: String, listener: ResponseListener) {
+    fun getPasscode(generateNewPasscode: Boolean, emailId: String, listener: ResponseListener) {
         val requestCall: Call<String> =
             RestClient1.getWebServiceData()?.getPasscode(generateNewPasscode, emailId)!!
         requestCall.enqueue(object : Callback<String> {

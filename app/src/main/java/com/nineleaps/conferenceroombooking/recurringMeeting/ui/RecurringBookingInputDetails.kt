@@ -339,7 +339,6 @@ class RecurringBookingInputDetails : AppCompatActivity() {
     private fun makeCallToApiForSuggestedRooms() {
         mSuggestedRoomApiIsCallled = true
         mManagerConferecneRoomViewModel.getSuggestedConferenceRoomList(
-            GetPreference.getTokenFromPreference(this),
             mRoom
         )
     }
@@ -349,7 +348,7 @@ class RecurringBookingInputDetails : AppCompatActivity() {
      */
     private fun getViewModelForBuildingList() {
         progressBar.visibility = View.VISIBLE
-        mBuildingsViewModel.getBuildingList(GetPreference.getTokenFromPreference(this))
+        mBuildingsViewModel.getBuildingList()
     }
 
     /**
@@ -613,7 +612,7 @@ class RecurringBookingInputDetails : AppCompatActivity() {
     private fun getConferenceRoomViewModel() {
         if (NetworkState.appIsConnectedToInternet(this)) {
             progressBar.visibility = View.VISIBLE
-            mManagerConferecneRoomViewModel.getConferenceRoomList(mRoom, GetPreference.getTokenFromPreference(this))
+            mManagerConferecneRoomViewModel.getConferenceRoomList(mRoom)
         } else {
             val i = Intent(this@RecurringBookingInputDetails, NoInternetConnectionActivity::class.java)
             startActivityForResult(i, Constants.RES_CODE2)

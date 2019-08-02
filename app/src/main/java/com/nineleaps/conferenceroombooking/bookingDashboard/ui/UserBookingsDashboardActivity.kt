@@ -113,7 +113,7 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
 
     private fun getPasscode() {
         mProgressBar.visibility = View.VISIBLE
-        mBookingDashBoardViewModel.getPasscode(GetPreference.getTokenFromPreference(this), false, acct.email!!)
+        mBookingDashBoardViewModel.getPasscode(false, acct.email!!)
     }
 
     /**
@@ -151,7 +151,7 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
         dialog.setPositiveButton(R.string.ok) { _, _ ->
         }
         dialog.setNeutralButton(getString(R.string.get_new_passcode)) { _, _ ->
-            mBookingDashBoardViewModel.getPasscode(GetPreference.getTokenFromPreference(this), true, acct.email!!)
+            mBookingDashBoardViewModel.getPasscode(true, acct.email!!)
         }
         val builder = GetAleretDialog.showDialog(dialog)
         ColorOfDialogButton.setColorOfDialogButton(builder)
