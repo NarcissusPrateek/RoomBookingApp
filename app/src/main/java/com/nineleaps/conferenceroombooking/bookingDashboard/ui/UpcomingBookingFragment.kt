@@ -212,7 +212,7 @@ class UpcomingBookingFragment : Fragment() {
             booking_refresh_layout.isRefreshing = false
             mProgressBar.visibility = View.GONE
             progressDialog.dismiss()
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else if (it == Constants.NO_CONTENT_FOUND && finalList.size == 0) {
                 upcoming_empty_view.visibility = View.VISIBLE
@@ -238,7 +238,7 @@ class UpcomingBookingFragment : Fragment() {
 
         mBookingDashBoardViewModel.returnCancelFailed().observe(this, Observer {
             progressDialog.dismiss()
-            if (it == getString(R.string.invalid_token)) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else {
                 ShowToast.show(activity!!, it as Int)

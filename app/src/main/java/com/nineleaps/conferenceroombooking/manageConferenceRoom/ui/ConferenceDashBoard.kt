@@ -120,7 +120,7 @@ class ConferenceDashBoard : AppCompatActivity() {
         mManageConferenceRoomViewModel.returnFailureForConferenceRoom().observe(this, Observer {
             mProgressDialog.dismiss()
             when (it) {
-                Constants.INVALID_TOKEN -> ShowDialogForSessionExpired.signOut(this, ConferenceDashBoard())
+                Constants.INVALID_TOKEN, Constants.FORBIDDEN, Constants.UNPROCESSABLE -> ShowDialogForSessionExpired.signOut(this, ConferenceDashBoard())
                 else -> {
                     ShowToast.show(this, it as Int)
                     finish()
@@ -135,7 +135,7 @@ class ConferenceDashBoard : AppCompatActivity() {
 
         mManageConferenceRoomViewModel.returnFailureForDeleteRoom().observe(this, Observer {
             mProgressDialog.dismiss()
-            if (it == getString(R.string.invalid_token)) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, UserBookingsDashboardActivity())
             } else {
                 ShowToast.show(this, it as Int)

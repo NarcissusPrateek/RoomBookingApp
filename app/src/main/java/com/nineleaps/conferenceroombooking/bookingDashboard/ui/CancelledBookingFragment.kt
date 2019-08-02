@@ -170,7 +170,7 @@ class CancelledBookingFragment : Fragment() {
             cancelled_progress_bar.visibility = View.GONE
             cancelled_booking_refresh_layout.isRefreshing = false
             mProgressBar.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else if (it == Constants.NO_CONTENT_FOUND && finalList.size == 0) {
                 cancelled_empty_view.visibility = View.VISIBLE

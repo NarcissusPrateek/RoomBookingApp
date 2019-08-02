@@ -172,7 +172,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
         // Negative response from server
         mSelectMemberViewModel.returnFailureForEmployeeList().observe(this, Observer {
             mProgressBar.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, SelectMeetingMembersActivity())
             } else {
                 ShowToast.show(this, it as Int)
@@ -189,7 +189,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
         // negative response from server
         mBookingViewModel.returnFailureForBooking().observe(this, Observer {
             progressDialog.dismiss()
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, SelectMeetingMembersActivity())
             } else {
                 ShowToast.show(this, it as Int)
@@ -211,7 +211,6 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
     private fun addDataToObject() {
         val acct = GoogleSignIn.getLastSignedInAccount(applicationContext)
         val mBookingDetails = getIntentData()
-        Log.e("-----data from Intent", mBookingDetails.toString())
         mBooking.email = acct!!.email
         mBooking.purpose = mBookingDetails.purpose
         mBooking.roomId = mBookingDetails.roomId!!.toInt()

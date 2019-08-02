@@ -195,7 +195,7 @@ class InputDetailsForBookingFragment : Fragment() {
         })
         mBuildingsViewModel.returnMBuildingFailure().observe(this, Observer {
             mProgressBar.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else {
                 ShowToast.show(activity!!, it as Int)
@@ -209,7 +209,7 @@ class InputDetailsForBookingFragment : Fragment() {
         // Negative response
         mConferenceRoomViewModel.returnFailure().observe(this, Observer {
             mProgressBar.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else {
                 ShowToast.show(activity!!, it as Int)
@@ -229,7 +229,7 @@ class InputDetailsForBookingFragment : Fragment() {
         // negative response for suggested rooms
         mConferenceRoomViewModel.returnFailureForSuggestedRooms().observe(this, Observer {
             mProgressBar.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else {
                 ShowToast.show(activity!!, it as Int)

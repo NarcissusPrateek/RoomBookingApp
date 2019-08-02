@@ -130,7 +130,7 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
         })
         mBookingDashBoardViewModel.returnPasscodeFailed().observe(this, androidx.lifecycle.Observer {
             mProgressBar.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 showAlert()
             } else {
                 ShowToast.show(this, it as Int)

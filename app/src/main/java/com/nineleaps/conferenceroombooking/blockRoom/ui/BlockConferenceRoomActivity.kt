@@ -148,7 +148,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
         mBuildingViewModel.returnMBuildingFailure().observe(this, Observer {
             mProgressDialog.visibility = View.GONE
             when (it) {
-                Constants.INVALID_TOKEN -> ShowDialogForSessionExpired.showAlert(this, BlockConferenceRoomActivity())
+                Constants.INVALID_TOKEN, Constants.UNPROCESSABLE, Constants.FORBIDDEN -> ShowDialogForSessionExpired.showAlert(this, BlockConferenceRoomActivity())
                 Constants.NO_CONTENT_FOUND -> Toast.makeText(this, getString(R.string.empty_building_list), Toast.LENGTH_SHORT).show()
                 else -> {
                     ShowToast.show(this, it as Int)
@@ -167,7 +167,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
 
         mBlockRoomViewModel.returnResponseErrorForBlockRoom().observe(this, Observer {
             progressDialog.dismiss()
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, BlockConferenceRoomActivity())
             } else {
                 ShowToast.show(this, it as Int)
@@ -204,7 +204,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
 
         mBlockRoomViewModel.returnResponseErrorForConfirmation().observe(this, Observer {
             progressDialog.dismiss()
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, BlockConferenceRoomActivity())
             } else {
                 ShowToast.show(this, it as Int)
@@ -221,7 +221,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
 
         mBlockRoomViewModel.returnResponseErrorForConferenceRoom().observe(this, Observer {
             mProgressDialog.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, BlockConferenceRoomActivity())
             } else {
                 ShowToast.show(this, it as Int)
@@ -282,7 +282,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
     private fun getBuilding() {
         mProgressDialog.visibility = View.VISIBLE
         // make api call
-        mBuildingViewModel.getBuildingList(GetPreference.getTokenFromPreference(this))
+        mBuildingViewModel.getBuildingList()
     }
 
     /**

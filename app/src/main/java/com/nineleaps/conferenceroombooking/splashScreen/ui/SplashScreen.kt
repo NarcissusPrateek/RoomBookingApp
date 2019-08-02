@@ -121,7 +121,7 @@ class SplashScreen : AppCompatActivity() {
         mGetRoleOfUserViewModel.returnFailureCodeForUserRole().observe(this, Observer {
             mProgressBar.visibility = View.GONE
             when (it) {
-                Constants.INVALID_TOKEN -> signIn()
+                Constants.INVALID_TOKEN, Constants.UNPROCESSABLE, Constants.FORBIDDEN -> signIn()
                 else -> {
                     Toast.makeText(this, "" + it, Toast.LENGTH_SHORT).show()
                     ShowToast.show(this, it as Int)

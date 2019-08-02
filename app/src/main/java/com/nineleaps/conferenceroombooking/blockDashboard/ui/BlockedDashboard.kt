@@ -149,7 +149,7 @@ class BlockedDashboard : AppCompatActivity() {
             refreshLayout.isRefreshing = false
             mProgressBar.visibility = View.GONE
             when (it) {
-                Constants.INVALID_TOKEN -> ShowDialogForSessionExpired.showAlert(this, BlockedDashboard())
+                Constants.INVALID_TOKEN, Constants.FORBIDDEN, Constants.UNPROCESSABLE -> ShowDialogForSessionExpired.showAlert(this, BlockedDashboard())
                 Constants.NO_CONTENT_FOUND -> {
                     empty_view_blocked.visibility = View.VISIBLE
                     r2_block_dashboard.setBackgroundColor(Color.parseColor("#FFFFFF"))
@@ -170,7 +170,7 @@ class BlockedDashboard : AppCompatActivity() {
         mBlockedDashboardViewModel.returnFailureCodeForUnBlockRoom().observe(this, Observer {
             progressDialog.dismiss()
             when (it) {
-                Constants.INVALID_TOKEN -> ShowDialogForSessionExpired.showAlert(this, BlockedDashboard())
+                Constants.INVALID_TOKEN, Constants.UNPROCESSABLE, Constants.FORBIDDEN -> ShowDialogForSessionExpired.showAlert(this, BlockedDashboard())
                 else -> ShowToast.show(this, it as Int)
             }
         })

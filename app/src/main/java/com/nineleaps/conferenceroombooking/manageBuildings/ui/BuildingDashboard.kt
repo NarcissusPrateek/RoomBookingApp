@@ -158,7 +158,7 @@ class BuildingDashboard : AppCompatActivity() {
         })
         mBuildingsViewModel.returnMBuildingFailure().observe(this, Observer {
             mProgressDialog.dismiss()
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, BuildingDashboard())
             } else {
                 ShowToast.show(this, it as Int)
@@ -176,7 +176,7 @@ class BuildingDashboard : AppCompatActivity() {
 
         mBuildingsViewModel.returnFailureForDeleteBuilding().observe(this, Observer {
             mProgressDialog.dismiss()
-            if (it == getString(R.string.invalid_token)) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, UserBookingsDashboardActivity())
             } else {
                 ShowToast.show(this, it as Int)

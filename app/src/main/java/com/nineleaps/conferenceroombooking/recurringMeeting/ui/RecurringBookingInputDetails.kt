@@ -238,7 +238,7 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         })
         mBuildingsViewModel.returnMBuildingFailure().observe(this, Observer {
             progressBar.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, RecurringBookingInputDetails())
             } else {
                 ShowToast.show(this, it as Int)
@@ -253,7 +253,7 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         // Negative response
         mManagerConferecneRoomViewModel.returnFailure().observe(this, Observer {
             progressBar.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, RecurringBookingInputDetails())
             } else {
                 ShowToast.show(this, it as Int)
@@ -275,7 +275,7 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         // negative response for suggested rooms
         mManagerConferecneRoomViewModel.returnFailureForSuggestedRooms().observe(this, Observer {
             progressBar.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, RecurringBookingInputDetails())
             } else {
                 ShowToast.show(this, it as Int)
