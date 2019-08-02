@@ -27,8 +27,8 @@ class CheckRegistrationViewModel : ViewModel() {
      * function will initialize the repository object and calls the method of repository which will make the api call
      * and function will return the value for MutableLivedata
      */
-    fun checkRegistration(token: String, deviceId: String){
-        mCheckRegistrationRepository!!.checkRegistration(token, deviceId, object:
+    fun checkRegistration(deviceId: String){
+        mCheckRegistrationRepository!!.checkRegistration(deviceId, object:
             ResponseListener {
             override fun onSuccess(success: Any) {
                 mSuccessCode.value = success as SignIn

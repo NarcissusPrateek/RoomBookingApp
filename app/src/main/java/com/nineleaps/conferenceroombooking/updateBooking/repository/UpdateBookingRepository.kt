@@ -3,7 +3,6 @@ package com.nineleaps.conferenceroombooking.updateBooking.repository
 import com.nineleaps.conferenceroombooking.model.UpdateBooking
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
-import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -19,7 +18,7 @@ class UpdateBookingRepository @Inject constructor() {
      * and call the interface method with data from server
      */
     fun updateBookingDetails(mUpdateBooking: UpdateBooking, listener: ResponseListener) {
-        val requestCall: Call<ResponseBody> = RestClient1.getWebServiceData()?.update(mUpdateBooking)!!
+        val requestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.update(mUpdateBooking)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 if(t is SocketTimeoutException || t is UnknownHostException) {

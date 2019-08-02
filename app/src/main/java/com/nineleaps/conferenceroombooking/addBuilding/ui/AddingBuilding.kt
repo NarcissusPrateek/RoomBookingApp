@@ -2,27 +2,19 @@ package com.nineleaps.conferenceroombooking.addBuilding.ui
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.Html.fromHtml
 import android.text.TextWatcher
-import android.util.Log
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import butterknife.Optional
 import com.nineleaps.conferenceroombooking.BaseApplication
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
 import com.nineleaps.conferenceroombooking.R

@@ -20,17 +20,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.crashlytics.android.Crashlytics
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.nineleaps.conferenceroombooking.BaseApplication
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
 import com.nineleaps.conferenceroombooking.R
 import com.nineleaps.conferenceroombooking.SignIn
 import com.nineleaps.conferenceroombooking.bookingDashboard.ui.UserBookingsDashboardActivity
 import com.nineleaps.conferenceroombooking.checkConnection.NoInternetConnectionActivity
-import com.nineleaps.conferenceroombooking.services.TokenAuthenticator
 import com.nineleaps.conferenceroombooking.splashScreen.repository.GetRoleOfUser
 import com.nineleaps.conferenceroombooking.splashScreen.viewModel.GetRoleOfUserViewModel
-import com.nineleaps.conferenceroombooking.utils.*
+import com.nineleaps.conferenceroombooking.utils.Constants
+import com.nineleaps.conferenceroombooking.utils.GetProgress
+import com.nineleaps.conferenceroombooking.utils.ShowDialogForSessionExpired
+import com.nineleaps.conferenceroombooking.utils.ShowToast
 import io.fabric.sdk.android.Fabric
 import javax.inject.Inject
 
@@ -43,7 +44,6 @@ class SplashScreen : AppCompatActivity() {
     private lateinit var mProgressBar: ProgressBar
     private lateinit var prefs: SharedPreferences
     private lateinit var progressDialog: ProgressDialog
-    private lateinit var acct: GoogleSignInAccount
     private lateinit var mGetRoleOfUserViewModel: GetRoleOfUserViewModel
     private var email = ""
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,7 +88,7 @@ class SplashScreen : AppCompatActivity() {
      */
     private fun checkRegistration() {
         mProgressBar.visibility = View.VISIBLE
-        mGetRoleOfUserViewModel.getUserRole(GetPreference.getTokenFromPreference(this), email)
+        mGetRoleOfUserViewModel.getUserRole(email)
     }
 
     /**

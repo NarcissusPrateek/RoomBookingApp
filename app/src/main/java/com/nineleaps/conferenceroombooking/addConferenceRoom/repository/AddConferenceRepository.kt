@@ -2,7 +2,7 @@ package com.nineleaps.conferenceroombooking.addConferenceRoom.repository
 
 import com.nineleaps.conferenceroombooking.AddConferenceRoom
 import com.nineleaps.conferenceroombooking.services.ResponseListener
-import com.nineleaps.conferenceroombooking.services.RestClient1
+import com.nineleaps.conferenceroombooking.services.RestClient
 import com.nineleaps.conferenceroombooking.utils.Constants
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -18,7 +18,7 @@ class AddConferenceRepository @Inject constructor() {
     fun addConferenceDetails(mConferenceRoom: AddConferenceRoom, listener: ResponseListener) {
         //Retrofit Call
         val addConferenceRequestCall: Call<ResponseBody> =
-            RestClient1.getWebServiceData()?.addConference(mConferenceRoom)!!
+            RestClient.getWebServiceData()?.addConference(mConferenceRoom)!!
 
         addConferenceRequestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -50,7 +50,7 @@ class AddConferenceRepository @Inject constructor() {
     fun updateConferenceDetails(mConferenceRoom: AddConferenceRoom, listener: ResponseListener) {
         //Retrofit Call
         val addConferenceRequestCall: Call<ResponseBody> =
-            RestClient1.getWebServiceData()?.updateConference(mConferenceRoom)!!
+            RestClient.getWebServiceData()?.updateConference(mConferenceRoom)!!
         addConferenceRequestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 when (t) {

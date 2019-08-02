@@ -5,7 +5,6 @@ import com.nineleaps.conferenceroombooking.model.BlockRoom
 import com.nineleaps.conferenceroombooking.model.BlockingConfirmation
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
-import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -24,7 +23,7 @@ class BlockRoomRepository @Inject constructor(){
         /**
          * make API call usnig retrofit
          */
-        val requestCall: Call<ResponseBody> = RestClient1.getWebServiceData()?.blockconference(mRoom)!!
+        val requestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.blockconference(mRoom)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 when(t) {
@@ -65,7 +64,7 @@ class BlockRoomRepository @Inject constructor(){
         /**
          *  api call using retrofit
          */
-        val requestCall: Call<List<ConferenceList>> = RestClient1.getWebServiceData()?.conferenceList(buildingId)!!
+        val requestCall: Call<List<ConferenceList>> = RestClient.getWebServiceData()?.conferenceList(buildingId)!!
         requestCall.enqueue(object : Callback<List<ConferenceList>> {
             override fun onFailure(call: Call<List<ConferenceList>>, t: Throwable) {
                 when(t) {
@@ -102,7 +101,7 @@ class BlockRoomRepository @Inject constructor(){
         /**
          * API call using retrofit
          */
-        val requestCall: Call<BlockingConfirmation> = RestClient1.getWebServiceData()?.blockConfirmation(mRoom)!!
+        val requestCall: Call<BlockingConfirmation> = RestClient.getWebServiceData()?.blockConfirmation(mRoom)!!
         requestCall.enqueue(object : Callback<BlockingConfirmation> {
             override fun onFailure(call: Call<BlockingConfirmation>, t: Throwable) {
                 when(t) {

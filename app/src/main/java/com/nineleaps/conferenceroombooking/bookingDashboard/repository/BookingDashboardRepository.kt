@@ -4,7 +4,6 @@ import com.nineleaps.conferenceroombooking.model.BookingDashboardInput
 import com.nineleaps.conferenceroombooking.model.DashboardDetails
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
-import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import com.nineleaps.conferenceroombooking.utils.GetCurrentTimeInUTC
 import okhttp3.ResponseBody
@@ -26,7 +25,7 @@ class BookingDashboardRepository @Inject constructor() {
          */
         mBookingDashboardInput.currentDatTime = GetCurrentTimeInUTC.getCurrentTimeInUTC()
         val requestCall: Call<DashboardDetails> =
-            RestClient1.getWebServiceData()?.getDashboard(mBookingDashboardInput)!!
+            RestClient.getWebServiceData()?.getDashboard(mBookingDashboardInput)!!
         requestCall.enqueue(object : Callback<DashboardDetails> {
             override fun onFailure(call: Call<DashboardDetails>, t: Throwable) {
                 when (t) {
@@ -59,7 +58,7 @@ class BookingDashboardRepository @Inject constructor() {
         /**
          * api call using retrofit
          */
-        val requestCall: Call<ResponseBody> = RestClient1.getWebServiceData()?.cancelBookedRoom(meetingId)!!
+        val requestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.cancelBookedRoom(meetingId)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 when (t) {
@@ -93,7 +92,7 @@ class BookingDashboardRepository @Inject constructor() {
          * api call using rerofit
          */
         val requestCall: Call<ResponseBody> =
-            RestClient1.getWebServiceData()?.cancelRecurringBooking(meetId, recurringMeetingId)!!
+            RestClient.getWebServiceData()?.cancelRecurringBooking(meetId, recurringMeetingId)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 when (t) {
@@ -121,7 +120,7 @@ class BookingDashboardRepository @Inject constructor() {
 
     fun getPasscode(generateNewPasscode: Boolean, emailId: String, listener: ResponseListener) {
         val requestCall: Call<String> =
-            RestClient1.getWebServiceData()?.getPasscode(generateNewPasscode, emailId)!!
+            RestClient.getWebServiceData()?.getPasscode(generateNewPasscode, emailId)!!
         requestCall.enqueue(object : Callback<String> {
             override fun onFailure(call: Call<String>, t: Throwable) {
                 listener.onFailure(Constants.INVALID_TOKEN)

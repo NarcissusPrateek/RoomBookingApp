@@ -2,7 +2,6 @@ package com.nineleaps.conferenceroombooking.splashScreen.repository
 
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
-import com.nineleaps.conferenceroombooking.services.RestClient1
 import com.nineleaps.conferenceroombooking.utils.Constants
 import retrofit2.Call
 import retrofit2.Callback
@@ -16,11 +15,11 @@ class GetRoleOfUser @Inject constructor(){
     /**
      * function will initialize the MutableLivedata Object and than call a function for api call
      */
-    fun getRole(token: String, email: String, listener: ResponseListener)  {
+    fun getRole(email: String, listener: ResponseListener)  {
         /**
          * api call using retrofit
          */
-        val requestCall: Call<Int> = RestClient1.getWebServiceData()?.getRole(email)!!
+        val requestCall: Call<Int> = RestClient.getWebServiceData()?.getRole(email)!!
         requestCall.enqueue(object : Callback<Int> {
             override fun onFailure(call: Call<Int>, t: Throwable) {
                 when(t) {

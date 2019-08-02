@@ -172,7 +172,7 @@ class SignIn : AppCompatActivity() {
     private fun checkRegistration() {
         progressDialog.show()
         mProgressBar.visibility = View.VISIBLE
-        mCheckRegistrationViewModel.checkRegistration(getGoogleIdToken(), GetPreference.getDeviceIdFromPreference(this))
+        mCheckRegistrationViewModel.checkRegistration(getGoogleIdToken())
     }
     private fun getGoogleIdToken():String {
         return getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE).getString(getString(R.string.google_id_token), getString(R.string.not_set))!!
