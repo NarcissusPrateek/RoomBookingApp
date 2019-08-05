@@ -41,6 +41,9 @@ class BuildingDashboard : AppCompatActivity() {
 
     @BindView(R.id.buidingRecyclerView)
     lateinit var recyclerView: RecyclerView
+
+    @BindView(R.id.building_dashboard_progress_bar)
+    lateinit var mProressBar: ProgressBar
     private lateinit var buildingAdapter: BuildingDashboardAdapter
     private lateinit var mBuildingsViewModel: BuildingViewModel
     private lateinit var mProgressDialog: ProgressDialog
@@ -66,6 +69,7 @@ class BuildingDashboard : AppCompatActivity() {
      */
     override fun onRestart() {
         super.onRestart()
+        mProressBar.visibility = View.VISIBLE
         mBuildingsViewModel.getBuildingList()
     }
 
@@ -77,8 +81,6 @@ class BuildingDashboard : AppCompatActivity() {
         initComponent()
         initLateInitializerVariables()
         initRepository()
-
-
         when {
             NetworkState.appIsConnectedToInternet(this) -> getViewModel()
             else -> {
@@ -126,7 +128,7 @@ class BuildingDashboard : AppCompatActivity() {
      */
     private fun observeData() {
         mBuildingsViewModel.returnMBuildingSuccess().observe(this, Observer {
-            mProgressDialog.dismiss()
+            mProressBar.visibility = View.GONE
             if (it.isEmpty()) Toasty.info(this, getString(R.string.please_add_building), Toasty.LENGTH_SHORT).show()
             else {
                 buildingAdapter = BuildingDashboardAdapter(this, it, object : BuildingDashboardAdapter.BtnClickListener {
@@ -157,7 +159,7 @@ class BuildingDashboard : AppCompatActivity() {
             }
         })
         mBuildingsViewModel.returnMBuildingFailure().observe(this, Observer {
-            mProgressDialog.dismiss()
+            mProressBar.visibility = View.GONE
             if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, BuildingDashboard())
             } else {
@@ -168,7 +170,6 @@ class BuildingDashboard : AppCompatActivity() {
         })
 
         mBuildingsViewModel.returnSuccessForDeleteBuilding().observe(this, Observer {
-
             mProgressDialog.dismiss()
             Toasty.success(this,getString(R.string.successfull_deletion)).show()
             mBuildingsViewModel.getBuildingList()
@@ -202,7 +203,7 @@ class BuildingDashboard : AppCompatActivity() {
      * setting the adapter by passing the data into it and implementing a Interface BtnClickListner of BuildingAdapter class
      */
     private fun getViewModel() {
-        mProgressDialog.show()
+        mProressBar.visibility = View.VISIBLE
         // making API call
         mBuildingsViewModel.getBuildingList()
     }
