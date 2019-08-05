@@ -23,7 +23,7 @@ class TokenAuthenticator : Authenticator {
             preference?.getString(Constants.REFRESH_TOKEN, "Not set")
         )
         val retrofitResponse = RestClient.getWebServiceData()?.getNewToken(mToken)?.execute()
-        if (retrofitResponse != null) {
+        if (retrofitResponse?.code() == 200) {
             GetPreference.setJWTToken(
                 mContext!!,
                 retrofitResponse.body()?.refreshToken!!,

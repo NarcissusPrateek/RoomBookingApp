@@ -127,7 +127,7 @@ class SignIn : AppCompatActivity() {
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            saveTokenAndUserIdInSharedPreference(account!!.idToken)
+            setTokenToAccessToken(account!!.idToken)
             Log.d("Google",account.idToken)
             if(NetworkState.appIsConnectedToInternet(this)) {
                 checkRegistration()
@@ -148,11 +148,7 @@ class SignIn : AppCompatActivity() {
                 .addOnCompleteListener(this) {
                 }
     }
-    private fun saveTokenAndUserIdInSharedPreference(idToken: String?) {
-        val editor = prefs.edit()
-        editor.putString(getString(R.string.google_id_token), idToken)
-        editor.apply()
-    }
+
     private fun saveCustomToken(idToken: String?) {
         val editor = prefs.edit()
         editor.putString(getString(R.string.token), "Bearer $idToken")
@@ -171,11 +167,14 @@ class SignIn : AppCompatActivity() {
      */
     private fun checkRegistration() {
         progressDialog.show()
-        mProgressBar.visibility = View.VISIBLE
-        mCheckRegistrationViewModel.checkRegistration(getGoogleIdToken())
+        mCheckRegistrationViewModel.checkRegistration(GetPreference.getDeviceIdFromPreference(this))
     }
-    private fun getGoogleIdToken():String {
-        return getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE).getString(getString(R.string.google_id_token), getString(R.string.not_set))!!
+
+    private fun setTokenToAccessToken(idToken: String?) {
+        val preference = getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE)
+        val editor = preference.edit()
+        editor.putString(getString(R.string.token), idToken)
+        editor.apply()
     }
     /**
      * observe data from server
