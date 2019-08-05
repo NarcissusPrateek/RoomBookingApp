@@ -17,5 +17,7 @@ class HideSoftKeyboard {
                 inputMethodManager.hideSoftInputFromWindow(activity.currentFocus.applicationWindowToken, 0)
 
         }
+
+
     }
 }
