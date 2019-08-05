@@ -15,11 +15,11 @@ class GetRoleOfUser @Inject constructor(){
     /**
      * function will initialize the MutableLivedata Object and than call a function for api call
      */
-    fun getRole(token: String, email: String, listener: ResponseListener)  {
+    fun getRole(email: String, listener: ResponseListener)  {
         /**
          * api call using retrofit
          */
-        val requestCall: Call<Int> = RestClient.getWebServiceData()?.getRole(token, email)!!
+        val requestCall: Call<Int> = RestClient.getWebServiceData()?.getRole(email)!!
         requestCall.enqueue(object : Callback<Int> {
             override fun onFailure(call: Call<Int>, t: Throwable) {
                 when(t) {

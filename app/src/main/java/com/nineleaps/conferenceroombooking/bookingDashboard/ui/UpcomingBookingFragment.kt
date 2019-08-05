@@ -121,7 +121,6 @@ class UpcomingBookingFragment : Fragment() {
     private fun getViewModel() {
         mProgressBar.visibility = View.VISIBLE
         mBookingDashBoardViewModel.getBookingList(
-            GetPreference.getTokenFromPreference(activity!!),
             mBookingDashboardInput
         )
     }
@@ -165,7 +164,6 @@ class UpcomingBookingFragment : Fragment() {
                     mBookingDashboardInput.pageNumber = pagination
                     upcoming_booking_progress_bar.visibility = View.VISIBLE
                     mBookingDashBoardViewModel.getBookingList(
-                        GetPreference.getTokenFromPreference(activity!!),
                         mBookingDashboardInput
                     )
                 }
@@ -183,7 +181,6 @@ class UpcomingBookingFragment : Fragment() {
             mBookingDashboardInput.pageNumber = pagination
             if (NetworkState.appIsConnectedToInternet(activity!!)) {
                 mBookingDashBoardViewModel.getBookingList(
-                    GetPreference.getTokenFromPreference(activity!!),
                     mBookingDashboardInput
                 )
             } else {
@@ -215,7 +212,7 @@ class UpcomingBookingFragment : Fragment() {
             booking_refresh_layout.isRefreshing = false
             mProgressBar.visibility = View.GONE
             progressDialog.dismiss()
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else if (it == Constants.NO_CONTENT_FOUND && finalList.size == 0) {
                 upcoming_empty_view.visibility = View.VISIBLE
@@ -235,14 +232,13 @@ class UpcomingBookingFragment : Fragment() {
             finalList.clear()
             dashBord_recyclerView1.adapter?.notifyDataSetChanged()
             mBookingDashBoardViewModel.getBookingList(
-                GetPreference.getTokenFromPreference(activity!!),
                 mBookingDashboardInput
             )
         })
 
         mBookingDashBoardViewModel.returnCancelFailed().observe(this, Observer {
             progressDialog.dismiss()
-            if (it == getString(R.string.invalid_token)) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else {
                 ShowToast.show(activity!!, it as Int)
@@ -314,15 +310,15 @@ class UpcomingBookingFragment : Fragment() {
             )
         builder.setMultiChoiceItems(
             items,
-            null,
-            DialogInterface.OnMultiChoiceClickListener { dialog, which, isChecked ->
-                if (isChecked) {
-                    selectedList.add(which)
-                } else if (selectedList.contains(which)) {
-                    selectedList.remove(which)
-                }
-            })
-        builder.setPositiveButton(getString(R.string.ok), DialogInterface.OnClickListener { _, _ ->
+            null
+        ) { _, which, isChecked ->
+            if (isChecked) {
+                selectedList.add(which)
+            } else if (selectedList.contains(which)) {
+                selectedList.remove(which)
+            }
+        }
+        builder.setPositiveButton(getString(R.string.ok)) { _, _ ->
             if (selectedList.isEmpty()) {
                 bookingId = finalList[position].bookingId!!
                 if (NetworkState.appIsConnectedToInternet(activity!!)) {
@@ -344,7 +340,7 @@ class UpcomingBookingFragment : Fragment() {
                 }
             }
 
-        })
+        }
 
         builder.setNegativeButton(getString(R.string.no)) { _, _ ->
 
@@ -370,7 +366,6 @@ class UpcomingBookingFragment : Fragment() {
     private fun recurringCancelBooking(bookingId: Int, recurringmeetingId: String?) {
         progressDialog.show()
         mBookingDashBoardViewModel.recurringCancelBooking(
-            GetPreference.getTokenFromPreference(activity!!),
             bookingId,
             recurringmeetingId!!
         )
@@ -420,7 +415,7 @@ class UpcomingBookingFragment : Fragment() {
      */
     private fun cancelBooking(mBookingId: Int) {
         progressDialog.show()
-        mBookingDashBoardViewModel.cancelBooking(GetPreference.getTokenFromPreference(activity!!), mBookingId)
+        mBookingDashBoardViewModel.cancelBooking(mBookingId)
     }
 
     override fun onResume() {

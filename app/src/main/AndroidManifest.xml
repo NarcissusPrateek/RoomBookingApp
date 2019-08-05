@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="com.nineleaps.conferenceroombooking">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.nineleaps.conferenceroombooking">
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.READ_PROFILE"/>
@@ -19,7 +18,6 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-
         <meta-data
                 android:name="io.fabric.ApiKey"
                 android:value="dfb427f6e30bbedadb01b9ab540f56eb9aeaa4ce"/>
@@ -32,6 +30,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+
         <activity
                 android:name=".checkConnection.NoInternetConnectionActivity"
                 android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"/>
@@ -91,8 +90,9 @@
                 android:name=".addConferenceRoom.ui.AddingConference"
                 android:label="Add Conference Room"
                 android:parentActivityName=".ConferenceRoomDashboard.ui.ConferenceDashBoard"
-                android:windowSoftInputMode="adjustResize|stateVisible"
-                android:screenOrientation="portrait">
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize|stateVisible">
+
         </activity>
         <activity
                 android:name=".manageBuildings.ui.BuildingDashboard"
@@ -114,7 +114,10 @@
                 android:parentActivityName=".manageBuildings.ui.BuildingDashboard"
                 android:screenOrientation="portrait">
         </activity>
-        <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts"/>
+
+        <meta-data
+                android:name="preloaded_fonts"
+                android:resource="@array/preloaded_fonts"/>
     </application>
 
 </manifest>

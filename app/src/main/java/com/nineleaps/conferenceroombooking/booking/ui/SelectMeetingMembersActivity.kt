@@ -172,7 +172,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
         // Negative response from server
         mSelectMemberViewModel.returnFailureForEmployeeList().observe(this, Observer {
             mProgressBar.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, SelectMeetingMembersActivity())
             } else {
                 ShowToast.show(this, it as Int)
@@ -189,7 +189,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
         // negative response from server
         mBookingViewModel.returnFailureForBooking().observe(this, Observer {
             progressDialog.dismiss()
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, SelectMeetingMembersActivity())
             } else {
                 ShowToast.show(this, it as Int)
@@ -202,7 +202,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
      */
     private fun addBooking() {
         progressDialog.show()
-        mBookingViewModel.addBookingDetails(mBooking, GetPreference.getTokenFromPreference(this))
+        mBookingViewModel.addBookingDetails(mBooking)
     }
 
     /**
@@ -211,7 +211,6 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
     private fun addDataToObject() {
         val acct = GoogleSignIn.getLastSignedInAccount(applicationContext)
         val mBookingDetails = getIntentData()
-        Log.e("-----data from Intent", mBookingDetails.toString())
         mBooking.email = acct!!.email
         mBooking.purpose = mBookingDetails.purpose
         mBooking.roomId = mBookingDetails.roomId!!.toInt()
@@ -241,7 +240,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
     // call function of ViewModel which will make API call
     private fun getViewModel() {
         mProgressBar.visibility = View.VISIBLE
-        mSelectMemberViewModel.getEmployeeList(GetPreference.getTokenFromPreference(this), acct.email!!)
+        mSelectMemberViewModel.getEmployeeList(acct.email!!)
     }
 
     @OnClick(R.id.next_activity)

@@ -18,8 +18,8 @@ class BlockedDashboardViewModel : ViewModel() {
         this.mBlockDashboardRepository = mBlockRoomDashBoardRepo
     }
 
-    fun getBlockedList(token: String) {
-        mBlockDashboardRepository!!.getBlockedList(token, object :
+    fun getBlockedList() {
+        mBlockDashboardRepository!!.getBlockedList(object :
             ResponseListener {
             override fun onSuccess(success: Any) {
                 mBlockedRoomList.value = success as List<Blocked>
@@ -41,8 +41,8 @@ class BlockedDashboardViewModel : ViewModel() {
     }
     //-----------------------------------------------------------------------------------------------------------
 
-    fun unBlockRoom(token: String, bookingId: Int) {
-        mBlockDashboardRepository!!.unblockRoom(token, bookingId, object:
+    fun unBlockRoom(bookingId: Int) {
+        mBlockDashboardRepository!!.unblockRoom(bookingId, object:
             ResponseListener {
             override fun onSuccess(success: Any) {
                 mSuccessCodeForBlockRoom.value = success as Int

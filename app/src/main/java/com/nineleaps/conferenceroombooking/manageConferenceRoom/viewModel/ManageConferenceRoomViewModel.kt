@@ -19,8 +19,8 @@ class ManageConferenceRoomViewModel : ViewModel() {
         mManageConferenceRoomRepository = mManageRoomRepo
     }
 
-    fun getConferenceRoomList(buildingId: Int, token: String) {
-        mManageConferenceRoomRepository!!.getConferenceRoomList(buildingId, token, object :
+    fun getConferenceRoomList(buildingId: Int) {
+        mManageConferenceRoomRepository!!.getConferenceRoomList(buildingId, object :
             ResponseListener {
             override fun onSuccess(success: Any) {
                 mHrConferenceRoomList.value = success as List<ConferenceList>
@@ -41,8 +41,8 @@ class ManageConferenceRoomViewModel : ViewModel() {
         return mFailureCodeForHrConferenceRoom
     }
 
-    fun deleteConferenceRoom(token: String, roomId: Int) {
-        mManageConferenceRoomRepository!!.deleteBuilding(token, roomId, object : ResponseListener {
+    fun deleteConferenceRoom(roomId: Int) {
+        mManageConferenceRoomRepository!!.deleteBuilding(roomId, object : ResponseListener {
             override fun onSuccess(success: Any) {
                 mSuccessForDeleteBuilding.value = success as Int
             }

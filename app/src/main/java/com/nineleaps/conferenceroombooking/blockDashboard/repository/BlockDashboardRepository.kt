@@ -13,8 +13,8 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 class BlockDashboardRepository @Inject constructor(){
-    fun getBlockedList(token: String, listener: ResponseListener) {
-        val requestCall: Call<List<Blocked>> = RestClient.getWebServiceData()?.getBlockedConference(token)!!
+    fun getBlockedList(listener: ResponseListener) {
+        val requestCall: Call<List<Blocked>> = RestClient.getWebServiceData()?.getBlockedConference()!!
         requestCall.enqueue(object : Callback<List<Blocked>> {
             override fun onFailure(call: Call<List<Blocked>>, t: Throwable) {
                 when(t) {
@@ -43,8 +43,8 @@ class BlockDashboardRepository @Inject constructor(){
     /**
      * make request to server for unblock room
      */
-    fun unblockRoom(token: String, bookingId: Int, listener: ResponseListener) {
-        val requestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.unBlockingConferenceRoom(token, bookingId)!!
+    fun unblockRoom(bookingId: Int, listener: ResponseListener) {
+        val requestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.unBlockingConferenceRoom(bookingId)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 when(t) {

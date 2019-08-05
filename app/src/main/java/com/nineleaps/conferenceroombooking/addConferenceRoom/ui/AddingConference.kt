@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.Html
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -121,7 +122,6 @@ class AddingConference : AppCompatActivity() {
     }
 
 
-
     private fun initTextChangeListener() {
         textChangeListenerOnRoomName()
         textChangeListenerOnRoomCapacity()
@@ -181,7 +181,7 @@ class AddingConference : AppCompatActivity() {
         })
         mAddConferenceRoomViewModel.returnFailureForAddingRoom().observe(this, Observer {
             progressDialog.dismiss()
-            if (it == getString(R.string.invalid_token)) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, AddingConference())
             } else {
                 ShowToast.show(this, it as Int)
@@ -196,7 +196,7 @@ class AddingConference : AppCompatActivity() {
         mAddConferenceRoomViewModel.returnFailureForUpdateRoom().observe(this, Observer {
             progressDialog.dismiss()
             when (it) {
-                getString(R.string.invalid_token) -> ShowDialogForSessionExpired.showAlert(this, AddingConference())
+                Constants.UNPROCESSABLE, Constants.INVALID_TOKEN, Constants.FORBIDDEN  -> ShowDialogForSessionExpired.showAlert(this, AddingConference())
                 Constants.UNAVAILABLE_SLOT -> Toasty.info(
                     this,
                     getString(R.string.room_name_conflict_message),
@@ -235,7 +235,7 @@ class AddingConference : AppCompatActivity() {
     // make api call with updated data to update room details
     private fun updateRoomDetails() {
         progressDialog.show()
-        mAddConferenceRoomViewModel.updateConferenceDetails(GetPreference.getTokenFromPreference(this), mConferenceRoom)
+        mAddConferenceRoomViewModel.updateConferenceDetails(mConferenceRoom)
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -315,7 +315,7 @@ class AddingConference : AppCompatActivity() {
      */
     private fun addRoom() {
         progressDialog.show()
-        mAddConferenceRoomViewModel.addConferenceDetails(GetPreference.getTokenFromPreference(this), mConferenceRoom)
+        mAddConferenceRoomViewModel.addConferenceDetails(mConferenceRoom)
     }
 
     /**

@@ -155,12 +155,12 @@ class InputDetailsForBookingFragment : Fragment() {
      */
     private fun getViewModelForBuildingList() {
         mProgressBar.visibility = View.VISIBLE
-        mBuildingsViewModel.getBuildingList(GetPreference.getTokenFromPreference(activity!!))
+        mBuildingsViewModel.getBuildingList()
     }
 
     private fun getViewModelForConferenceRoomList(mInputDetailsForRoom: InputDetailsForRoom) {
         mProgressBar.visibility = View.VISIBLE
-        mConferenceRoomViewModel.getConferenceRoomList(GetPreference.getTokenFromPreference(activity!!), mInputDetailsForRoom)
+        mConferenceRoomViewModel.getConferenceRoomList(mInputDetailsForRoom)
     }
 
     private fun setAdapter(mListOfRooms: List<RoomDetails>) {
@@ -195,7 +195,7 @@ class InputDetailsForBookingFragment : Fragment() {
         })
         mBuildingsViewModel.returnMBuildingFailure().observe(this, Observer {
             mProgressBar.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else {
                 ShowToast.show(activity!!, it as Int)
@@ -209,7 +209,7 @@ class InputDetailsForBookingFragment : Fragment() {
         // Negative response
         mConferenceRoomViewModel.returnFailure().observe(this, Observer {
             mProgressBar.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else {
                 ShowToast.show(activity!!, it as Int)
@@ -229,7 +229,7 @@ class InputDetailsForBookingFragment : Fragment() {
         // negative response for suggested rooms
         mConferenceRoomViewModel.returnFailureForSuggestedRooms().observe(this, Observer {
             mProgressBar.visibility = View.GONE
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else {
                 ShowToast.show(activity!!, it as Int)
@@ -277,7 +277,7 @@ class InputDetailsForBookingFragment : Fragment() {
     }
     private fun makeCallToApiForSuggestedRooms() {
         mSuggestedRoomApiIsCallled = true
-        mConferenceRoomViewModel.getSuggestedConferenceRoomList(GetPreference.getTokenFromPreference(activity!!), mInputDetailsForRoom)
+        mConferenceRoomViewModel.getSuggestedConferenceRoomList(mInputDetailsForRoom)
     }
 
     private fun setBuildingSpinner(mBuildingList: List<Building>) {

@@ -33,7 +33,7 @@ android {
         vectorDrawables.useSupportLibrary true
         multiDexEnabled true
         applicationId "com.nineleaps.conferenceroombooking"
-        minSdkVersion 19
+        minSdkVersion 22
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -183,7 +183,6 @@ dependencies {
     // Multi Dex
     implementation 'com.android.support:multidex:1.0.3'
     implementation "com.wajahatkarim3.easyvalidation:easyvalidation-core:1.0.1"
-
 
 
     implementation 'com.google.firebase:firebase-core:17.0.1'

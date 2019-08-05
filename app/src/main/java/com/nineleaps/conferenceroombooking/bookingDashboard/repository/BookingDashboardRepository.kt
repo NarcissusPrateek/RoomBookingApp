@@ -19,13 +19,13 @@ class BookingDashboardRepository @Inject constructor() {
      * function will make api call for making a booking
      * and call the interface method with data from server
      */
-    fun getBookingList(token: String, mBookingDashboardInput: BookingDashboardInput, listener: ResponseListener) {
+    fun getBookingList(mBookingDashboardInput: BookingDashboardInput, listener: ResponseListener) {
         /**
          * API call using retrofit
          */
         mBookingDashboardInput.currentDatTime = GetCurrentTimeInUTC.getCurrentTimeInUTC()
         val requestCall: Call<DashboardDetails> =
-            RestClient.getWebServiceData()?.getDashboard(token, mBookingDashboardInput)!!
+            RestClient.getWebServiceData()?.getDashboard(mBookingDashboardInput)!!
         requestCall.enqueue(object : Callback<DashboardDetails> {
             override fun onFailure(call: Call<DashboardDetails>, t: Throwable) {
                 when (t) {
@@ -54,11 +54,11 @@ class BookingDashboardRepository @Inject constructor() {
     /**
      * function will make the API Call and call the interface method with data from server
      */
-    fun cancelBooking(token: String, meetingId: Int, listener: ResponseListener) {
+    fun cancelBooking(meetingId: Int, listener: ResponseListener) {
         /**
          * api call using retrofit
          */
-        val requestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.cancelBookedRoom(token, meetingId)!!
+        val requestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.cancelBookedRoom(meetingId)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 when (t) {
@@ -87,12 +87,12 @@ class BookingDashboardRepository @Inject constructor() {
     /**
      * function will make the API Call and call the interface method with data from srver
      */
-    fun recurringCancelBooking(token: String, meetId: Int, recurringMeetingId: String, listener: ResponseListener) {
+    fun recurringCancelBooking(meetId: Int, recurringMeetingId: String, listener: ResponseListener) {
         /**
          * api call using rerofit
          */
         val requestCall: Call<ResponseBody> =
-            RestClient.getWebServiceData()?.cancelRecurringBooking(token, meetId, recurringMeetingId)!!
+            RestClient.getWebServiceData()?.cancelRecurringBooking(meetId, recurringMeetingId)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 when (t) {
@@ -118,9 +118,9 @@ class BookingDashboardRepository @Inject constructor() {
         })
     }
 
-    fun getPasscode(token: String, generateNewPasscode: Boolean, emailId: String, listener: ResponseListener) {
+    fun getPasscode(generateNewPasscode: Boolean, emailId: String, listener: ResponseListener) {
         val requestCall: Call<String> =
-            RestClient.getWebServiceData()?.getPasscode(token, generateNewPasscode, emailId)!!
+            RestClient.getWebServiceData()?.getPasscode(generateNewPasscode, emailId)!!
         requestCall.enqueue(object : Callback<String> {
             override fun onFailure(call: Call<String>, t: Throwable) {
                 listener.onFailure(Constants.INVALID_TOKEN)

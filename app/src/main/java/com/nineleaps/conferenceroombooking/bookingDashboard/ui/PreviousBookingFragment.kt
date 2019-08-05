@@ -106,7 +106,9 @@ class PreviousBookingFragment : Fragment() {
     private fun getViewModel() {
         mProgressBar.visibility = View.VISIBLE
         //progressDialog.show()
-        mBookingDashBoardViewModel.getBookingList(GetPreference.getTokenFromPreference(activity!!), mBookingDashboardInput)
+        mBookingDashBoardViewModel.getBookingList(
+            mBookingDashboardInput
+        )
     }
 
     private fun initRecyclerView() {
@@ -129,7 +131,9 @@ class PreviousBookingFragment : Fragment() {
                     pagination++
                     previous_progress_bar.visibility = View.VISIBLE
                     mBookingDashboardInput.pageNumber = pagination
-                    mBookingDashBoardViewModel.getBookingList(GetPreference.getTokenFromPreference(activity!!), mBookingDashboardInput)
+                    mBookingDashBoardViewModel.getBookingList(
+                        mBookingDashboardInput
+                    )
                 }
             }
         })
@@ -143,7 +147,9 @@ class PreviousBookingFragment : Fragment() {
             finalList.clear()
             pagination = 1
             mBookingDashboardInput.pageNumber = pagination
-            mBookingDashBoardViewModel.getBookingList(GetPreference.getTokenFromPreference(activity!!), mBookingDashboardInput)
+            mBookingDashBoardViewModel.getBookingList(
+                mBookingDashboardInput
+            )
         }
     }
 
@@ -168,7 +174,7 @@ class PreviousBookingFragment : Fragment() {
             previous__booking_refresh_layout.isRefreshing = false
             mProgressBar.visibility = View.GONE
             //progressDialog.dismiss()
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else if (it == Constants.NO_CONTENT_FOUND && finalList.size == 0) {
                 previous__empty_view.visibility = View.VISIBLE

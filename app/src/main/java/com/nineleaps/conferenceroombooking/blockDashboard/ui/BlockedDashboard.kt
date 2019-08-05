@@ -125,7 +125,7 @@ class BlockedDashboard : AppCompatActivity() {
      */
     private fun refreshOnPull() {
         refreshLayout.setOnRefreshListener {
-            mBlockedDashboardViewModel.getBlockedList(GetPreference.getTokenFromPreference(this))
+            mBlockedDashboardViewModel.getBlockedList()
         }
     }
 
@@ -149,7 +149,7 @@ class BlockedDashboard : AppCompatActivity() {
             refreshLayout.isRefreshing = false
             mProgressBar.visibility = View.GONE
             when (it) {
-                Constants.INVALID_TOKEN -> ShowDialogForSessionExpired.showAlert(this, BlockedDashboard())
+                Constants.INVALID_TOKEN, Constants.FORBIDDEN, Constants.UNPROCESSABLE -> ShowDialogForSessionExpired.showAlert(this, BlockedDashboard())
                 Constants.NO_CONTENT_FOUND -> {
                     empty_view_blocked.visibility = View.VISIBLE
                     r2_block_dashboard.setBackgroundColor(Color.parseColor("#FFFFFF"))
@@ -165,12 +165,12 @@ class BlockedDashboard : AppCompatActivity() {
         mBlockedDashboardViewModel.returnSuccessCodeForUnBlockRoom().observe(this, Observer {
             progressDialog.dismiss()
             Toasty.success(this,getString(R.string.room_unblocked), Toast.LENGTH_SHORT, true).show()
-            mBlockedDashboardViewModel.getBlockedList(GetPreference.getTokenFromPreference(this))
+            mBlockedDashboardViewModel.getBlockedList()
         })
         mBlockedDashboardViewModel.returnFailureCodeForUnBlockRoom().observe(this, Observer {
             progressDialog.dismiss()
             when (it) {
-                Constants.INVALID_TOKEN -> ShowDialogForSessionExpired.showAlert(this, BlockedDashboard())
+                Constants.INVALID_TOKEN, Constants.UNPROCESSABLE, Constants.FORBIDDEN -> ShowDialogForSessionExpired.showAlert(this, BlockedDashboard())
                 else -> ShowToast.show(this, it as Int)
             }
         })
@@ -259,7 +259,7 @@ class BlockedDashboard : AppCompatActivity() {
      */
     private fun loadBlocking() {
         mProgressBar.visibility = View.VISIBLE
-        mBlockedDashboardViewModel.getBlockedList(GetPreference.getTokenFromPreference(this))
+        mBlockedDashboardViewModel.getBlockedList()
     }
 
     /**
@@ -267,6 +267,6 @@ class BlockedDashboard : AppCompatActivity() {
      */
     private fun unblockRoom(mBookingId: Int) {
         progressDialog.show()
-        mBlockedDashboardViewModel.unBlockRoom(GetPreference.getTokenFromPreference(this), mBookingId)
+        mBlockedDashboardViewModel.unBlockRoom(mBookingId)
     }
 }

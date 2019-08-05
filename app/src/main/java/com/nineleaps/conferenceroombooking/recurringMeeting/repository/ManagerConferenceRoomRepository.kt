@@ -17,12 +17,12 @@ class ManagerConferenceRoomRepository @Inject constructor() {
      * function will initialize the MutableLivedata Object and than call a function for api call
      * Passing the Context and model and call API, In return sends the status of LiveData
      */
-    fun getConferenceRoomList(mRoom: ManagerConference, token: String, listener: ResponseListener) {
+    fun getConferenceRoomList(mRoom: ManagerConference, listener: ResponseListener) {
         /**
          * api call using retrofit
          */
         val requestCall: Call<List<RoomDetails>> =
-            RestClient.getWebServiceData()?.getMangerConferenceRoomList(token, mRoom)!!
+            RestClient.getWebServiceData()?.getMangerConferenceRoomList(mRoom)!!
         requestCall.enqueue(object : Callback<List<RoomDetails>> {
             override fun onFailure(call: Call<List<RoomDetails>>, t: Throwable) {
                 listener.onFailure(Constants.INTERNAL_SERVER_ERROR)
@@ -44,12 +44,12 @@ class ManagerConferenceRoomRepository @Inject constructor() {
      * function will initialize the MutableLivedata Object and than make API Call
      * Passing the Context and model and call API, In return sends the status of LiveData
      */
-    fun getSuggestedRooms(token: String, mInputDetailsForRoom: ManagerConference, listener: ResponseListener) {
+    fun getSuggestedRooms(mInputDetailsForRoom: ManagerConference, listener: ResponseListener) {
         /**
          * api call using Retrofit
          */
         val requestCall: Call<List<RoomDetails>> =
-            RestClient.getWebServiceData()?.getSuggestedRoomsForRecurring(token, mInputDetailsForRoom)!!
+            RestClient.getWebServiceData()?.getSuggestedRoomsForRecurring(mInputDetailsForRoom)!!
         requestCall.enqueue(object : Callback<List<RoomDetails>> {
             override fun onFailure(call: Call<List<RoomDetails>>, t: Throwable) {
                 when (t) {

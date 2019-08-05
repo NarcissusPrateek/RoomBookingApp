@@ -66,7 +66,7 @@ class BuildingDashboard : AppCompatActivity() {
      */
     override fun onRestart() {
         super.onRestart()
-        mBuildingsViewModel.getBuildingList(GetPreference.getTokenFromPreference(this))
+        mBuildingsViewModel.getBuildingList()
     }
 
     /**
@@ -158,7 +158,7 @@ class BuildingDashboard : AppCompatActivity() {
         })
         mBuildingsViewModel.returnMBuildingFailure().observe(this, Observer {
             mProgressDialog.dismiss()
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, BuildingDashboard())
             } else {
                 ShowToast.show(this, it as Int)
@@ -171,12 +171,12 @@ class BuildingDashboard : AppCompatActivity() {
 
             mProgressDialog.dismiss()
             Toasty.success(this,getString(R.string.successfull_deletion)).show()
-            mBuildingsViewModel.getBuildingList(GetPreference.getTokenFromPreference(this))
+            mBuildingsViewModel.getBuildingList()
         })
 
         mBuildingsViewModel.returnFailureForDeleteBuilding().observe(this, Observer {
             mProgressDialog.dismiss()
-            if (it == getString(R.string.invalid_token)) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, UserBookingsDashboardActivity())
             } else {
                 ShowToast.show(this, it as Int)
@@ -187,7 +187,7 @@ class BuildingDashboard : AppCompatActivity() {
     private fun showDeleteDialog(buildingId: Int) {
         val dialog = GetAleretDialog.getDialog(this,"Delete","Are you sure you wnat to delete the Building")
         dialog.setPositiveButton(R.string.ok){_,_->
-            mBuildingsViewModel.deleteBuilding(GetPreference.getTokenFromPreference(this),buildingId)
+            mBuildingsViewModel.deleteBuilding(buildingId)
             getViewModel()
         }
         dialog.setNegativeButton(R.string.cancel){_,_->
@@ -204,6 +204,6 @@ class BuildingDashboard : AppCompatActivity() {
     private fun getViewModel() {
         mProgressDialog.show()
         // making API call
-        mBuildingsViewModel.getBuildingList(GetPreference.getTokenFromPreference(this))
+        mBuildingsViewModel.getBuildingList()
     }
 }

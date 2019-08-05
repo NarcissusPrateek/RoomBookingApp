@@ -17,12 +17,12 @@ class ManagerBookingRepository @Inject constructor() {
      * function will initialize the MutableLivedata Object and than call a function for api call
      * Passing the Context and model and call API, In return sends the status of LiveData
      */
-    fun addBookingDetails(mBooking: ManagerBooking, token: String, listener: ResponseListener) {
+    fun addBookingDetails(mBooking: ManagerBooking, listener: ResponseListener) {
         /**
          * api call using retrofit
          */
         val requestCall: Call<ResponseBody> =
-            RestClient.getWebServiceData()?.addManagerBookingDetails(token, mBooking)!!
+            RestClient.getWebServiceData()?.addManagerBookingDetails(mBooking)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 when (t) {

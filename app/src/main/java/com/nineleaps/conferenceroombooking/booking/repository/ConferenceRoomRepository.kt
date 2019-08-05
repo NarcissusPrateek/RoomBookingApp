@@ -18,11 +18,11 @@ class ConferenceRoomRepository @Inject constructor() {
      * function will initialize the MutableLivedata Object and than make API Call
      * Passing the Context and model and call API, In return sends the status of LiveData
      */
-    fun getConferenceRoomList(token: String, mInputDetailsForRoom: InputDetailsForRoom, listener: ResponseListener) {
+    fun getConferenceRoomList(mInputDetailsForRoom: InputDetailsForRoom, listener: ResponseListener) {
         /**
          * api call using Retrofit
          */
-        val requestCall: Call<List<RoomDetails>> = RestClient.getWebServiceData()?.getConferenceRoomList(token, mInputDetailsForRoom)!!
+        val requestCall: Call<List<RoomDetails>> = RestClient.getWebServiceData()?.getConferenceRoomList(mInputDetailsForRoom)!!
         requestCall.enqueue(object : Callback<List<RoomDetails>> {
             override fun onFailure(call: Call<List<RoomDetails>>, t: Throwable) {
                 when(t) {
@@ -54,11 +54,11 @@ class ConferenceRoomRepository @Inject constructor() {
      * function will initialize the MutableLivedata Object and than make API Call
      * Passing the Context and model and call API, In return sends the status of LiveData
      */
-    fun getSuggestedRooms(token: String, mInputDetailsForRoom: InputDetailsForRoom, listener: ResponseListener) {
+    fun getSuggestedRooms(mInputDetailsForRoom: InputDetailsForRoom, listener: ResponseListener) {
         /**
          * api call using Retrofit
          */
-        val requestCall: Call<List<RoomDetails>> = RestClient.getWebServiceData()?.getSuggestedRooms(token, mInputDetailsForRoom)!!
+        val requestCall: Call<List<RoomDetails>> = RestClient.getWebServiceData()?.getSuggestedRooms(mInputDetailsForRoom)!!
         requestCall.enqueue(object : Callback<List<RoomDetails>> {
             override fun onFailure(call: Call<List<RoomDetails>>, t: Throwable) {
                 when(t) {

@@ -27,8 +27,8 @@ class BookingViewModel: ViewModel() {
      * function will initialize the repository object and calls the method of repository which will make the api call
      * and function will return the value for MutableLivedata
      */
-    fun addBookingDetails(mBooking: Booking, token: String) {
-        mBookingRepository!!.addBookingDetails(mBooking, token, object:
+    fun addBookingDetails(mBooking: Booking) {
+        mBookingRepository!!.addBookingDetails(mBooking, object:
             ResponseListener {
             override fun onFailure(failure: Any) {
                 mErrorCodeFromServerFromBooking.value = failure

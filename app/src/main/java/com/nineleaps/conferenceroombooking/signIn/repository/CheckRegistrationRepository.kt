@@ -17,11 +17,11 @@ class CheckRegistrationRepository @Inject constructor(){
     /**
      * function will initialize the MutableLivedata Object and than call a function for api call
      */
-    fun checkRegistration(token: String, deviceId: String, listener: ResponseListener)  {
+    fun checkRegistration(deviceId: String, listener: ResponseListener)  {
         /**
          * api call using retrofit
          */
-        val requestCall: Call<SignIn> = RestClient.getWebServiceData()?.getRequestCode(token, deviceId)!!
+        val requestCall: Call<SignIn> = RestClient.getWebServiceData()?.getRequestCode(deviceId)!!
         requestCall.enqueue(object : Callback<SignIn> {
             override fun onFailure(call: Call<SignIn>, t: Throwable) {
                 when(t) {

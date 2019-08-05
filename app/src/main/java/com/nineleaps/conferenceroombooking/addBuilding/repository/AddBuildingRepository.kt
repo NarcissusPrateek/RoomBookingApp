@@ -18,8 +18,8 @@ class AddBuildingRepository @Inject constructor(){
     /**
      * make API call and calls the methods of interface
      */
-    fun addBuildingDetails(mAddBuilding: AddBuilding, token: String, listener: ResponseListener) {
-        val addBuildingRequestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.addBuilding(token, mAddBuilding)!!
+    fun addBuildingDetails(mAddBuilding: AddBuilding, listener: ResponseListener) {
+        val addBuildingRequestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.addBuilding(mAddBuilding)!!
         addBuildingRequestCall.enqueue(object : Callback<ResponseBody> {
             // Negative response
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -51,8 +51,8 @@ class AddBuildingRepository @Inject constructor(){
     /**
      * make API call and calls the methods of interface
      */
-    fun updateBuildingDetails(mAddBuilding: AddBuilding, token: String, listener: ResponseListener) {
-        val addBuildingRequestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.updateBuilding(token, mAddBuilding)!!
+    fun updateBuildingDetails(mAddBuilding: AddBuilding, listener: ResponseListener) {
+        val addBuildingRequestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.updateBuilding(mAddBuilding)!!
         addBuildingRequestCall.enqueue(object : Callback<ResponseBody> {
             // Negative response
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

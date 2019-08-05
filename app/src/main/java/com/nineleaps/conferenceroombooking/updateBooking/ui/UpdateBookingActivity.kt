@@ -168,7 +168,7 @@ class UpdateBookingActivity : AppCompatActivity() {
 
     private fun updateMeetingDetails() {
         progressDialog.show()
-        mUpdateBookingViewModel.updateBookingDetails(mUpdateBooking, GetPreference.getTokenFromPreference(this))
+        mUpdateBookingViewModel.updateBookingDetails(mUpdateBooking)
     }
 
     /**
@@ -208,7 +208,7 @@ class UpdateBookingActivity : AppCompatActivity() {
         })
         mUpdateBookingViewModel.returnUpdateFailed().observe(this, Observer {
             progressDialog.dismiss()
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, UpdateBookingActivity())
             } else {
                 ShowToast.show(this, it as Int)

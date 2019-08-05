@@ -120,7 +120,7 @@ class ConferenceDashBoard : AppCompatActivity() {
         mManageConferenceRoomViewModel.returnFailureForConferenceRoom().observe(this, Observer {
             mProgressDialog.dismiss()
             when (it) {
-                Constants.INVALID_TOKEN -> ShowDialogForSessionExpired.signOut(this, ConferenceDashBoard())
+                Constants.INVALID_TOKEN, Constants.FORBIDDEN, Constants.UNPROCESSABLE -> ShowDialogForSessionExpired.signOut(this, ConferenceDashBoard())
                 else -> {
                     ShowToast.show(this, it as Int)
                     finish()
@@ -135,7 +135,7 @@ class ConferenceDashBoard : AppCompatActivity() {
 
         mManageConferenceRoomViewModel.returnFailureForDeleteRoom().observe(this, Observer {
             mProgressDialog.dismiss()
-            if (it == getString(R.string.invalid_token)) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, UserBookingsDashboardActivity())
             } else {
                 ShowToast.show(this, it as Int)
@@ -168,7 +168,7 @@ class ConferenceDashBoard : AppCompatActivity() {
     private fun showAlertDialogForDelete(roomId: Int?) {
         val dialog = GetAleretDialog.getDialog(this, "Delete", "Are you sure you wnat to delete the Room")
         dialog.setPositiveButton(R.string.ok) { _, _ ->
-            mManageConferenceRoomViewModel.deleteConferenceRoom(GetPreference.getTokenFromPreference(this), roomId!!)
+            mManageConferenceRoomViewModel.deleteConferenceRoom(roomId!!)
             getConference(buildingId)
         }
         dialog.setNegativeButton(R.string.cancel) { _, _ ->
@@ -218,7 +218,7 @@ class ConferenceDashBoard : AppCompatActivity() {
          * getting Progress Dialog
          */
         mProgressDialog.show()
-        mManageConferenceRoomViewModel.getConferenceRoomList(buildingId, GetPreference.getTokenFromPreference(this))
+        mManageConferenceRoomViewModel.getConferenceRoomList(buildingId)
     }
 }
 

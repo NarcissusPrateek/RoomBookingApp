@@ -153,7 +153,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
 
     private fun getViewModel() {
         mProgressBar.visibility = View.VISIBLE
-        mSelectMemberViewModel.getEmployeeList(GetPreference.getTokenFromPreference(this), acct.email!!)
+        mSelectMemberViewModel.getEmployeeList(acct.email!!)
     }
 
     /**
@@ -179,7 +179,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
         })
         mSelectMemberViewModel.returnFailureForEmployeeList().observe(this, Observer {
             mProgressBar.visibility = View.GONE
-            if (it == getString(R.string.invalid_token)) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, ManagerSelectMeetingMembers())
             } else {
                 ShowToast.show(this, it as Int)
@@ -194,7 +194,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
         })
         mManagerBookingViewModel.returnFailureForBooking().observe(this, Observer {
             progressDialog.dismiss()
-            if (it == Constants.INVALID_TOKEN) {
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, ManagerSelectMeetingMembers())
             } else {
                 ShowToast.show(this, it as Int)
@@ -274,7 +274,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
      */
     private fun addBooking() {
         progressDialog.show()
-        mManagerBookingViewModel.addBookingDetails(mManagerBooking, GetPreference.getTokenFromPreference(this))
+        mManagerBookingViewModel.addBookingDetails(mManagerBooking)
     }
 
     fun addChip(name: String, email: String) {

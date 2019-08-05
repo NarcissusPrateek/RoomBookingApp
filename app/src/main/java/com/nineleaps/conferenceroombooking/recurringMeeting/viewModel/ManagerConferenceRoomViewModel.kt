@@ -29,10 +29,9 @@ class ManagerConferenceRoomViewModel : ViewModel() {
     /**
      * function will initialize the repository object and calls the method of repository which will make the api call
      */
-    fun getConferenceRoomList(mRoom: ManagerConference, token: String) {
+    fun getConferenceRoomList(mRoom: ManagerConference) {
         mManagerConferenceRoomRepository!!.getConferenceRoomList(
             mRoom,
-            token,
             object : ResponseListener {
                 override fun onSuccess(success: Any) {
                     mConferenceRoomList.value = success as List<RoomDetails>
@@ -50,8 +49,8 @@ class ManagerConferenceRoomViewModel : ViewModel() {
      * function will initialize the repository object and calls the method of repository which will make the api call
      * and function will return the value for MutableLivedata
      */
-    fun getSuggestedConferenceRoomList(token: String, mInputDetailsForRoom: ManagerConference) {
-        mManagerConferenceRoomRepository!!.getSuggestedRooms(token, mInputDetailsForRoom, object:
+    fun getSuggestedConferenceRoomList(mInputDetailsForRoom: ManagerConference) {
+        mManagerConferenceRoomRepository!!.getSuggestedRooms(mInputDetailsForRoom, object:
             ResponseListener {
             override fun onSuccess(success: Any) {
                 mSuggestedConferenceRoomList.value = success as List<RoomDetails>
