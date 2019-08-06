@@ -48,28 +48,62 @@
                         android:drawablePadding="@dimen/drawable_padding_5dp"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/room_capacity_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <LinearLayout
+                    android:id="@+id/room_info_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/dp_8"
-                    android:background="@color/white"
-                    app:counterEnabled="true"
-                    app:counterMaxLength="3"
-                    app:errorEnabled="true">
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/conference_capacity"
-                        android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/room_capacity_layout"
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:maxLength="20"
-                        android:inputType="number"
-                        android:hint="@string/room_capacity"
-                        android:textColor="@color/textColorGray"
-                        android:drawableStart="@drawable/ic_room_black_24dp"
-                        android:drawablePadding="@dimen/drawable_padding_5dp"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                        app:counterEnabled="true"
+                        android:paddingStart="@dimen/dp_8"
+                        app:counterMaxLength="3"
+                        android:background="@color/white"
+                        android:layout_marginTop="@dimen/dp_8"
+                        app:errorEnabled="true"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/conference_capacity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:maxLines="1"
+                            android:inputType="number"
+                            android:textColor="@color/textColorGray"
+                            android:drawableStart="@drawable/ic_schedule_black_24dp"
+                            android:drawablePadding="@dimen/dp_5"
+                            android:maxLength="3"
+                            android:hint="Capacity"/>
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/floor_layout"
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:paddingStart="@dimen/dp_8"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="1"
+                        app:errorEnabled="true"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/floor"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:maxLength="1"
+                            android:textColor="@color/textColorGray"
+                            android:inputType="number"
+                            android:hint="Floor"
+                            android:drawableStart="@drawable/ic_schedule_black_24dp"
+                            android:drawablePadding="@dimen/dp_5"/>
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
             <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/permission_required"
                     android:layout_width="match_parent"

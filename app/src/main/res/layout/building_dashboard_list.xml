@@ -1,103 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<layout-->
-    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--&gt;-->
-
-    <!--<data>-->
-        <!--<variable-->
-            <!--name="building"-->
-            <!--type="com.example.conferencerommapp.model.Building" />-->
-    <!--</data>-->
-    <!--<androidx.cardview.widget.CardView-->
-
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="@dimen/dp_16"-->
-        <!--android:layout_marginRight="@dimen/dp_16"-->
-        <!--android:layout_marginTop="@dimen/dp_16"-->
-        <!--app:cardCornerRadius="@dimen/card_corner_radius_dp_5">-->
-        <!--<RelativeLayout-->
-            <!--android:orientation="vertical"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginStart="@dimen/dp_8"-->
-            <!--android:padding="@dimen/dp_8">-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/building_name"-->
-                <!--android:paddingRight="@dimen/dp_8"-->
-                <!--android:paddingBottom="@dimen/dp_1"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:hint="@string/building_name_hint"-->
-                <!--android:textSize="@dimen/sp_16"-->
-                <!--android:fontFamily="@font/roboto"-->
-                <!--android:textColor="@color/black"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="@{building.buildingName}"-->
-                <!--android:maxLines="1"-->
-                <!--android:ellipsize="end"/>-->
-            <!--<TextView-->
-                <!--android:layout_below="@id/building_name"-->
-                <!--android:layout_marginTop="@dimen/dp_2"-->
-                <!--android:drawableStart="@drawable/ic_location_on_black_24dp"-->
-                <!--android:id="@+id/building_place"-->
-                <!--android:fontFamily="@font/roboto"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:hint="@string/building_place_hint"-->
-                <!--android:drawablePadding="@dimen/dp_16"-->
-                <!--android:textSize="@dimen/sp_12"-->
-                <!--android:text="@{building.buildingPlace}"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:maxLines="1"-->
-                <!--android:ellipsize="end"/>-->
-            <!--<View-->
-                <!--android:layout_marginTop="@dimen/dp_8"-->
-                <!--android:layout_below="@+id/building_place"-->
-                <!--android:id="@+id/line"-->
-                <!--android:background="#E5E5E5"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="0.5dp"/>-->
-
-            <!--<TextView-->
-                <!--android:layout_below="@+id/line"-->
-                <!--android:textColor="@color/colorPrimary"-->
-                <!--android:text="Edit"-->
-                <!--android:id="@+id/edit_room_details"-->
-                <!--android:layout_marginTop="@dimen/dp_8"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"/>-->
-
-            <!--<TextView-->
-                <!--android:layout_below="@+id/line"-->
-                <!--android:layout_toRightOf="@id/edit_room_details"-->
-                <!--android:textColor="@color/colorPrimary"-->
-                <!--android:text="View Rooms"-->
-                <!--android:id="@+id/view_room_text_view"-->
-                <!--android:layout_marginStart="@dimen/dp_16"-->
-                <!--android:layout_marginTop="@dimen/dp_8"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"/>-->
-
-            <!--<TextView-->
-                <!--android:layout_below="@+id/line"-->
-                <!--android:layout_alignParentRight="true"-->
-                <!--android:textColor="#F00"-->
-                <!--android:text="Delete"-->
-                <!--android:id="@+id/delete_building_text_view"-->
-                <!--android:layout_marginStart="@dimen/dp_16"-->
-                <!--android:layout_marginTop="@dimen/dp_8"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"/>-->
-        <!--</RelativeLayout>-->
-    <!--</androidx.cardview.widget.CardView>-->
-
-<!--</layout>-->
-
-
-    <!--android:layout_toEndOf="@+id/linear_layout_icon"-->
-
-
 <androidx.cardview.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -168,14 +69,13 @@
                 android:layout_height="wrap_content"/>
 
         <TextView
-            android:layout_below="@+id/line"
-            android:layout_alignParentRight="true"
-            android:textColor="@color/error_color"
-            android:text="Delete"
-            android:id="@+id/delete_building_text_view"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+                android:layout_below="@+id/line"
+                android:layout_toRightOf="@id/view_room_text_view"
+                android:textColor="@color/error_color"
+                android:text="Delete"
+                android:id="@+id/delete_building_text_view"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

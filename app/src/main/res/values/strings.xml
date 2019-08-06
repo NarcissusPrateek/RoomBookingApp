@@ -116,12 +116,12 @@
     <string name="to_date">To-Date</string>
     <string name="invalid_conference_room">Invalid Room</string>
     <string name="internal_server">Internal Server Error!</string>
-    <string name="field_cant_be_empty">Field can\'t be empty</string>
+    <string name="field_cant_be_empty">Invalid Field</string>
     <string name="building_added">Building Added Successfully</string>
     <string name="empty_building_list">Building List is Empty!</string>
     <string name="registered_successfully">Registered Successfully!</string>
     <string name="select_participipants">Select Participants</string>
-    <string name="room_capacity">Room Capacity</string>
+    <string name="room_capacity">Capacity</string>
     <string name="select_room_capacity">Select Room Capacity</string>
     <string name="server_client_id">861287179604-0bl5rqopv0mip6ssob9bis5iqpb7e2nh.apps.googleusercontent.com</string>
     <string name="server_client_id_partial">894152946032-m2lup4qoo1g2g72emg5t2ge6hg5go755.apps.googleusercontent.com

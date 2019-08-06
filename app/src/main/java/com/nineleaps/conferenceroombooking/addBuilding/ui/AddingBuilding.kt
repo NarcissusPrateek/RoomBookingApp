@@ -65,21 +65,12 @@ class AddingBuilding : AppCompatActivity() {
         initLateInitializerVariables()
         initAddingBuildingRepository()
         initTextChangeListener()
-        softKeyBoard()
-    }
-
-    private fun softKeyBoard() {
         buildingNameEditText.requestFocus()
-        add_building_card_view.setOnClickListener {
-                HideSoftKeyboard.hideKeyboard(this)
-            }
-        add_building_layout.setOnClickListener {
-            HideSoftKeyboard.hideKeyboard(this)
-        }
+        HideSoftKeyboard.setUpUI(findViewById(R.id.add_building_layout),this)
+        HideSoftKeyboard.childUI(findViewById(R.id.add_building_layout),this)
     }
 
-
-    private fun initComponent() {
+   private fun initComponent() {
         (application as BaseApplication).getmAppComponent()?.inject(this)
     }
 

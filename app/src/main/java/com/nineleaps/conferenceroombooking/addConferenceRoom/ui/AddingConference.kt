@@ -62,11 +62,15 @@ class AddingConference : AppCompatActivity() {
     @BindView(R.id.permission_required)
     lateinit var switchButton: SwitchMaterial
 
+    @BindView(R.id.floor)
+    lateinit var floorEditText: EditText
+
     private lateinit var mAddConferenceRoomViewModel: AddConferenceRoomViewModel
     private var mConferenceRoom = AddConferenceRoom()
     private lateinit var progressDialog: ProgressDialog
     private var flag = false
     var roomId = 0
+    var floor = 0
     private var mEditRoomDetails = EditRoomDetails()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,34 +83,10 @@ class AddingConference : AppCompatActivity() {
 
     private fun softKeyboard() {
         conferenceRoomEditText.requestFocus()
-
-        add_conference_card_view.setOnClickListener {
-            HideSoftKeyboard.hideKeyboard(this)
-        }
-        add_conference_linear_layout.setOnClickListener {
-            HideSoftKeyboard.hideKeyboard(this)
-        }
-        add_conference_nestedScroll.setOnClickListener {
-            HideSoftKeyboard.hideKeyboard(this)
-        }
-        permission_required.setOnClickListener {
-            HideSoftKeyboard.hideKeyboard(this)
-        }
-        projector_check_box.setOnClickListener {
-            HideSoftKeyboard.hideKeyboard(this)
-        }
-        monitor_check_box.setOnClickListener {
-            HideSoftKeyboard.hideKeyboard(this)
-        }
-        speaker_check_box.setOnClickListener {
-            HideSoftKeyboard.hideKeyboard(this)
-        }
-        extension_board_check_box.setOnClickListener {
-            HideSoftKeyboard.hideKeyboard(this)
-        }
-        whiteboard_marker_check_box.setOnClickListener {
-            HideSoftKeyboard.hideKeyboard(this)
-        }
+        HideSoftKeyboard.setUpUI(findViewById(R.id.add_conference_nestedScroll),this)
+        HideSoftKeyboard.childUI(findViewById(R.id.add_conference_nestedScroll),this)
+        HideSoftKeyboard.childUI(findViewById(R.id.aminities_list),this)
+        HideSoftKeyboard.setUpUI(findViewById(R.id.permission_required),this)
     }
 
     /**
@@ -125,7 +105,10 @@ class AddingConference : AppCompatActivity() {
     private fun initTextChangeListener() {
         textChangeListenerOnRoomName()
         textChangeListenerOnRoomCapacity()
+        textChangeListenerOnRoomFloor()
     }
+
+
 
     private fun initComponent() {
         (application as BaseApplication).getmAppComponent()?.inject(this)
@@ -142,7 +125,10 @@ class AddingConference : AppCompatActivity() {
             mEditRoomDetails = intent.getSerializableExtra(Constants.EXTRA_INTENT_DATA) as EditRoomDetails
             roomId = mEditRoomDetails.mRoomDetail!!.roomId!!
             roomCapacity.text = mEditRoomDetails.mRoomDetail!!.capacity.toString().toEditable()
-            conferenceRoomEditText.text = mEditRoomDetails.mRoomDetail!!.roomName!!.toEditable()
+            val name = mEditRoomDetails.mRoomDetail!!.roomName!!.split(" ")[0].toEditable()
+            conferenceRoomEditText.text = name
+            val floor = mEditRoomDetails.mRoomDetail!!.roomName!!.split(" ")[1].toEditable()
+            floorEditText.text = floor
             switchButton.isChecked = mEditRoomDetails.mRoomDetail!!.permission!! != 0
             for (amenity in mEditRoomDetails.mRoomDetail!!.amenities!!) {
                 when (amenity) {
@@ -256,7 +242,7 @@ class AddingConference : AppCompatActivity() {
             val bundle: Bundle? = intent.extras
             mConferenceRoom.bId = bundle!!.get(Constants.EXTRA_BUILDING_ID)!!.toString().toInt()
         }
-        mConferenceRoom.roomName = conferenceRoomEditText.text.toString().trim()
+        mConferenceRoom.roomName = conferenceRoomEditText.text.toString().trim() +" "+ floorEditText.text.toString()+Floor.FloorToString(floorEditText.text.toString().trim().toInt())
         mConferenceRoom.capacity = roomCapacity.text.toString().toInt()
         mConferenceRoom.monitor = monitor.isChecked
         mConferenceRoom.speaker = speaker.isChecked
@@ -304,10 +290,27 @@ class AddingConference : AppCompatActivity() {
      * validate all input fields
      */
     private fun validateInputs(): Boolean {
-        if (!validateRoomName() or !validateRoomCapacity()) {
+        if (!validateRoomName() or !validateRoomCapacity() or !validateFloorInputs()) {
             return false
         }
         return true
+    }
+
+    private fun validateFloorInputs(): Boolean {
+        return if (floorEditText.text.toString().trim().isEmpty()) {
+            floor_layout.error = getString(R.string.field_cant_be_empty)
+            false
+        } else {
+            val input = floorEditText.text.toString().toLong()
+            if (input <= 0 || input > Int.MAX_VALUE) {
+                floor_layout.error = getString(R.string.room_capacity_must_be_more_than_0)
+                false
+            } else {
+                floor_layout.error = null
+                true
+            }
+        }
+
     }
 
     /**
@@ -352,6 +355,23 @@ class AddingConference : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 validateRoomCapacity()
+            }
+        })
+    }
+
+
+    private fun textChangeListenerOnRoomFloor() {
+        floorEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // nothing here
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // nothing here
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                validateFloorInputs()
             }
         })
     }

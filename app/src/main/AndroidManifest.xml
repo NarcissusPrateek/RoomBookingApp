@@ -107,7 +107,9 @@
                 android:name=".blockRoom.ui.BlockConferenceRoomActivity"
                 android:launchMode="singleTop"
                 android:parentActivityName=".blockDashboard.ui.BlockedDashboard"
-                android:screenOrientation="portrait"/>
+                android:screenOrientation="portrait">
+
+        </activity>
         <activity
                 android:name=".ConferenceRoomDashboard.ui.ConferenceDashBoard"
                 android:launchMode="singleTop"

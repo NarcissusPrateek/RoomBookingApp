@@ -90,6 +90,12 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
             val i = Intent(this@BlockConferenceRoomActivity, NoInternetConnectionActivity::class.java)
             startActivityForResult(i, Constants.RES_CODE)
         }
+        softKeyboard()
+    }
+
+    private fun softKeyboard() {
+        HideSoftKeyboard.setUpUI(findViewById(R.id.block_room),this)
+        HideSoftKeyboard.childUI(findViewById(R.id.block_room),this)
     }
 
     private fun initComponent() {
