@@ -2,13 +2,17 @@ package com.nineleaps.conferenceroombooking
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.multidex.MultiDex
 import com.example.conferenceroomapp.common.di.AppModule
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.iid.InstanceIdResult
 import com.nineleaps.conferenceroombooking.common.di.AppComponent
 import com.nineleaps.conferenceroombooking.common.di.DaggerAppComponent
 import com.nineleaps.conferenceroombooking.utils.Constants
+import com.orhanobut.hawk.Hawk
 
 
 class BaseApplication: Application(){
@@ -32,10 +36,12 @@ class BaseApplication: Application(){
                     return@OnCompleteListener
                 }
                 // Get new Instance ID token
-                getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE).edit().putString(
-                    Constants.DEVICE_ID, task.result!!.token).apply()
+                Hawk.init(applicationContext).build()
             })
     }
+
+
+
 
     fun getmAppComponent(): AppComponent? {
         return mAppComponent

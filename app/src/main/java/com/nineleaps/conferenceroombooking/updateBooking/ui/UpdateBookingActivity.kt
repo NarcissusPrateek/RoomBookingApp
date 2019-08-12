@@ -162,7 +162,7 @@ class UpdateBookingActivity : AppCompatActivity() {
         mFirebaseAnalytics.setUserId(GoogleSignIn.getLastSignedInAccount(this)!!.email)
         mFirebaseAnalytics.setUserProperty(
             getString(R.string.Roll_Id),
-            GetPreference.getRoleIdFromPreference(this).toString()
+            GetPreference.getRoleIdFromPreference().toString()
         )
     }
 

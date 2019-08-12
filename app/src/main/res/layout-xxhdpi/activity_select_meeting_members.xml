@@ -16,40 +16,63 @@
     <HorizontalScrollView
             android:id="@+id/scroll_view"
             android:padding="@dimen/dp_2"
-            android:paddingBottom="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chip_group"
                 android:layout_margin="@dimen/dp_5"
-                android:layout_marginBottom="@dimen/dp_5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
     </HorizontalScrollView>
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/purpose_layout"
+            android:layout_width="match_parent"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_below="@id/scroll_view"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_marginTop="@dimen/dp_8"
+            app:errorEnabled="true"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/event_name_text_view"
+                android:layout_below="@id/scroll_view"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/textColorGray"
+                android:hint="@string/purpose"
+                android:paddingRight="@dimen/dp_9"
+                android:drawableStart="@drawable/ic_local_offer_black_24dp"
+                android:drawablePadding="@dimen/dp_8"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
     <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:layout_below="@+id/scroll_view"
+            android:layout_below="@+id/purpose_layout"
             android:focusableInTouchMode="true"
             android:focusable="true"
             android:background="@color/white"
             app:errorEnabled="true"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-    <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/search_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:paddingLeft="@dimen/dp_16"
-            android:singleLine="true"
-            android:hint="@string/search"
-            android:layout_marginTop="@dimen/dp_10"
-            android:drawableEnd="@drawable/ic_search"
-           />
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/search_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dp_16"
+                android:singleLine="true"
+                android:hint="@string/search"
+                android:layout_marginTop="@dimen/dp_10"
+                android:drawableEnd="@drawable/ic_search"
+        />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button

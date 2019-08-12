@@ -554,7 +554,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
         mFirebaseAnalytics.setMinimumSessionDuration(5000)
         mFirebaseAnalytics.setSessionTimeoutDuration(1000000)
         mFirebaseAnalytics.setUserId(room.email)
-        mFirebaseAnalytics.setUserProperty(getString(R.string.Roll_Id),GetPreference.getRoleIdFromPreference(this).toString())
+        mFirebaseAnalytics.setUserProperty(getString(R.string.Roll_Id),GetPreference.getRoleIdFromPreference().toString())
     }
 
     /**

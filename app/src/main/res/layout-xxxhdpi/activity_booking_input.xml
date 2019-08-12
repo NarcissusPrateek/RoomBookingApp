@@ -127,83 +127,83 @@
                             android:drawablePadding="@dimen/dp_5"/>
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/purpose_layout"
-                    android:layout_below="@id/date_capacity_layout"
-                    android:layout_width="match_parent"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginTop="@dimen/dp_8"
-                    app:errorEnabled="true"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-                <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/event_name_text_view"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:textColor="@color/textColorGray"
-                        android:hint="@string/purpose"
-                        android:paddingRight="@dimen/dp_9"
-                        android:drawableStart="@drawable/ic_local_offer_black_24dp"
-                        android:drawablePadding="@dimen/dp_8"/>
-            </com.google.android.material.textfield.TextInputLayout>
+            <!--<com.google.android.material.textfield.TextInputLayout-->
+            <!--android:id="@+id/purpose_layout"-->
+            <!--android:layout_below="@id/date_capacity_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_marginStart="@dimen/dp_8"-->
+            <!--android:layout_marginEnd="@dimen/dp_8"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@color/white"-->
+            <!--android:layout_marginTop="@dimen/dp_8"-->
+            <!--app:errorEnabled="true"-->
+            <!--style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">-->
+            <!--<com.google.android.material.textfield.TextInputEditText-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:id="@+id/event_name_text_view"-->
+            <!--android:maxLines="1"-->
+            <!--android:singleLine="true"-->
+            <!--android:textColor="@color/textColorGray"-->
+            <!--android:hint="@string/purpose"-->
+            <!--android:paddingRight="@dimen/dp_9"-->
+            <!--android:drawableStart="@drawable/ic_local_offer_black_24dp"-->
+            <!--android:drawablePadding="@dimen/dp_8"/>-->
+            <!--</com.google.android.material.textfield.TextInputLayout>-->
 
-            <Spinner
-                android:id="@+id/building_name_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/purpose_layout"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:background="@drawable/spinner_rect"
-                android:drawablePadding="@dimen/dp_5"
-                android:paddingTop="@dimen/dp_12"
-                android:paddingBottom="@dimen/dp_12" />
-            <TextView
-                    android:id="@+id/text_view_error_spinner_building"
-                    android:layout_below="@id/building_name_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/error_color"
-                    android:visibility="invisible"
-                    android:layout_marginStart="@dimen/dp_20"
-                    android:textSize="@dimen/sp_12"
-                    android:text="Select building"/>
-            <CheckBox
-                android:text="Private"
-                android:textColor="@color/textColorGray"
-                android:textSize="@dimen/sp_14"
-                android:paddingStart="@dimen/dp_2"
-                android:paddingRight="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_below="@id/building_name_spinner"
-                android:id="@+id/checkbox_private"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <!--<Spinner-->
+            <!--android:id="@+id/building_name_spinner"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/purpose_layout"-->
+            <!--android:layout_marginStart="@dimen/dp_8"-->
+            <!--android:layout_marginTop="@dimen/dp_8"-->
+            <!--android:layout_marginEnd="@dimen/dp_8"-->
+            <!--android:background="@drawable/spinner_rect"-->
+            <!--android:drawablePadding="@dimen/dp_5"-->
+            <!--android:paddingTop="@dimen/dp_12"-->
+            <!--android:paddingBottom="@dimen/dp_12" />-->
+            <!--<TextView-->
+            <!--android:id="@+id/text_view_error_spinner_building"-->
+            <!--android:layout_below="@id/building_name_spinner"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="@color/error_color"-->
+            <!--android:visibility="invisible"-->
+            <!--android:layout_marginStart="@dimen/dp_20"-->
+            <!--android:textSize="@dimen/sp_12"-->
+            <!--android:text="Select building"/>-->
+            <!--<CheckBox-->
+            <!--android:text="Private"-->
+            <!--android:textColor="@color/textColorGray"-->
+            <!--android:textSize="@dimen/sp_14"-->
+            <!--android:paddingStart="@dimen/dp_2"-->
+            <!--android:paddingRight="@dimen/dp_16"-->
+            <!--android:layout_marginStart="@dimen/dp_12"-->
+            <!--android:layout_marginTop="@dimen/dp_8"-->
+            <!--android:layout_below="@id/building_name_spinner"-->
+            <!--android:id="@+id/checkbox_private"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
 
             <Button
-                android:id="@+id/search_room"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/checkbox_private"
-                android:layout_centerHorizontal="true"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:text="Search" />
+                    android:id="@+id/search_room"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/date_capacity_layout"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:text="Search" />
 
             <TableRow
                     android:layout_below="@+id/search_room"
                     android:id="@+id/horizontal_line_below_search_button"
                     android:visibility="gone"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:layout_marginBottom="@dimen/dp_5"
+                    android:layout_marginBottom="@dimen/dp_4"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:background="@color/grey"/>
@@ -211,17 +211,45 @@
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
                     android:visibility="gone"
-                    android:background="@drawable/rectangle"
-                    android:text="Sorry No Rooms available.Have look on Suggestions"
+                    android:textColor="@color/black"
                     android:id="@+id/suggestions"
-                    android:layout_margin="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:paddingTop="@dimen/dp_8"
+                    android:layout_margin="@dimen/dp_10"
                     android:layout_below="@id/horizontal_line_below_search_button"
                     android:textSize="@dimen/sp_12"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/filter_layout_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_below="@+id/search_room"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"
+                    android:background="@color/white"
+                    app:errorEnabled="true"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/filter_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/search_room"
+                        android:maxLines="1"
+                        android:visibility="gone"
+                        android:paddingLeft="@dimen/dp_16"
+                        android:singleLine="true"
+                        android:hint="@string/search"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:drawableEnd="@drawable/ic_search"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                     android:background="@color/recycler_background"
-                    android:layout_below="@id/suggestions"
+                    android:layout_below="@id/filter_layout_edit_text"
                     android:visibility="visible"
                     android:layout_margin="@dimen/dp_2"
                     android:layout_marginBottom="@dimen/dp_4"

@@ -21,8 +21,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.iid.FirebaseInstanceId
 import com.nineleaps.conferenceroombooking.Helper.GoogleGSO
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
 import com.nineleaps.conferenceroombooking.bookingDashboard.ui.UserBookingsDashboardActivity
@@ -31,9 +33,10 @@ import com.nineleaps.conferenceroombooking.model.SignIn
 import com.nineleaps.conferenceroombooking.signIn.repository.CheckRegistrationRepository
 import com.nineleaps.conferenceroombooking.signIn.viewModel.CheckRegistrationViewModel
 import com.nineleaps.conferenceroombooking.utils.*
+import com.orhanobut.hawk.Hawk
 import javax.inject.Inject
 
-class SignIn : AppCompatActivity() {
+class SignIn : AppCompatActivity()  {
 
     @Inject
     lateinit var mCheckRegistrationRepo: CheckRegistrationRepository
@@ -53,7 +56,11 @@ class SignIn : AppCompatActivity() {
         ButterKnife.bind(this)
         initialize()
         observeData()
+        Hawk.init(this).build()
+        Firebase.FirebaseDeviceId()
+
     }
+
 
     private fun crashHandler() {
         val foreground :ForegroundCounter= ForegroundCounter().createAndInstallCallbacks(application)
@@ -128,7 +135,6 @@ class SignIn : AppCompatActivity() {
         try {
             val account = completedTask.getResult(ApiException::class.java)
             setTokenToAccessToken(account!!.idToken)
-            Log.d("Google",account.idToken)
             if(NetworkState.appIsConnectedToInternet(this)) {
                 checkRegistration()
             } else {
@@ -150,9 +156,7 @@ class SignIn : AppCompatActivity() {
     }
 
     private fun saveCustomToken(idToken: String?) {
-        val editor = prefs.edit()
-        editor.putString(getString(R.string.token), "Bearer $idToken")
-        editor.apply()
+        Hawk.put(getString(R.string.token),"Bearer $idToken")
     }
     /**
      * on back pressed the function will clear the activity stack and will close the application
@@ -167,14 +171,12 @@ class SignIn : AppCompatActivity() {
      */
     private fun checkRegistration() {
         progressDialog.show()
-        mCheckRegistrationViewModel.checkRegistration(GetPreference.getDeviceIdFromPreference(this))
+        Hawk.put("Device",FirebaseInstanceId.getInstance().getToken())
+        mCheckRegistrationViewModel.checkRegistration(Hawk.get("Device"))
     }
 
     private fun setTokenToAccessToken(idToken: String?) {
-        val preference = getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE)
-        val editor = preference.edit()
-        editor.putString(getString(R.string.token), idToken)
-        editor.apply()
+        Hawk.put(getString(R.string.token),idToken)
     }
     /**
      * observe data from server
@@ -198,10 +200,8 @@ class SignIn : AppCompatActivity() {
      * a function which will set the value in shared preference
      */
     private fun setValueForSharedPreference(it: SignIn?) {
-        val editor = prefs.edit()
-        val code : String = it!!.statusCode.toString()
-        editor.putInt(Constants.ROLE_CODE,code.toInt())
-        editor.apply()
+        Hawk.put(Constants.ROLE_CODE,it!!.statusCode!!.toInt())
+        val code : String = it.statusCode.toString()
         saveCustomToken(it.token)
         GetPreference.setJWTToken(this, it.refreshToken!!, it.token!!)
         intentToNextActivity(code.toInt())

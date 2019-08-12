@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.nineleaps.conferenceroombooking.BaseApplication
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
 import com.nineleaps.conferenceroombooking.R
@@ -132,6 +133,7 @@ class AddingBuilding : AppCompatActivity() {
      */
     @OnClick(R.id.button_add_building)
     fun getBuildingDetails() {
+        FirebaseAnalytic.firebaseAnalytics(FirebaseAnalytics.getInstance(this),this,"Add Building","pratheekbilla1997@gmail.com")
         HideSoftKeyboard.hideKeyboard(this)
         if (validateInputs()) {
             if (NetworkState.appIsConnectedToInternet(this)) {

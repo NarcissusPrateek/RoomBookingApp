@@ -186,7 +186,7 @@ class BuildingDashboard : AppCompatActivity() {
     }
 
     private fun showDeleteDialog(buildingId: Int) {
-        val dialog = GetAleretDialog.getDialog(this,"Delete","Are you sure you wnat to delete the Building")
+        val dialog = GetAleretDialog.getDialog(this,"Delete","Are you sure you want to delete the Building")
         dialog.setPositiveButton(R.string.ok){_,_->
             mBuildingsViewModel.deleteBuilding(buildingId)
             getViewModel()

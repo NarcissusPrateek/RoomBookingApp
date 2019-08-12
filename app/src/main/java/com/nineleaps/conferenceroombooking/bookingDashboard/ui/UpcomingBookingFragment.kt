@@ -34,6 +34,7 @@ import com.nineleaps.conferenceroombooking.model.Dashboard
 import com.nineleaps.conferenceroombooking.model.GetIntentDataFromActvity
 import com.nineleaps.conferenceroombooking.updateBooking.ui.UpdateBookingActivity
 import com.nineleaps.conferenceroombooking.utils.*
+import com.orhanobut.hawk.Hawk
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_upcoming_booking.*
 import javax.inject.Inject
@@ -57,6 +58,7 @@ class UpcomingBookingFragment : Fragment() {
     var hasMoreItem: Boolean = false
     var mBookingDashboardInput = BookingDashboardInput()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        HideSoftKeyboard.hideKeyboard(activity!!)
         return inflater.inflate(R.layout.fragment_upcoming_booking, container, false)
     }
 
@@ -90,6 +92,7 @@ class UpcomingBookingFragment : Fragment() {
      */
     @SuppressLint("ResourceAsColor")
     fun init() {
+        Log.i("Role", Hawk.get<Int>(Constants.ROLE_CODE).toString())
         mProgressBar = activity!!.findViewById(R.id.upcoming_main_progress_bar)
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(activity!!)
         initRecyclerView()
@@ -131,7 +134,7 @@ class UpcomingBookingFragment : Fragment() {
         mFirebaseAnalytics.setMinimumSessionDuration(5000)
         mFirebaseAnalytics.setSessionTimeoutDuration(1000000)
         mFirebaseAnalytics.setUserId(email)
-        mFirebaseAnalytics.setUserProperty("Roll Id", GetPreference.getRoleIdFromPreference(activity!!).toString())
+        mFirebaseAnalytics.setUserProperty("Roll Id", GetPreference.getRoleIdFromPreference().toString())
     }
 
     private fun initRecyclerView() {
@@ -356,10 +359,9 @@ class UpcomingBookingFragment : Fragment() {
         mFirebaseAnalytics.setMinimumSessionDuration(5000)
         mFirebaseAnalytics.setSessionTimeoutDuration(1000000)
         mFirebaseAnalytics.setUserId(email)
-        Log.i("Role", GetPreference.getRoleIdFromPreference(activity!!).toString())
         mFirebaseAnalytics.setUserProperty(
             getString(R.string.Roll_Id),
-            GetPreference.getRoleIdFromPreference(activity!!).toString()
+            GetPreference.getRoleIdFromPreference().toString()
         )
     }
 
@@ -406,7 +408,7 @@ class UpcomingBookingFragment : Fragment() {
         mFirebaseAnalytics.setUserId(email)
         mFirebaseAnalytics.setUserProperty(
             getString(R.string.Roll_Id),
-            GetPreference.getRoleIdFromPreference(activity!!).toString()
+            GetPreference.getRoleIdFromPreference().toString()
         )
     }
 

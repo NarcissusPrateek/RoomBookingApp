@@ -47,6 +47,7 @@ class CancelledBookingFragment : Fragment() {
     var hasMoreItem: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        HideSoftKeyboard.hideKeyboard(activity!!)
         activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         return inflater.inflate(R.layout.fragment_cancelled_booking, container, false)
     }

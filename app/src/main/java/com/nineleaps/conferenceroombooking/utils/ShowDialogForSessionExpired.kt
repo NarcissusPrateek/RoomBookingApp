@@ -6,6 +6,7 @@ import android.content.Intent
 import com.nineleaps.conferenceroombooking.Helper.GoogleGSO
 import com.nineleaps.conferenceroombooking.R
 import com.nineleaps.conferenceroombooking.SignIn
+import com.orhanobut.hawk.Hawk
 
 class ShowDialogForSessionExpired {
     companion object {
@@ -29,12 +30,14 @@ class ShowDialogForSessionExpired {
          * sign out from application
          */
         fun signOut(mContext: Context, activity: Activity) {
-            val mGoogleSignInClient = GoogleGSO.getGoogleSignInClient(mContext)
+            Hawk.init(activity).build()
+           val mGoogleSignInClient = GoogleGSO.getGoogleSignInClient(mContext)
             mGoogleSignInClient.signOut()
                 .addOnCompleteListener(activity) {
                     mContext.startActivity(Intent(mContext, SignIn::class.java))
                     (mContext as Activity).finish()
                 }
+            Hawk.deleteAll()
         }
     }
 }

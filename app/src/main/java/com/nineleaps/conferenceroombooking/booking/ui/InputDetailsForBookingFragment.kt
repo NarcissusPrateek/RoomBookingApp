@@ -1,15 +1,20 @@
 package com.nineleaps.conferenceroombooking.booking.ui
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -28,24 +33,17 @@ import com.nineleaps.conferenceroombooking.booking.repository.ConferenceRoomRepo
 import com.nineleaps.conferenceroombooking.booking.viewModel.ConferenceRoomViewModel
 import com.nineleaps.conferenceroombooking.bookingDashboard.ui.UserBookingsDashboardActivity
 import com.nineleaps.conferenceroombooking.checkConnection.NoInternetConnectionActivity
-import com.nineleaps.conferenceroombooking.manageBuildings.repository.BuildingsRepository
-import com.nineleaps.conferenceroombooking.manageBuildings.viewModel.BuildingViewModel
-import com.nineleaps.conferenceroombooking.model.Building
 import com.nineleaps.conferenceroombooking.model.GetIntentDataFromActvity
 import com.nineleaps.conferenceroombooking.model.RoomDetails
 import com.nineleaps.conferenceroombooking.utils.*
 import kotlinx.android.synthetic.main.activity_booking_input.*
 import kotlinx.android.synthetic.main.activity_booking_input_from_user.booking_scroll_view
-import kotlinx.android.synthetic.main.activity_booking_input_from_user.building_name_spinner
 import kotlinx.android.synthetic.main.activity_booking_input_from_user.capacity_layout
 import kotlinx.android.synthetic.main.activity_booking_input_from_user.date
 import kotlinx.android.synthetic.main.activity_booking_input_from_user.date_layout
 import kotlinx.android.synthetic.main.activity_booking_input_from_user.from_time_layout
-import kotlinx.android.synthetic.main.activity_booking_input_from_user.horizontal_line_below_search_button
-import kotlinx.android.synthetic.main.activity_booking_input_from_user.purpose_layout
 import kotlinx.android.synthetic.main.activity_booking_input_from_user.search_room
 import kotlinx.android.synthetic.main.activity_booking_input_from_user.suggestions
-import kotlinx.android.synthetic.main.activity_booking_input_from_user.text_view_error_spinner_building
 import javax.inject.Inject
 
 
@@ -54,43 +52,63 @@ class InputDetailsForBookingFragment : Fragment() {
     @Inject
     lateinit var mRoomRepo: ConferenceRoomRepository
 
-    @Inject
-    lateinit var mBuildingRepo: BuildingsRepository
-
     @BindView(R.id.input_for_booking_progress_bar)
     lateinit var mProgressBar: ProgressBar
+
     @BindView(R.id.date)
     lateinit var dateEditText: EditText
+
     @BindView(R.id.fromTime)
     lateinit var fromTimeEditText: EditText
+
     @BindView(R.id.toTime)
     lateinit var toTimeEditText: EditText
+
     @BindView(R.id.room_capacity)
     lateinit var roomCapacityEditText: EditText
+
     private lateinit var customAdapter: RoomAdapter
-    private lateinit var mBuildingsViewModel: BuildingViewModel
+
     @BindView(R.id.recycler_view_room_list)
     lateinit var mRecyclerView: RecyclerView
-    @BindView(R.id.event_name_text_view)
-    lateinit var purposeEditText: EditText
+
+    @BindView(R.id.filter_edit_text)
+    lateinit var filterEditText: EditText
+
     @BindView(R.id.booking_scroll_view)
     lateinit var scrollView: NestedScrollView
-    lateinit var intent:Intent
+
+    lateinit var intent: Intent
+
+    private val roomList = ArrayList<RoomDetails>()
+
+    private lateinit var progressDialog: ProgressDialog
+
     private lateinit var mSetDataFromActivity: GetIntentDataFromActvity
+
     private lateinit var mConferenceRoomViewModel: ConferenceRoomViewModel
+
     private var mInputDetailsForRoom = InputDetailsForRoom()
-    private var mSuggestedRoomApiIsCallled = false
+
     private lateinit var acct: GoogleSignInAccount
+
     var mSetIntentData = GetIntentDataFromActvity()
-    var mBuildingName = Constants.SELECT_BUILDING
-    var mBuildingId = -1
-    var capacity = 0
-    var buildingId = 0
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.activity_booking_input, container, false)
         ButterKnife.bind(this, view)
+        setClickListenerOnEditText()
+        softKeyboard()
+        filterEditText.onRightDrawableClicked {
+            it.text.clear()
+        }
         return view
     }
+
+    private fun softKeyboard() {
+        HideSoftKeyboard.hideKeyboard(activity!!)
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -99,88 +117,94 @@ class InputDetailsForBookingFragment : Fragment() {
     }
 
     private fun clickListenerOnSearchButton() {
+        if (NetworkState.appIsConnectedToInternet(activity!!)) {
+
         search_room.setOnClickListener {
-            suggestions.visibility = View.GONE
-            purposeEditText.onEditorAction(EditorInfo.IME_ACTION_DONE)
-            roomCapacityEditText.onEditorAction(EditorInfo.IME_ACTION_DONE)
-            validationOnDataEnteredByUser()
+            HideSoftKeyboard.hideKeyboard(activity!!)
+                filterSearch()
+                suggestions.visibility = View.GONE
+                roomCapacityEditText.onEditorAction(EditorInfo.IME_ACTION_DONE)
+                validationOnDataEnteredByUser()
+            }
+
         }
+        else{
+            val i = Intent(activity!!, NoInternetConnectionActivity::class.java)
+            startActivityForResult(i, Constants.RES_CODE)
+        }
+    }
+
+    private fun filterSearch() {
+        setClickListenerOnEditText()
     }
 
     private fun initTextChangeListener() {
         textChangeListenerOnDateEditText()
         textChangeListenerOnFromTimeEditText()
         textChangeListenerOnToTimeEditText()
-        textChangeListenerOnPurposeEditText()
         textChangeListenerOnRoomCapacity()
     }
 
     private fun init() {
-        //HideSoftKeyboard.hideSoftKeyboard(activity!!)
         setPickerToEditText()
         initComponentForInputDetails()
         initTextChangeListener()
         initLateInitializerVariables()
-        initBuildingRepository()
         initRoomRepository()
         clickListenerOnSearchButton()
-        if (NetworkState.appIsConnectedToInternet(activity!!)) {
-            getViewModelForBuildingList()
-        } else {
-            startActivityForResult(Intent(activity!!, NoInternetConnectionActivity::class.java), Constants.RES_CODE)
-        }
     }
 
     private fun initComponentForInputDetails() {
         (activity?.application as BaseApplication).getmAppComponent()?.inject(this)
     }
+
     private fun initRoomRepository() {
         mConferenceRoomViewModel.setConferenceRoomRepo(mRoomRepo)
-    }
-
-    private fun initBuildingRepository() {
-        mBuildingsViewModel.setBuildingRepository(mBuildingRepo)
     }
 
     private fun initLateInitializerVariables() {
         acct = GoogleSignIn.getLastSignedInAccount(activity)!!
         mInputDetailsForRoom.email = acct.email.toString()
-        mBuildingsViewModel = ViewModelProviders.of(this).get(BuildingViewModel::class.java)
+        progressDialog = GetProgress.getProgressDialog(getString(R.string.searching_processing), activity!!)
+
         mConferenceRoomViewModel = ViewModelProviders.of(this).get(ConferenceRoomViewModel::class.java)
         mSetDataFromActivity = GetIntentDataFromActvity()
     }
 
-    /**
-     * get the object of ViewModel using ViewModelProviders and observers the data from backend
-     */
-    private fun getViewModelForBuildingList() {
-        mProgressBar.visibility = View.VISIBLE
-        mBuildingsViewModel.getBuildingList()
-    }
-
     private fun getViewModelForConferenceRoomList(mInputDetailsForRoom: InputDetailsForRoom) {
-        mProgressBar.visibility = View.VISIBLE
+        progressDialog.show()
         mConferenceRoomViewModel.getConferenceRoomList(mInputDetailsForRoom)
     }
 
     private fun setAdapter(mListOfRooms: List<RoomDetails>) {
-        mProgressBar.visibility = View.GONE
-        customAdapter =
-            RoomAdapter(mListOfRooms as ArrayList<RoomDetails>, activity!!, object : RoomAdapter.ItemClickListener {
-                override fun onItemClick(roomId: Int?, buidingId: Int?, roomName: String?, buildingName: String?) {
-                    mSetIntentData.buildingName = mBuildingName
-                    mSetIntentData.roomName = roomName
-                    mSetIntentData.buildingId = mBuildingId
-                    mSetIntentData.roomId = roomId
-                    mSetIntentData.capacity = roomCapacityEditText.text.toString()
-                    mSetIntentData.date = dateEditText.text.toString()
-                    mSetIntentData.isPurposeVisible = checkbox_private.isChecked
-                    goToSelectMeetingMembersActivity()
-                }
-            })
-        mRecyclerView.adapter = customAdapter
-        booking_scroll_view.post {
-            scrollView.smoothScrollTo(0, mRecyclerView.top)
+        progressDialog.dismiss()
+        if (mListOfRooms.isEmpty())
+        {
+            horizontal_line_below_search_button.visibility = View.VISIBLE
+            suggestions.visibility = View.VISIBLE
+            suggestions.text = getString(R.string.no_rooms_available)
+        }
+        else {
+            filter_edit_text.visibility = View.VISIBLE
+            roomList.clear()
+            roomList.addAll(mListOfRooms)
+            customAdapter =
+                RoomAdapter(mListOfRooms as ArrayList<RoomDetails>, activity!!, object : RoomAdapter.ItemClickListener {
+                    override fun onItemClick(roomId: Int?, buidingId: Int?, roomName: String?, buildingName: String?) {
+                        mSetIntentData.buildingName = buildingName
+                        mSetIntentData.roomName = roomName
+                        mSetIntentData.buildingId = buidingId
+                        mSetIntentData.roomId = roomId
+                        mSetIntentData.capacity = roomCapacityEditText.text.toString()
+                        mSetIntentData.date = dateEditText.text.toString()
+                        mSetIntentData.isPurposeVisible = true
+                        goToSelectMeetingMembersActivity()
+                    }
+                })
+            mRecyclerView.adapter = customAdapter
+            booking_scroll_view.post {
+                scrollView.smoothScrollTo(0, filterEditText.top)
+            }
         }
     }
 
@@ -188,122 +212,43 @@ class InputDetailsForBookingFragment : Fragment() {
      * observe data from server
      */
     private fun observeData() {
-        mBuildingsViewModel.returnMBuildingSuccess().observe(this, Observer {
-            mProgressBar.visibility = View.GONE
-                            setBuildingSpinner(it)
-
-        })
-        mBuildingsViewModel.returnMBuildingFailure().observe(this, Observer {
-            mProgressBar.visibility = View.GONE
-            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
-                ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
-            } else {
-                ShowToast.show(activity!!, it as Int)
-            }
-        })
-
         //positive response
         mConferenceRoomViewModel.returnSuccess().observe(this, Observer {
+            progressDialog.dismiss()
             checkForStatusOfRooms(it)
         })
         // Negative response
         mConferenceRoomViewModel.returnFailure().observe(this, Observer {
-            mProgressBar.visibility = View.GONE
+            progressDialog.dismiss()
             if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else {
                 ShowToast.show(activity!!, it as Int)
-            }
-        })
-
-        // positive response for suggested rooms
-        mConferenceRoomViewModel.returnSuccessForSuggested().observe(this, Observer {
-            horizontal_line_below_search_button.visibility = View.VISIBLE
-            suggestions.visibility = View.VISIBLE
-            when {
-                it.isEmpty() -> suggestions.text = getString(R.string.no_rooms_available)
-                else -> suggestions.text = getString(R.string.suggestion_rooms)
-            }
-            setAdapter(it)
-        })
-        // negative response for suggested rooms
-        mConferenceRoomViewModel.returnFailureForSuggestedRooms().observe(this, Observer {
-            mProgressBar.visibility = View.GONE
-            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
-                ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
-            } else {
-                ShowToast.show(activity!!, it as Int)
-
             }
         })
     }
+
     private fun goToSelectMeetingMembersActivity() {
         mSetIntentData.fromTime = "${dateEditText.text} ${fromTimeEditText.text}"
         mSetIntentData.toTime = "${dateEditText.text} ${toTimeEditText.text}"
-        mSetIntentData.purpose = purposeEditText.text.toString()
         intent = Intent(activity!!, SelectMeetingMembersActivity::class.java)
         intent.putExtra(Constants.EXTRA_INTENT_DATA, mSetIntentData)
         startActivity(intent)
     }
 
     private fun checkForStatusOfRooms(mListOfRooms: List<RoomDetails>?) {
-        var count = 0
-        for (room in mListOfRooms!!) {
-            if (room.status == getString(R.string.unavailable)) {
-                count++
-            }
-        }
-        if (count == mListOfRooms.size) {
-            if (NetworkState.appIsConnectedToInternet(activity!!)) {
-                makeCallToApiForSuggestedRooms()
-            } else {
-                val i = Intent(activity!!, NoInternetConnectionActivity::class.java)
-                startActivityForResult(i, Constants.RES_CODE3)
-            }
-
-        } else {
-            setAdapter(mListOfRooms)
-        }
+        setAdapter(mListOfRooms!!)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.RES_CODE && resultCode == Activity.RESULT_OK) {
-            getViewModelForBuildingList()
-        }
-        if (requestCode == Constants.RES_CODE3 && resultCode == Activity.RESULT_OK) {
-            makeCallToApiForSuggestedRooms()
+            getViewModelForConferenceRoomList(mInputDetailsForRoom)
+        }else{
+
         }
     }
-    private fun makeCallToApiForSuggestedRooms() {
-        mSuggestedRoomApiIsCallled = true
-        mConferenceRoomViewModel.getSuggestedConferenceRoomList(mInputDetailsForRoom)
-    }
 
-    private fun setBuildingSpinner(mBuildingList: List<Building>) {
-        val buildingNameList = mutableListOf<String>()
-        val buildingIdList = mutableListOf<Int>()
-
-        buildingNameList.add(getString(R.string.select_building))
-        buildingIdList.add(-1)
-        for (mBuilding in mBuildingList) {
-            buildingNameList.add(mBuilding.buildingName!!)
-            buildingIdList.add(mBuilding.buildingId!!.toInt())
-        }
-        val adapter = ArrayAdapter<String>(activity!!, R.layout.spinner_icon, R.id.spinner_text, buildingNameList)
-        building_name_spinner.adapter = adapter
-        building_name_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                mBuildingName = buildingNameList[position]
-                mBuildingId = buildingIdList[position]
-                text_view_error_spinner_building.visibility = View.INVISIBLE
-            }
-
-            override fun onNothingSelected(adapterView: AdapterView<*>?) {
-                mBuildingName = getString(R.string.select_building)
-            }
-        }
-    }
 
     /**
      * function will attach date and time picker to the input fields
@@ -389,26 +334,7 @@ class InputDetailsForBookingFragment : Fragment() {
         })
     }
 
-    /**
-     * add text change listener for the purpose edit text
-     */
-    private fun textChangeListenerOnPurposeEditText() {
-        purposeEditText.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                // nothing here
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // nothing here
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validatePurpose()
-            }
-        })
-    }
-
-    /**
+     /**
      * add text change listener for the room name
      */
     private fun textChangeListenerOnRoomCapacity() {
@@ -446,20 +372,7 @@ class InputDetailsForBookingFragment : Fragment() {
         }
     }
 
-    /**
-     * validate all input fields
-     */
-    private fun validatePurpose(): Boolean {
-        return if (purposeEditText.text.toString().trim().isEmpty()) {
-            purpose_layout.error = getString(R.string.field_cant_be_empty)
-            false
-        }else {
-            purpose_layout.error = null
-            true
-        }
-    }
-
-    /**
+     /**
      * validations for all input fields for empty condition
      */
     private fun validateFromTime(): Boolean {
@@ -496,24 +409,10 @@ class InputDetailsForBookingFragment : Fragment() {
     }
 
     /**
-     * validate building spinner
-     */
-    private fun validateBuildingSpinner(): Boolean {
-        return if (mBuildingName == getString(R.string.select_building)) {
-            text_view_error_spinner_building.visibility = View.VISIBLE
-            false
-        } else {
-            text_view_error_spinner_building.visibility = View.INVISIBLE
-            true
-        }
-    }
-
-    /**
      * check validation for all input fields
      */
     private fun validate(): Boolean {
-
-        if (!validateFromTime() or !validateToTime() or !validateDate() or !validateBuildingSpinner() or !validatePurpose() or !validateRoomCapacity()) {
+        if (!validateFromTime() or !validateToTime() or !validateDate() or !validateRoomCapacity()) {
             return false
         }
         return true
@@ -596,14 +495,79 @@ class InputDetailsForBookingFragment : Fragment() {
 
     private fun setDataForApiCallToFetchRoomDetails() {
         mInputDetailsForRoom.capacity = roomCapacityEditText.text.toString().toInt()
-        mInputDetailsForRoom.buildingId = mBuildingId
-        mInputDetailsForRoom.fromTime = FormatTimeAccordingToZone.formatDateAsUTC(dateEditText.text.toString() + " " + fromTimeEditText.text.toString())
-        mInputDetailsForRoom.toTime = FormatTimeAccordingToZone.formatDateAsUTC(dateEditText.text.toString() + " " + toTimeEditText.text.toString())
+        mInputDetailsForRoom.fromTime =
+            FormatTimeAccordingToZone.formatDateAsUTC(dateEditText.text.toString() + " " + fromTimeEditText.text.toString())
+        mInputDetailsForRoom.toTime =
+            FormatTimeAccordingToZone.formatDateAsUTC(dateEditText.text.toString() + " " + toTimeEditText.text.toString())
         if (NetworkState.appIsConnectedToInternet(activity!!)) {
             getViewModelForConferenceRoomList(mInputDetailsForRoom)
         } else {
             val i = Intent(activity!!, NoInternetConnectionActivity::class.java)
-            startActivityForResult(i, Constants.RES_CODE2)
+            startActivityForResult(i, Constants.RES_CODE)
         }
     }
+
+    /**
+     * take input from edit text and set addTextChangedListener
+     */
+    private fun setClickListenerOnEditText() {
+        filterEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+                /**
+                 * Nothing Here
+                 */
+            }
+
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+                when {
+                    charSequence.isEmpty() -> filterEditText.setCompoundDrawablesWithIntrinsicBounds(
+                        0,
+                        0,
+                        R.drawable.ic_search,
+                        0
+                    )
+                    else -> filterEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
+                }
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+                filter(editable.toString())
+            }
+        })
+    }
+
+    /**
+     * filter matched data from employee list and set updated list to adapter
+     */
+    fun filter(text: String) {
+        val filterName = java.util.ArrayList<RoomDetails>()
+        for (s in roomList) {
+            if (s.roomName!!.toLowerCase().contains(text.toLowerCase()) || s.buildingName!!.toLowerCase().contains(text.toLowerCase())) {
+                filterName.add(s)
+            }
+        }
+        customAdapter.filterList(filterName)
+        // no items present in recyclerview than give option for add other emails
+        when {
+            customAdapter.itemCount == 0 -> suggestions.visibility = View.VISIBLE
+            else -> suggestions.visibility = View.GONE
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun EditText.onRightDrawableClicked(onClicked: (view: EditText) -> Unit) {
+        this.setOnTouchListener { v, event ->
+            var hasConsumed = false
+            when {
+                v is EditText && event.x >= v.width - v.totalPaddingRight -> {
+                    if (event.action == MotionEvent.ACTION_UP) {
+                        onClicked(this)
+                    }
+                    hasConsumed = true
+                }
+            }
+            hasConsumed
+        }
+    }
+
 }

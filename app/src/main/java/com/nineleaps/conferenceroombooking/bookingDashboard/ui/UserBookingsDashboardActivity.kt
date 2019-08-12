@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -35,6 +36,7 @@ import com.nineleaps.conferenceroombooking.recurringMeeting.ui.RecurringBookingI
 import com.nineleaps.conferenceroombooking.recurringMeeting.ui.UpcomingBookingFragment
 import com.nineleaps.conferenceroombooking.splashScreen.ui.SplashScreen
 import com.nineleaps.conferenceroombooking.utils.*
+import com.orhanobut.hawk.Hawk
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main2.*
 import kotlinx.android.synthetic.main.activity_user_dashboard.*
@@ -56,6 +58,7 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
         setContentView(R.layout.activity_main2)
         setNavigationViewItem()
         crashHandler()
+        softKeyBoard()
         init()
         mProgressBar = findViewById(R.id.user_booking_dashboard_progress_bar)
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
@@ -81,6 +84,12 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
                 UpcomingBookingFragment()
             ).commit()
         }
+
+    }
+
+    private fun softKeyBoard() {
+
+        HideSoftKeyboard.hideKeyboard(this)
     }
 
     private fun crashHandler() {
@@ -120,7 +129,6 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
      * all observer for LiveData
      */
     private fun observeData() {
-
         /**
          * observing data for booking list
          */
@@ -176,6 +184,7 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
      * this function will set action to the item in navigation drawer like HR or Logout or Project Manager
      */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        softKeyBoard()
         when (item.itemId) {
             R.id.logout -> {
                 showAlertForSignout()
@@ -217,7 +226,7 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
      */
     private fun setItemInDrawerByRole() {
         val pref = getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE)
-        val code = pref.getInt(Constants.ROLE_CODE, Constants.EMPLOYEE_CODE)
+        val code = Hawk.get<Int>(Constants.ROLE_CODE)
         val navMenu = nav_view.menu
         if (code != Constants.MANAGER_CODE) {
             navMenu.findItem(R.id.project_manager).isVisible = false
@@ -255,8 +264,9 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
      * Sign out from application
      */
     private fun signOut() {
-        var mGoogleSignInClient: GoogleSignInClient = GoogleGSO.getGoogleSignInClient(this)
-        mGoogleSignInClient!!.signOut()
+        Hawk.deleteAll()
+        val mGoogleSignInClient: GoogleSignInClient = GoogleGSO.getGoogleSignInClient(this)
+        mGoogleSignInClient.signOut()
             .addOnCompleteListener(this) {
                 Toasty.success(this, getString(R.string.successfully_sign_out), Toasty.LENGTH_SHORT).show()
                 startActivity(Intent(this@UserBookingsDashboardActivity, SignIn::class.java))

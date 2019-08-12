@@ -38,7 +38,8 @@ class ManageConferenceRoomRepository @Inject constructor() {
             override fun onResponse(call: Call<List<ConferenceList>>, response: Response<List<ConferenceList>>) {
                 if ((response.code() == Constants.OK_RESPONSE) or (response.code() == Constants.SUCCESSFULLY_CREATED)) {
                     listener.onSuccess(response.body()!!)
-                } else {
+                    }
+                else {
                     listener.onFailure(response.code())
                 }
             }

@@ -13,7 +13,7 @@ import com.nineleaps.conferenceroombooking.model.RoomDetails
 
 @Suppress("NAME_SHADOWING")
 class RoomAdapter(
-    private val roomDetailsList: ArrayList<RoomDetails>,
+    private var roomDetailsList: ArrayList<RoomDetails>,
     val mContext: Context,
     val listener: ItemClickListener
 ) : androidx.recyclerview.widget.RecyclerView.Adapter<RoomAdapter.ViewHolder>() {
@@ -33,9 +33,9 @@ class RoomAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val amiList = roomDetailsList[position].amenities
-        if(roomDetailsList[position].permission == 1) {
-            holder.permissionTextView.visibility = View.VISIBLE
-        }
+//        if(roomDetailsList[position].permission == 1) {
+//            holder.permissionTextView.visibility = View.VISIBLE
+//        }
         for (i in amiList!!.indices) {
             when (i) {
                 0 -> {
@@ -63,7 +63,7 @@ class RoomAdapter(
         if (roomDetailsList[position].status == "Unavailable") {
             holder.roomNameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unavailable, 0, 0, 0)
             holder.roomNameTextView.setTextColor(mContext.getResources().getColor(R.color.aminities))
-            holder.permissionTextView.setTextColor(mContext.getResources().getColor(R.color.aminities))
+           // holder.permissionTextView.setTextColor(mContext.getResources().getColor(R.color.aminities))
             holder.buildingNameTextView.setTextColor(mContext.getResources().getColor(R.color.aminities))
             holder.mainCard.elevation = 0.75F
         }
@@ -113,7 +113,7 @@ class RoomAdapter(
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         var buildingNameTextView: TextView = itemView.findViewById(R.id.building_name)
         var roomNameTextView: TextView = itemView.findViewById(R.id.room_name)
-        var permissionTextView: TextView = itemView.findViewById(R.id.permission_required_text_view)
+     //   var permissionTextView: TextView = itemView.findViewById(R.id.permission_required_text_view)
         val mainCard: CardView = itemView.findViewById(R.id.main_card)
         var amenity1: TextView = itemView.findViewById(R.id.ami_room1)
         var amenity2: TextView = itemView.findViewById(R.id.ami_room2)
@@ -138,6 +138,11 @@ class RoomAdapter(
      */
     interface ItemClickListener {
         fun onItemClick(roomId: Int?, buidingId: Int?, roomName: String?, buildingName: String?)
+    }
+
+    fun filterList(filteredNames: ArrayList<RoomDetails>) {
+        this.roomDetailsList = filteredNames
+        notifyDataSetChanged()
     }
 
 }

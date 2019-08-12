@@ -127,9 +127,9 @@ class AddingConference : AppCompatActivity() {
             roomCapacity.text = mEditRoomDetails.mRoomDetail!!.capacity.toString().toEditable()
             val name = mEditRoomDetails.mRoomDetail!!.roomName!!.split(" ")[0].toEditable()
             conferenceRoomEditText.text = name
-            val floor = mEditRoomDetails.mRoomDetail!!.roomName!!.split(" ")[1].toEditable()
-            floorEditText.text = floor
-            switchButton.isChecked = mEditRoomDetails.mRoomDetail!!.permission!! != 0
+//            val floor = mEditRoomDetails.mRoomDetail!!.roomName!!.split(" ")[1].toEditable()
+        //    floorEditText.text = floor
+            switchButton.isChecked = mEditRoomDetails.mRoomDetail!!.permission!! != false
             for (amenity in mEditRoomDetails.mRoomDetail!!.amenities!!) {
                 when (amenity) {
                     Constants.PROJECTOR -> projector.isChecked = true

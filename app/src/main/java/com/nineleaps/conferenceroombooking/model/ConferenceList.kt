@@ -27,6 +27,8 @@ data class ConferenceList(
         var place : String? = null,
 
         @SerializedName("permission")
-        var permission: Int? = null
+        var permission: Boolean? = null,
 
+        @SerializedName("status")
+        var mStatus:String? = null
 ) :Serializable

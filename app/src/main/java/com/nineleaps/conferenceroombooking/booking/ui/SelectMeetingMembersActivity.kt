@@ -13,6 +13,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -57,21 +58,40 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
 
     @BindView(R.id.select_meeting_members_progress_bar)
     lateinit var mProgressBar: ProgressBar
+
+    @BindView(R.id.event_name_text_view)
+    lateinit var purposeEditText: EditText
+
     private val employeeList = ArrayList<EmployeeList>()
+
     private val selectedName = ArrayList<String>()
+
     private val selectedEmail = ArrayList<String>()
+
     lateinit var customAdapter: SelectMembers
+
     @BindView(R.id.search_edit_text)
     lateinit var searchEditText: EditText
     @BindView(R.id.add_email)
+
     lateinit var addEmailButton: Button
+
     private lateinit var mSelectMemberViewModel: SelectMemberViewModel
+
     lateinit var progressDialog: ProgressDialog
+
     private lateinit var mBookingViewModel: BookingViewModel
+
     private var mBooking = Booking()
+
+   private lateinit var attendee:MutableList<String>
+
     private lateinit var acct: GoogleSignInAccount
+
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
+
     private lateinit var mGetIntentDataFromActivity: GetIntentDataFromActvity
+
     private var count = 0
 
     companion object {
@@ -116,6 +136,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
     fun init() {
         initToolBar()
         initComponentForSelectMembers()
+        textChangeListenerOnPurposeEditText()
         initLateInitializerVariables()
         initSelectEmployeeRepo()
         initBookingRepo()
@@ -211,8 +232,9 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
     private fun addDataToObject() {
         val acct = GoogleSignIn.getLastSignedInAccount(applicationContext)
         val mBookingDetails = getIntentData()
+        Log.i("IntentDataSelectMeeting",mBookingDetails.toString())
         mBooking.email = acct!!.email
-        mBooking.purpose = mBookingDetails.purpose
+        mBooking.purpose = purposeEditText.text.toString()
         mBooking.roomId = mBookingDetails.roomId!!.toInt()
         mBooking.buildingId = mBookingDetails.buildingId!!.toInt()
         mBooking.isPurposeVisible = mBookingDetails.isPurposeVisible
@@ -245,43 +267,51 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
 
     @OnClick(R.id.next_activity)
     fun onClick() {
+        purposeEditText.onEditorAction(EditorInfo.IME_ACTION_DONE)
         var emailString = ""
         val size = selectedName.size
         selectedEmail.indices.forEach { index ->
             emailString += selectedEmail[index]
+
             if (index != (size - 1)) {
                 emailString += ","
             }
         }
-        mBooking.cCMail = emailString
+        attendee = emailString.split(",").toMutableList()
+        mBooking.cCMail = attendee
         //mGetIntentDataFromActivity.emailOfSelectedEmployees = emailString
         // show alert before booking
-        val dialog = GetAleretDialog.getDialog(this, getString(R.string.confirm), getString(R.string.book_confirmation_message))
-        dialog.setPositiveButton(getString(R.string.book)) { _, _ ->
-            if (NetworkState.appIsConnectedToInternet(this)) {
-                addDataToObject()
-                addBooking()
-                bookingLogFirebaseAnalytics()
-            } else {
-                val i = Intent(this@SelectMeetingMembersActivity, NoInternetConnectionActivity::class.java)
-                startActivityForResult(i, Constants.RES_CODE2)
+        if(validatePurpose()){
+            val dialog = GetAleretDialog.getDialog(this, getString(R.string.confirm), getString(R.string.book_confirmation_message))
+            dialog.setPositiveButton(getString(R.string.book)) { _, _ ->
+                if (NetworkState.appIsConnectedToInternet(this)) {
+                    addDataToObject()
+                    addBooking()
+                    bookingLogFirebaseAnalytics()
+                } else {
+                    val i = Intent(this@SelectMeetingMembersActivity, NoInternetConnectionActivity::class.java)
+                    startActivityForResult(i, Constants.RES_CODE2)
+                }
             }
+            dialog.setNegativeButton(R.string.no) { _, _ ->
+                // do nothing
+            }
+            val builder = GetAleretDialog.showDialog(dialog)
+            ColorOfDialogButton.setColorOfDialogButton(builder)
         }
-        dialog.setNegativeButton(R.string.no) { _, _ ->
-            // do nothing
-        }
-        val builder = GetAleretDialog.showDialog(dialog)
-        ColorOfDialogButton.setColorOfDialogButton(builder)
+
     }
 
     private fun bookingLogFirebaseAnalytics() {
-        val bookingBundle = Bundle()
-        mFirebaseAnalytics.logEvent(getString(R.string.singleBooking),bookingBundle)
-        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true)
-        mFirebaseAnalytics.setMinimumSessionDuration(5000)
-        mFirebaseAnalytics.setSessionTimeoutDuration(1000000)
-        mFirebaseAnalytics.setUserId(mBooking.email)
-        mFirebaseAnalytics.setUserProperty(getString(R.string.Roll_Id),GetPreference.getRoleIdFromPreference(this).toString())
+
+        FirebaseAnalytic.firebaseAnalytics(mFirebaseAnalytics,this,getString(R.string.singleBooking),mBooking.email!!)
+//        val bookingBundle = Bundle()
+//        mFirebaseAnalytics.logEvent(getString(R.string.singleBooking),bookingBundle)
+//        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true)
+//        mFirebaseAnalytics.setMinimumSessionDuration(5000)
+//        mFirebaseAnalytics.setSessionTimeoutDuration(1000000)
+//        mFirebaseAnalytics.setUserId(mBooking.email)
+//        mFirebaseAnalytics.setUserProperty(getString(R.string.Roll_Id),GetPreference.getRoleIdFromPreference(this).toString())
     }
     /**
      * add selected recycler item to chip and add this chip to chip group
@@ -303,6 +333,37 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
             count++
         } else {
             Toast.makeText(this, getString(R.string.already_selected), Toast.LENGTH_SHORT).show()
+        }
+    }
+    /**
+     * add text change listener for the purpose edit text
+     */
+    private fun textChangeListenerOnPurposeEditText() {
+        purposeEditText.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // nothing here
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // nothing here
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                validatePurpose()
+            }
+        })
+    }
+
+    /**
+     * validate all input fields
+     */
+    private fun validatePurpose(): Boolean {
+        return if (purposeEditText.text.toString().trim().isEmpty()) {
+            purpose_layout.error = getString(R.string.field_cant_be_empty)
+            false
+        }else {
+            purpose_layout.error = null
+            true
         }
     }
 

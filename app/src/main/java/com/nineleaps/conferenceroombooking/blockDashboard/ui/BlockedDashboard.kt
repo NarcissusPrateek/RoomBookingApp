@@ -226,7 +226,7 @@ class BlockedDashboard : AppCompatActivity() {
         mFirebaseAnalytics.setMinimumSessionDuration(5000)
         mFirebaseAnalytics.setSessionTimeoutDuration(1000000)
         mFirebaseAnalytics.setUserId(acct.email)
-        mFirebaseAnalytics.setUserProperty(getString(R.string.Roll_Id),GetPreference.getRoleIdFromPreference(this).toString())
+        mFirebaseAnalytics.setUserProperty(getString(R.string.Roll_Id),GetPreference.getRoleIdFromPreference().toString())
     }
 
 

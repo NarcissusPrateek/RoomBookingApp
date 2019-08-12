@@ -120,7 +120,7 @@
     <string name="building_added">Building Added Successfully</string>
     <string name="empty_building_list">Building List is Empty!</string>
     <string name="registered_successfully">Registered Successfully!</string>
-    <string name="select_participipants">Select Participants</string>
+    <string name="select_participipants">Booking Details</string>
     <string name="room_capacity">Capacity</string>
     <string name="select_room_capacity">Select Room Capacity</string>
     <string name="server_client_id">861287179604-0bl5rqopv0mip6ssob9bis5iqpb7e2nh.apps.googleusercontent.com</string>
@@ -254,5 +254,6 @@
     <string name="room_capacity_label">5 People</string>
     <string name="select_floor">Select Floor</string>
     <string name="authorization">Authorization</string>
+    <string name="searching_processing">Searching...</string>
 
 </resources>

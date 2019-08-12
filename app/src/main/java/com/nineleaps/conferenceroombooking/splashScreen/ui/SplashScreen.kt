@@ -20,6 +20,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.crashlytics.android.Crashlytics
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.iid.FirebaseInstanceId
 import com.nineleaps.conferenceroombooking.BaseApplication
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
 import com.nineleaps.conferenceroombooking.R
@@ -28,10 +31,8 @@ import com.nineleaps.conferenceroombooking.bookingDashboard.ui.UserBookingsDashb
 import com.nineleaps.conferenceroombooking.checkConnection.NoInternetConnectionActivity
 import com.nineleaps.conferenceroombooking.splashScreen.repository.GetRoleOfUser
 import com.nineleaps.conferenceroombooking.splashScreen.viewModel.GetRoleOfUserViewModel
-import com.nineleaps.conferenceroombooking.utils.Constants
-import com.nineleaps.conferenceroombooking.utils.GetProgress
-import com.nineleaps.conferenceroombooking.utils.ShowDialogForSessionExpired
-import com.nineleaps.conferenceroombooking.utils.ShowToast
+import com.nineleaps.conferenceroombooking.utils.*
+import com.orhanobut.hawk.Hawk
 import io.fabric.sdk.android.Fabric
 import javax.inject.Inject
 
@@ -50,9 +51,14 @@ class SplashScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_splash_screen)
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+        FirebaseAnalytic.firebaseAnalyticsReset(FirebaseAnalytics.getInstance(this))
         init()
         observeData()
+        timeDelayForSplashScreen()
+    }
+
+    private fun timeDelayForSplashScreen() {
         val logoHandler = Handler()
         val logoRunnable = Runnable {
             val account = GoogleSignIn.getLastSignedInAccount(this)
@@ -73,8 +79,6 @@ class SplashScreen : AppCompatActivity() {
         }
         logoHandler.postDelayed(logoRunnable, 3000)
     }
-
-
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -116,7 +120,6 @@ class SplashScreen : AppCompatActivity() {
         mGetRoleOfUserViewModel.returnSuccessCodeForUserROle().observe(this, Observer {
             mProgressBar.visibility = View.GONE
             setValueForSharedPreference(it)
-            Log.i("Role", it.toString())
         })
         mGetRoleOfUserViewModel.returnFailureCodeForUserRole().observe(this, Observer {
             mProgressBar.visibility = View.GONE
@@ -166,9 +169,10 @@ class SplashScreen : AppCompatActivity() {
      * set value in shared preference
      */
     private fun setValueForSharedPreference(it: Int) {
-        val editor = prefs.edit()
-        editor.putInt(Constants.ROLE_CODE, it)
-        editor.apply()
+        Hawk.put(Constants.ROLE_CODE,it)
+//        val editor = prefs.edit()
+//        editor.putInt(Constants.ROLE_CODE, it)
+//        editor.apply()
         goToNextActivity(it)
     }
 }

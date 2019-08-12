@@ -107,24 +107,26 @@ class ConferenceDashBoard : AppCompatActivity() {
         mManageConferenceRoomViewModel.returnConferenceRoomList().observe(this, Observer {
             mProgressDialog.dismiss()
                         mConferenceList.clear()
-            when {
-                it.isNotEmpty() -> mConferenceList.addAll(it)
-                else -> {
+            if (it.isNotEmpty()) mConferenceList.addAll(it)
+            else {
 
-                    empty_view_blocked1.visibility = View.VISIBLE
-                    empty_view_blocked1.setBackgroundColor(Color.parseColor("#FFFFFF"))
-                }
+                empty_view_blocked1.visibility = View.VISIBLE
+                empty_view_blocked1.setBackgroundColor(Color.parseColor("#FFFFFF"))
             }
             setAdapter()
         })
         mManageConferenceRoomViewModel.returnFailureForConferenceRoom().observe(this, Observer {
             mProgressDialog.dismiss()
-            when (it) {
-                Constants.INVALID_TOKEN, Constants.FORBIDDEN, Constants.UNPROCESSABLE -> ShowDialogForSessionExpired.signOut(this, ConferenceDashBoard())
-                else -> {
-                    ShowToast.show(this, it as Int)
-                    finish()
-                }
+            if (it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN || it == Constants.UNPROCESSABLE) ShowDialogForSessionExpired.signOut(this, ConferenceDashBoard())
+            else if (it == Constants.NO_CONTENT_FOUND)
+            {
+
+                empty_view_blocked1.visibility = View.VISIBLE
+                empty_view_blocked1.setBackgroundColor(Color.parseColor("#FFFFFF"))
+            }
+            else {
+                ShowToast.show(this, it as Int)
+                finish()
             }
         })
 

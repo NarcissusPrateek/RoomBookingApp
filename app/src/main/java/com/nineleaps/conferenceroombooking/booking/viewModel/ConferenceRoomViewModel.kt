@@ -27,12 +27,12 @@ class ConferenceRoomViewModel : ViewModel() {
     /**
      * A MutableLiveData variable which will hold the Value for negative response from repository
      */
-    private var errorCodeFromServerForSuggestedRooms =  MutableLiveData<Any>()
+//    private var errorCodeFromServerForSuggestedRooms =  MutableLiveData<Any>()
 
     /**
      * a MutableLiveData variable which will hold the positive response for repository
      */
-    var mSuggestedConferenceRoomList =  MutableLiveData<List<RoomDetails>>()
+//    var mSuggestedConferenceRoomList =  MutableLiveData<List<RoomDetails>>()
 
     fun setConferenceRoomRepo(mRoomRepo: ConferenceRoomRepository) {
         mConferenceRoomRepository = mRoomRepo
@@ -61,27 +61,27 @@ class ConferenceRoomViewModel : ViewModel() {
     /**
      * function will initialize the repository object and calls the method of repository which will make the api call
      * and function will return the value for MutableLivedata
-     */
-    fun getSuggestedConferenceRoomList(mInputDetailsForRoom: InputDetailsForRoom) {
-        mConferenceRoomRepository!!.getSuggestedRooms(mInputDetailsForRoom, object:
-            ResponseListener {
-            override fun onSuccess(success: Any) {
-                mSuggestedConferenceRoomList.value = success as List<RoomDetails>
-            }
-
-            override fun onFailure(failure: Any) {
-                errorCodeFromServerForSuggestedRooms.value = failure
-            }
-
-        })
-    }
+//     */
+//    fun getSuggestedConferenceRoomList(mInputDetailsForRoom: InputDetailsForRoom) {
+//        mConferenceRoomRepository!!.getSuggestedRooms(mInputDetailsForRoom, object:
+//            ResponseListener {
+//            override fun onSuccess(success: Any) {
+//                mSuggestedConferenceRoomList.value = success as List<RoomDetails>
+//            }
+//
+//            override fun onFailure(failure: Any) {
+//                errorCodeFromServerForSuggestedRooms.value = failure
+//            }
+//
+//        })
+//    }
 
 
     /**
      * function will return the MutableLiveData of List of buildings
      */
     fun returnSuccess(): MutableLiveData<List<RoomDetails>> {
-        return mConferenceRoomList!!
+        return mConferenceRoomList
     }
 
     /**
@@ -94,15 +94,15 @@ class ConferenceRoomViewModel : ViewModel() {
     /**
      * function will return the MutableLiveData of List of buildings
      */
-    fun returnSuccessForSuggested(): MutableLiveData<List<RoomDetails>> {
-        return mSuggestedConferenceRoomList
-    }
-
-    /**
-     * function will return the MutableLiveData of Int if something went wrong at server
-     */
-    fun returnFailureForSuggestedRooms(): MutableLiveData<Any> {
-        return errorCodeFromServerForSuggestedRooms
-    }
+//    fun returnSuccessForSuggested(): MutableLiveData<List<RoomDetails>> {
+//        return mSuggestedConferenceRoomList
+//    }
+//
+//    /**
+//     * function will return the MutableLiveData of Int if something went wrong at server
+//     */
+//    fun returnFailureForSuggestedRooms(): MutableLiveData<Any> {
+//        return errorCodeFromServerForSuggestedRooms
+//    }
 
 }

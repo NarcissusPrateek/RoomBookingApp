@@ -265,7 +265,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
         mFirebaseAnalytics.setUserId(mManagerBooking.email)
         mFirebaseAnalytics.setUserProperty(
             getString(R.string.Roll_Id),
-            GetPreference.getRoleIdFromPreference(this).toString()
+            GetPreference.getRoleIdFromPreference().toString()
         )
     }
 

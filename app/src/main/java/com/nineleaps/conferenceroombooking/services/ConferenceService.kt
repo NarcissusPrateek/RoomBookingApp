@@ -9,7 +9,7 @@ import com.nineleaps.conferenceroombooking.model.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
-import com.nineleaps.conferenceroombooking.model.RoomDetails as RoomDetails1
+import com.nineleaps.conferenceroombooking.model.RoomDetails
 
 interface ConferenceService {
 
@@ -17,22 +17,22 @@ interface ConferenceService {
     fun getBuildingList(
     ): Call<List<Building>>
 
-    @POST("api/AvailableRooms")
+    @POST("api/availableRooms")
     fun getConferenceRoomList(
         @Body availableRoom: InputDetailsForRoom
-    ): Call<List<RoomDetails1>>
+    ): Call<List<RoomDetails>>
 
 
-    @POST("api/SuggestedRooms")
-    fun getSuggestedRooms(
-        @Body availableRoom: InputDetailsForRoom
-    ): Call<List<RoomDetails1>>
+//    @POST("api/SuggestedRooms")
+//    fun getSuggestedRooms(
+//        @Body availableRoom: InputDetailsForRoom
+//    ): Call<List<RoomDetails1>>
 
 
     @POST("api/SuggestionRecurringMeeting")
     fun getSuggestedRoomsForRecurring(
         @Body availableRoom: ManagerConference
-    ): Call<List<RoomDetails1>>
+    ): Call<List<RoomDetails>>
 
     @GET("api/Login")
     fun getRequestCode(
@@ -91,7 +91,7 @@ interface ConferenceService {
     @POST("api/AvailableRoomsForRecurring")
     fun getMangerConferenceRoomList(
         @Body availableRoom: ManagerConference
-    ): Call<List<RoomDetails1>>
+    ): Call<List<RoomDetails>>
 //    // Pratheek's.....
 
     @POST("api/AddBuilding")
@@ -134,7 +134,7 @@ interface ConferenceService {
         @Body meetId: Int
     ): Call<ResponseBody>
 
-    @GET("api/ConferenceRooms")
+    @GET("api/roomsById")
     fun conferenceList(
         @Query("buildingId") id: Int
     ): Call<List<ConferenceList>>

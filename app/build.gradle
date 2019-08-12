@@ -187,6 +187,10 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-core:17.0.1'
 
+    //Hawk for the Shared Preference
+    implementation "com.orhanobut:hawk:2.0.1"
+
+
 }
 sonarqube {
     properties {

@@ -61,11 +61,11 @@ class Constants {
 
         const val PAGE_SIZE = 7
 
-        const val BOOKING_DASHBOARD_TYPE_UPCOMING = "upcoming"
+        const val BOOKING_DASHBOARD_TYPE_UPCOMING = "Upcoming"
 
-        const val BOOKING_DASHBOARD_TYPE_PREVIOUS = "previous"
+        const val BOOKING_DASHBOARD_TYPE_PREVIOUS = "Previous"
 
-        const val BOOKING_DASHBOARD_TYPE_CANCELLED = "cancelled"
+        const val BOOKING_DASHBOARD_TYPE_CANCELLED = "Cancelled"
 
         const val BOOKING_DASHBOARD_PENDING = "Pending"
 
@@ -105,6 +105,7 @@ class Constants {
         const val TOKEN = "TOKEN"
 
         const val DEVICE_ID = "DEVICE ID"
+
 
         const val DEFAULT_INT_PREFERENCE_VALUE = -1
 

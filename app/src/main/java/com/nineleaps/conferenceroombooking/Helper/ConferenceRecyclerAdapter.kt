@@ -26,7 +26,7 @@ class ConferenceRecyclerAdapter(private val conferencceList: List<ConferenceList
         holder.conferencelist = conferencceList[position]
         holder.conferenceName.text = conferencceList[position].roomName + " [${conferencceList[position].capacity} people]"
      //   holder.roomCapacity.text = " [${conferencceList[position].capacity} people]"
-        if(conferencceList[position].permission!! == 1) {
+        if(conferencceList[position].permission!! == true) {
             holder.permissionTextView.visibility = View.VISIBLE
         } else {
             holder.permissionTextView.visibility = View.GONE

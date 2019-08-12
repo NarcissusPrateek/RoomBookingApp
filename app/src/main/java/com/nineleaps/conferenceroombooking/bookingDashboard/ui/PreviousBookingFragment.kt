@@ -47,6 +47,7 @@ class PreviousBookingFragment : Fragment() {
     var isApiCalled: Boolean = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        HideSoftKeyboard.hideKeyboard(activity!!)
         return inflater.inflate(R.layout.fragment_previous_booking, container, false)
     }
 
