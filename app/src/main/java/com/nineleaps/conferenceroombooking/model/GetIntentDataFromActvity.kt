@@ -18,5 +18,6 @@ data class GetIntentDataFromActvity(
     var purpose: String? = null,
     var isPurposeVisible:Boolean? = null,
     var cCMail: List<String>? = null,
-    var bookingId: Int? = null
+    var bookingId: Int? = null,
+    var name: List<String>? = null
 ) : Serializable

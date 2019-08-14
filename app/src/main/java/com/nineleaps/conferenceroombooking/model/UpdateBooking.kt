@@ -11,5 +11,11 @@ data class UpdateBooking(
     var newtotime: String? =null,
 
     @SerializedName("meetId")
-    var bookingId: Int? = null
+    var bookingId: Int? = null,
+
+    @SerializedName("purpose")
+    var purpose: String? = null,
+
+    @SerializedName("attendee")
+    var cCmail:List<String>? = null
 )

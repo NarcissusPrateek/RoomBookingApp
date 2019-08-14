@@ -19,7 +19,7 @@ data class Blocked(
     @SerializedName("endTime")
     var toTime: String? = null,
 
-    @SerializedName("purpose")
+    @SerializedName("purposeEditText")
     var purpose: String? = null,
 
     @SerializedName("meetId")

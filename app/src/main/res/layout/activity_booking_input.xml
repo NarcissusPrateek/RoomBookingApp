@@ -145,7 +145,7 @@
             <!--android:maxLines="1"-->
             <!--android:singleLine="true"-->
             <!--android:textColor="@color/textColorGray"-->
-            <!--android:hint="@string/purpose"-->
+            <!--android:hint="@string/purposeEditText"-->
             <!--android:paddingRight="@dimen/dp_9"-->
             <!--android:drawableStart="@drawable/ic_local_offer_black_24dp"-->
             <!--android:drawablePadding="@dimen/dp_8"/>-->

@@ -208,6 +208,7 @@ class UpcomingBookingFragment : Fragment() {
             mProgressBar.visibility = View.GONE
             progressDialog.dismiss()
             hasMoreItem = it.paginationMetaData!!.nextPage!!
+            Log.i("@@@@@!!",it.dashboard!!.toString())
             setFilteredDataToAdapter(it.dashboard!!)
         })
         mBookingDashBoardViewModel.returnFailure().observe(this, Observer {
@@ -275,7 +276,10 @@ class UpcomingBookingFragment : Fragment() {
      * this function will call a function which will filter the data after that set the filtered data to adapter
      */
     private fun setFilteredDataToAdapter(dashboardItemList: List<Dashboard>) {
+        Log.i("@@@@",dashboardItemList.toString())
+
         finalList.addAll(dashboardItemList)
+        Log.i("@@@@!",finalList.toString())
         dashBord_recyclerView1.adapter?.notifyDataSetChanged()
     }
 

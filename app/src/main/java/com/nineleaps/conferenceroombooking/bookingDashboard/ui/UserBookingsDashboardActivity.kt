@@ -57,7 +57,7 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
         setNavigationViewItem()
-        crashHandler()
+     //   crashHandler()
         softKeyBoard()
         init()
         mProgressBar = findViewById(R.id.user_booking_dashboard_progress_bar)
@@ -92,16 +92,16 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
         HideSoftKeyboard.hideKeyboard(this)
     }
 
-    private fun crashHandler() {
-        val foreground: ForegroundCounter = ForegroundCounter().createAndInstallCallbacks(application)
-        val defaultHandler: Thread.UncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
-        Thread.setDefaultUncaughtExceptionHandler { t: Thread?, e: Throwable? ->
-            if (foreground.inForeground())
-                defaultHandler.uncaughtException(t, e)
-            else
-                startActivity(Intent(this, SplashScreen::class.java))
-        }
-    }
+//    private fun crashHandler() {
+//        val foreground: ForegroundCounter = ForegroundCounter().createAndInstallCallbacks(application)
+//        val defaultHandler: Thread.UncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
+//        Thread.setDefaultUncaughtExceptionHandler { t: Thread?, e: Throwable? ->
+//            if (foreground.inForeground())
+//                defaultHandler.uncaughtException(t, e)
+//            else
+//                startActivity(Intent(this, SplashScreen::class.java))
+//        }
+//    }
 
     private fun init() {
         initComponentForBookingDashBoard()

@@ -255,5 +255,6 @@
     <string name="select_floor">Select Floor</string>
     <string name="authorization">Authorization</string>
     <string name="searching_processing">Searching...</string>
+    <string name="meeting_participants">Attendee</string>
 
 </resources>

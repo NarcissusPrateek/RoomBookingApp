@@ -2,6 +2,7 @@ package com.nineleaps.conferenceroombooking.Helper
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -11,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.nineleaps.conferenceroombooking.R
 import com.nineleaps.conferenceroombooking.model.Dashboard
+import com.nineleaps.conferenceroombooking.model.EmployeeList
 import com.nineleaps.conferenceroombooking.model.GetIntentDataFromActvity
 import com.nineleaps.conferenceroombooking.utils.Constants
 import com.nineleaps.conferenceroombooking.utils.FormatDate
@@ -51,6 +53,7 @@ class UpcomingBookingAdapter(
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        Log.i("@@@@",dashboardItemList.toString())
         mCancelBookingClickListener = btnListener
         mShowMembersListener = mShowMembers
         mEditBookingListener = mEditBooking
@@ -213,9 +216,9 @@ class UpcomingBookingAdapter(
     private fun editActivity(position: Int) {
         val fromDate = dashboardItemList[position].fromTime!!.split("T")
         val toDate = dashboardItemList[position].toTime!!.split("T")
-
         val localStartTime = FormatTimeAccordingToZone.formatDateAsIndianStandardTime("${fromDate[0]} ${fromDate[1]}")
         val localEndTime = FormatTimeAccordingToZone.formatDateAsIndianStandardTime("${fromDate[0]} ${toDate[1]}")
+
 
         mIntentData.date = localStartTime.split(" ")[0]
         mIntentData.fromTime = localStartTime.split(" ")[1]
@@ -226,7 +229,9 @@ class UpcomingBookingAdapter(
         mIntentData.roomId = dashboardItemList[position].roomId
         mIntentData.bookingId = dashboardItemList[position].bookingId
         mIntentData.cCMail = dashboardItemList[position].cCMail
+        mIntentData.name = dashboardItemList[position].name
         mEditBookingListener!!.editBooking(mIntentData)
+
     }
 
 

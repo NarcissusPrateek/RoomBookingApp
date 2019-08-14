@@ -84,7 +84,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
 
     private var mBooking = Booking()
 
-   private lateinit var attendee:MutableList<String>
+    private lateinit var attendee: MutableList<String>
 
     private lateinit var acct: GoogleSignInAccount
 
@@ -110,6 +110,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
             it.text.clear()
         }
     }
+
     private fun initToolBar() {
         val actionBar = supportActionBar
         actionBar!!.title = fromHtml("<font color=\"#FFFFFF\">" + getString(R.string.select_participipants) + "</font>")
@@ -120,7 +121,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
     fun checkSearchEditTextContent() {
         if (validateEmailFormat()) {
             val email = searchEditText.text.toString().trim()
-            if(email == acct.email) {
+            if (email == acct.email) {
                 Toast.makeText(this, getString(R.string.already_part_of_meeting), Toast.LENGTH_SHORT).show()
                 return
             }
@@ -232,7 +233,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
     private fun addDataToObject() {
         val acct = GoogleSignIn.getLastSignedInAccount(applicationContext)
         val mBookingDetails = getIntentData()
-        Log.i("IntentDataSelectMeeting",mBookingDetails.toString())
+        Log.i("IntentDataSelectMeeting", mBookingDetails.toString())
         mBooking.email = acct!!.email
         mBooking.purpose = purposeEditText.text.toString()
         mBooking.roomId = mBookingDetails.roomId!!.toInt()
@@ -245,10 +246,10 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
     private fun initComponentForSelectMembers() {
         (application as BaseApplication).getmAppComponent()?.inject(this)
     }
+
     private fun initSelectEmployeeRepo() {
         mSelectMemberViewModel.setEmployeeListRepo(mSelectEmployeeRepo)
     }
-
 
 
     /**
@@ -281,8 +282,12 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
         mBooking.cCMail = attendee
         //mGetIntentDataFromActivity.emailOfSelectedEmployees = emailString
         // show alert before booking
-        if(validatePurpose()){
-            val dialog = GetAleretDialog.getDialog(this, getString(R.string.confirm), getString(R.string.book_confirmation_message))
+        if (validatePurpose()) {
+            val dialog = GetAleretDialog.getDialog(
+                this,
+                getString(R.string.confirm),
+                getString(R.string.book_confirmation_message)
+            )
             dialog.setPositiveButton(getString(R.string.book)) { _, _ ->
                 if (NetworkState.appIsConnectedToInternet(this)) {
                     addDataToObject()
@@ -304,7 +309,12 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
 
     private fun bookingLogFirebaseAnalytics() {
 
-        FirebaseAnalytic.firebaseAnalytics(mFirebaseAnalytics,this,getString(R.string.singleBooking),mBooking.email!!)
+        FirebaseAnalytic.firebaseAnalytics(
+            mFirebaseAnalytics,
+            this,
+            getString(R.string.singleBooking),
+            mBooking.email!!
+        )
 //        val bookingBundle = Bundle()
 //        mFirebaseAnalytics.logEvent(getString(R.string.singleBooking),bookingBundle)
 //        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true)
@@ -313,6 +323,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
 //        mFirebaseAnalytics.setUserId(mBooking.email)
 //        mFirebaseAnalytics.setUserProperty(getString(R.string.Roll_Id),GetPreference.getRoleIdFromPreference(this).toString())
     }
+
     /**
      * add selected recycler item to chip and add this chip to chip group
      */
@@ -335,11 +346,12 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.already_selected), Toast.LENGTH_SHORT).show()
         }
     }
+
     /**
-     * add text change listener for the purpose edit text
+     * add text change listener for the purposeEditText edit text
      */
     private fun textChangeListenerOnPurposeEditText() {
-        purposeEditText.addTextChangedListener(object: TextWatcher {
+        purposeEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 // nothing here
             }
@@ -361,7 +373,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
         return if (purposeEditText.text.toString().trim().isEmpty()) {
             purpose_layout.error = getString(R.string.field_cant_be_empty)
             false
-        }else {
+        } else {
             purpose_layout.error = null
             true
         }
@@ -409,8 +421,13 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
                  * Nothing here
                  */
                 when {
-                    charSequence.isEmpty() -> searchEditText.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_search,0)
-                    else -> searchEditText.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_clear,0)
+                    charSequence.isEmpty() -> searchEditText.setCompoundDrawablesWithIntrinsicBounds(
+                        0,
+                        0,
+                        R.drawable.ic_search,
+                        0
+                    )
+                    else -> searchEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
                 }
             }
 

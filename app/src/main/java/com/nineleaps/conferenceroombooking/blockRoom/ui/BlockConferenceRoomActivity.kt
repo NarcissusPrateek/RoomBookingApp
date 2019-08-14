@@ -439,7 +439,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
     }
 
     /**
-     * validate purpose field
+     * validate purposeEditText field
      */
     private fun validatePurpose(): Boolean {
         val input = purposeEditText.text.toString().trim()
@@ -616,7 +616,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
     }
 
     /**
-     * add text change listener for the purpose edit text
+     * add text change listener for the purposeEditText edit text
      */
     private fun textChangeListenerOnPurposeEditText() {
         purposeEditText.addTextChangedListener(object : TextWatcher {

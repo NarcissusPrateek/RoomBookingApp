@@ -21,6 +21,6 @@ data class BlockRoom(
     @SerializedName("status")
     var status: String? = null,
 
-    @SerializedName("purpose")
+    @SerializedName("purposeEditText")
     var purpose: String? = null
 )

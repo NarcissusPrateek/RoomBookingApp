@@ -22,7 +22,7 @@ data class ManagerBooking(
     @SerializedName("endTime")
     var toTime: ArrayList<String>? = null,
 
-    @SerializedName("purpose")
+    @SerializedName("purposeEditText")
     var purpose: String? = null,
 
     @SerializedName("capacity")

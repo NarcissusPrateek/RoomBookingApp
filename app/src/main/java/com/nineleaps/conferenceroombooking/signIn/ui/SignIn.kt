@@ -52,7 +52,7 @@ class SignIn : AppCompatActivity()  {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signin)
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
-        crashHandler()
+       // crashHandler()
         ButterKnife.bind(this)
         initialize()
         observeData()
@@ -62,16 +62,16 @@ class SignIn : AppCompatActivity()  {
     }
 
 
-    private fun crashHandler() {
-        val foreground :ForegroundCounter= ForegroundCounter().createAndInstallCallbacks(application)
-        val defaultHandler:Thread.UncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
-        Thread.setDefaultUncaughtExceptionHandler{ t: Thread?, e: Throwable? ->
-            if (foreground.inForeground())
-                defaultHandler.uncaughtException(t,e)
-            else
-                Handler(Looper.getMainLooper()).postAtFrontOfQueue ({ Runtime.getRuntime().exit(0) })
-        }
-    }
+//    private fun crashHandler() {
+//        val foreground :ForegroundCounter= ForegroundCounter().createAndInstallCallbacks(application)
+//        val defaultHandler:Thread.UncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
+//        Thread.setDefaultUncaughtExceptionHandler{ t: Thread?, e: Throwable? ->
+//            if (foreground.inForeground())
+//                defaultHandler.uncaughtException(t,e)
+//            else
+//                Handler(Looper.getMainLooper()).postAtFrontOfQueue ({ Runtime.getRuntime().exit(0) })
+//        }
+//    }
 
     @OnClick(R.id.sign_in_button)
     fun signIn() {
