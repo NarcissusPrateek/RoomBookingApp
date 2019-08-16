@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nineleaps.conferenceroombooking.addBuilding.repository.AddBuildingRepository
 import com.nineleaps.conferenceroombooking.model.AddBuilding
+import com.nineleaps.conferenceroombooking.model.Location
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 
 open class AddBuildingViewModel : ViewModel() {
@@ -21,6 +22,10 @@ open class AddBuildingViewModel : ViewModel() {
 
     var mSuccessForUpdateBuilding = MutableLiveData<Int>()
     var mFailureForUpdateBuilding = MutableLiveData<Any>()
+
+    var mGetLocationList = MutableLiveData<List<Location>>()
+    var mFailureForGetLocation = MutableLiveData<Any>()
+
 
     /**
      * initialize repo object
@@ -93,4 +98,29 @@ open class AddBuildingViewModel : ViewModel() {
         return mFailureForUpdateBuilding
     }
 
+    //-----------------------------------------Get Location details ----------------------------------------------------
+    /**
+     * function will initialize the repository object and calls the method of repository which will make the api call
+     * and assign values to the live data objects
+     */
+    fun getLocation(){
+        mAddBuildingRepository!!.getLocationDetails(object :ResponseListener{
+            override fun onSuccess(success: Any) {
+                mGetLocationList.value = success as List<Location>
+            }
+
+            override fun onFailure(failure: Any) {
+                mFailureForGetLocation.value = failure
+            }
+
+        })
+    }
+
+    fun returnMGetLocationList():MutableLiveData<List<Location>>{
+        return mGetLocationList
+    }
+
+    fun returnMFailureForGetLocation():MutableLiveData<Any>{
+        return mFailureForGetLocation
+    }
 }

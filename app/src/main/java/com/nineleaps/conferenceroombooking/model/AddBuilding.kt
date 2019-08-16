@@ -8,8 +8,16 @@ data class AddBuilding(
         var buildingName: String? = null,
 
         @SerializedName("place")
-        var place:String? = null,
+        var place:Int? = null,
 
         @SerializedName("buildingId")
         var buildingId: Int? = null
+)
+
+data class Location(
+        @SerializedName("location")
+        var locaionName:String? = null,
+
+        @SerializedName("locationId")
+        var locationId:Int? = null
 )

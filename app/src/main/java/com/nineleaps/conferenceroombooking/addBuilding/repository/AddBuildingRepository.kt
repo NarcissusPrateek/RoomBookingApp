@@ -1,6 +1,7 @@
 package com.nineleaps.conferenceroombooking.addBuilding.repository
 
 import com.nineleaps.conferenceroombooking.model.AddBuilding
+import com.nineleaps.conferenceroombooking.model.Location
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
 import com.nineleaps.conferenceroombooking.utils.Constants
@@ -80,6 +81,41 @@ class AddBuildingRepository @Inject constructor(){
         })
     }
 
+    //--------------------------------------------api call for get Location details ----------------------------
+    /**
+     * make API call and calls the methods of interface
+     */
+    fun getLocationDetails(listener: ResponseListener){
+        val getLocationRequestCall:Call<List<Location>> = RestClient.getWebServiceData()?.getAllLocation()!!
+        getLocationRequestCall.enqueue(object :Callback<List<Location>>{
+            override fun onFailure(call: Call<List<Location>>, t: Throwable) {
+                when(t) {
+                    is SocketTimeoutException -> {
+                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
+                    }
+                    is UnknownHostException -> {
+                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
+                    }
+                    else -> {
+                        listener.onFailure(Constants.INTERNAL_SERVER_ERROR)
+                    }
+                }
+            }
+
+            override fun onResponse(call: Call<List<Location>>, response: Response<List<Location>>) {
+                if ((response.code() == Constants.OK_RESPONSE) or (response.code() == Constants.NO_CONTENT_FOUND)){
+                    if (response.body()!!.isEmpty()){
+                        listener.onSuccess(ArrayList<Location>())
+                    }
+                    listener.onSuccess(response.body()!!)
+                }
+                else{
+                    listener.onFailure(response.code())
+                }
+            }
+
+        })
+    }
 
 
 }

@@ -153,4 +153,9 @@ interface ConferenceService {
     fun deleteRoom(
         @Query("roomId") id: Int
     ): Call<ResponseBody>
+
+    @GET("api/getAllLocation")
+    fun getAllLocation(
+
+    ):Call<List<Location>>
 }

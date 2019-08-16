@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.Html.fromHtml
 import android.text.TextWatcher
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +26,7 @@ import com.nineleaps.conferenceroombooking.addBuilding.repository.AddBuildingRep
 import com.nineleaps.conferenceroombooking.addBuilding.viewModel.AddBuildingViewModel
 import com.nineleaps.conferenceroombooking.checkConnection.NoInternetConnectionActivity
 import com.nineleaps.conferenceroombooking.model.AddBuilding
+import com.nineleaps.conferenceroombooking.model.Location
 import com.nineleaps.conferenceroombooking.utils.*
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_adding_building.*
@@ -40,13 +44,14 @@ class AddingBuilding : AppCompatActivity() {
      */
     @BindView(R.id.edit_text_building_name)
     lateinit var buildingNameEditText: EditText
-    @BindView(R.id.edit_text_building_place)
-    lateinit var buildingPlaceEditText: EditText
+
     private lateinit var mAddBuildingViewModel: AddBuildingViewModel
     private var mAddBuilding = AddBuilding()
     private lateinit var progressDialog: ProgressDialog
     var flag = false
     var mUpdateBuildingDetails = AddBuilding()
+    private var locationName ="Select Location"
+    private var locationId = -1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_adding_building)
@@ -67,11 +72,18 @@ class AddingBuilding : AppCompatActivity() {
         initAddingBuildingRepository()
         initTextChangeListener()
         buildingNameEditText.requestFocus()
-        HideSoftKeyboard.setUpUI(findViewById(R.id.add_building_layout),this)
-        HideSoftKeyboard.childUI(findViewById(R.id.add_building_layout),this)
+        if(NetworkState.appIsConnectedToInternet(this)) {
+            getLocationDetails()
+        } else {
+            val i = Intent(this@AddingBuilding, NoInternetConnectionActivity::class.java)
+            startActivityForResult(i, Constants.RES_CODE2)
+        }
+        HideSoftKeyboard.setUpUI(findViewById(R.id.add_building_layout), this)
+        HideSoftKeyboard.setUpUI(findViewById(R.id.add_building_layout), this)
+        HideSoftKeyboard.setUpUI(findViewById(R.id.location_Spinner), this)
     }
 
-   private fun initComponent() {
+    private fun initComponent() {
         (application as BaseApplication).getmAppComponent()?.inject(this)
     }
 
@@ -80,21 +92,20 @@ class AddingBuilding : AppCompatActivity() {
         if (flag) {
             button_add_building.text = getString(R.string.update_button)
             mUpdateBuildingDetails.buildingId = intent.getIntExtra(Constants.BUILDING_ID, 0)
-            buildingNameEditText.text = Editable.Factory.getInstance().newEditable(intent.getStringExtra(Constants.BUILDING_NAME))
-            buildingPlaceEditText.text = Editable.Factory.getInstance().newEditable(intent.getStringExtra(Constants.BUILDING_PLACE))
-        }
+            buildingNameEditText.text =
+                Editable.Factory.getInstance().newEditable(intent.getStringExtra(Constants.BUILDING_NAME))
+            }
     }
 
     private fun initTextChangeListener() {
         textChangeListenerOnBuildingName()
-        textChangeListenerOnBuildingPlace()
     }
 
     /**
      * add text change listener for the building Name
      */
     private fun textChangeListenerOnBuildingName() {
-        buildingNameEditText.addTextChangedListener(object: TextWatcher {
+        buildingNameEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 // nothing here
             }
@@ -108,38 +119,24 @@ class AddingBuilding : AppCompatActivity() {
             }
         })
     }
-    /**
-     * add text change listener for the building place
-     */
-    private fun textChangeListenerOnBuildingPlace() {
-        buildingPlaceEditText.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                // nothing here
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // nothing here
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validateBuildingPlace()
-            }
-        })
-    }
-
 
     /**
      * function will invoke whenever the add button is clicked
      */
     @OnClick(R.id.button_add_building)
     fun getBuildingDetails() {
-        FirebaseAnalytic.firebaseAnalytics(FirebaseAnalytics.getInstance(this),this,"Add Building","pratheekbilla1997@gmail.com")
+        FirebaseAnalytic.firebaseAnalytics(
+            FirebaseAnalytics.getInstance(this),
+            this,
+            getString(R.string.Add_Buildings),
+            "pratheekbilla1997@gmail.com"
+        )
         HideSoftKeyboard.hideKeyboard(this)
         if (validateInputs()) {
             if (NetworkState.appIsConnectedToInternet(this)) {
-                if(flag) {
+                if (flag) {
                     mUpdateBuildingDetails.buildingName = buildingNameEditText.text.toString().trim()
-                    mUpdateBuildingDetails.place =  buildingPlaceEditText.text.toString().trim()
+                   // mUpdateBuildingDetails.place = buildingPlaceEditText.text.toString().trim()
                     updateBuildingDetails(mUpdateBuildingDetails)
                 } else {
                     addDataToObject(mAddBuilding)
@@ -153,12 +150,9 @@ class AddingBuilding : AppCompatActivity() {
     }
 
 
-
-
     private fun initAddingBuildingRepository() {
         mAddBuildingViewModel.setBuildingRepository(mAddBuildingRepository)
     }
-
 
 
     private fun initActionBar() {
@@ -173,9 +167,16 @@ class AddingBuilding : AppCompatActivity() {
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == Constants.RES_CODE && resultCode == Activity.RESULT_OK) {
-            addDataToObject(mAddBuilding)
-            addBuild(mAddBuilding)
+        if (resultCode == Activity.RESULT_OK ){
+            when (requestCode){
+                Constants.RES_CODE ->{
+                    addDataToObject(mAddBuilding)
+                    addBuild(mAddBuilding)
+                }
+                Constants.RES_CODE2 ->{
+                    getLocationDetails()
+                }
+            }
         }
     }
 
@@ -210,6 +211,51 @@ class AddingBuilding : AppCompatActivity() {
                 ShowToast.show(this, it as Int)
             }
         })
+
+        mAddBuildingViewModel.returnMGetLocationList().observe(this, Observer {
+            progressDialog.dismiss()
+            setSpinner(it)
+        })
+
+        mAddBuildingViewModel.returnMFailureForGetLocation().observe(this, Observer {
+            progressDialog.dismiss()
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
+                ShowDialogForSessionExpired.showAlert(this, AddingBuilding())
+            } else {
+                ShowToast.show(this, it as Int)
+            }
+        })
+    }
+
+    private fun setSpinner(locationList: List<Location>?) {
+        val locationNameList = mutableListOf<String>()
+        val locationIdList = mutableListOf<Int>()
+        locationNameList.add(getString(R.string.select_location))
+        locationIdList.add(-1)
+        if (locationList!!.isEmpty()) {
+            locationNameList.add(getString(R.string.no_location_available))
+            locationIdList.add(-1)
+        } else {
+            for (location in locationList) {
+                locationIdList.add(location.locationId!!)
+                locationNameList.add(location.locaionName!!)
+            }
+        }
+        location_Spinner.adapter =
+            ArrayAdapter<String>(this, R.layout.spinner_icon, R.id.spinner_text, locationNameList)
+        location_Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                /**
+                 * It selects the first conference room
+                 */
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                locationId = locationIdList[position]
+                locationName = locationNameList[position]
+            }
+
+        }
     }
 
     /**
@@ -217,7 +263,7 @@ class AddingBuilding : AppCompatActivity() {
      */
     private fun addDataToObject(mAddBuilding: AddBuilding) {
         mAddBuilding.buildingName = buildingNameEditText.text.toString().trim()
-        mAddBuilding.place = buildingPlaceEditText.text.toString().trim()
+        mAddBuilding.place = locationId
     }
 
     /**
@@ -243,16 +289,16 @@ class AddingBuilding : AppCompatActivity() {
         }
         return true
     }
+
     /**
      * validation for building place for empty condition
      */
     private fun validateBuildingPlace(): Boolean {
-        val input = buildingPlaceEditText.text.toString().trim()
-        return if (input.isEmpty()) {
-            location_layout.error = getString(R.string.field_cant_be_empty)
+        return if (locationId == -1) {
+            error_spinner_location_text_view.visibility = View.VISIBLE
             false
         } else {
-            location_layout.error = null
+            error_spinner_location_text_view.visibility = View.GONE
             true
         }
     }
@@ -273,5 +319,10 @@ class AddingBuilding : AppCompatActivity() {
     private fun updateBuildingDetails(mUpdateBuildingDetails: AddBuilding) {
         progressDialog.show()
         mAddBuildingViewModel.updateBuildingDetails(mUpdateBuildingDetails)
+    }
+
+    private fun getLocationDetails(){
+        progressDialog.show()
+        mAddBuildingViewModel.getLocation()
     }
 }

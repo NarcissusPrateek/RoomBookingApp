@@ -54,6 +54,7 @@ class UpcomingBookingFragment : Fragment() {
     lateinit var email: String
     private var recurringmeetingId: String? = null
     private var makeApiCallOnResume = false
+    private var cardPosition = -1
     var pagination: Int = 1
     var hasMoreItem: Boolean = false
     var mBookingDashboardInput = BookingDashboardInput()
@@ -143,6 +144,7 @@ class UpcomingBookingFragment : Fragment() {
             activity!!,
             object : UpcomingBookingAdapter.CancelBtnClickListener {
                 override fun onCLick(position: Int) {
+                    cardPosition = position
                     showConfirmDialogForCancelMeeting(position)
                 }
             },
@@ -208,7 +210,6 @@ class UpcomingBookingFragment : Fragment() {
             mProgressBar.visibility = View.GONE
             progressDialog.dismiss()
             hasMoreItem = it.paginationMetaData!!.nextPage!!
-            Log.i("@@@@@!!",it.dashboard!!.toString())
             setFilteredDataToAdapter(it.dashboard!!)
         })
         mBookingDashBoardViewModel.returnFailure().observe(this, Observer {
@@ -231,9 +232,10 @@ class UpcomingBookingFragment : Fragment() {
          */
         mBookingDashBoardViewModel.returnBookingCancelled().observe(this, Observer {
             Toasty.success(activity!!, getString(R.string.cancelled_successful), Toast.LENGTH_SHORT, true).show()
-            pagination = 1
-            mBookingDashboardInput.pageNumber = pagination
-            finalList.clear()
+//            pagination = 1
+//            mBookingDashboardInput.pageNumber = pagination
+//            finalList.clear()
+            finalList.remove(finalList[cardPosition])
             dashBord_recyclerView1.adapter?.notifyDataSetChanged()
             mBookingDashBoardViewModel.getBookingList(
                 mBookingDashboardInput
@@ -276,10 +278,7 @@ class UpcomingBookingFragment : Fragment() {
      * this function will call a function which will filter the data after that set the filtered data to adapter
      */
     private fun setFilteredDataToAdapter(dashboardItemList: List<Dashboard>) {
-        Log.i("@@@@",dashboardItemList.toString())
-
         finalList.addAll(dashboardItemList)
-        Log.i("@@@@!",finalList.toString())
         dashBord_recyclerView1.adapter?.notifyDataSetChanged()
     }
 
