@@ -34,7 +34,6 @@ import com.nineleaps.conferenceroombooking.model.Dashboard
 import com.nineleaps.conferenceroombooking.model.GetIntentDataFromActvity
 import com.nineleaps.conferenceroombooking.updateBooking.ui.UpdateBookingActivity
 import com.nineleaps.conferenceroombooking.utils.*
-import com.nineleaps.conferenceroombooking.utils.GetAleretDialog.Companion.getDialogBoxForAminities
 import com.orhanobut.hawk.Hawk
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_upcoming_booking.*
