@@ -101,7 +101,7 @@
         </activity>
         <activity
                 android:name=".blockDashboard.ui.BlockedDashboard"
-                android:parentActivityName=".bookingDashboard.ui.UserBookingsDashboardActivity"
+                android:parentActivityName=".ConferenceRoomDashboard.ui.ConferenceDashBoard"
                 android:screenOrientation="portrait"/>
         <activity
                 android:name=".blockRoom.ui.BlockConferenceRoomActivity"

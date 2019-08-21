@@ -1,8 +1,10 @@
 package com.nineleaps.conferenceroombooking.utils
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.text.Html
+import android.widget.ArrayAdapter
 
 class GetAleretDialog {
     companion object {
@@ -33,7 +35,5 @@ class GetAleretDialog {
             mDialog.setMessage(Html.fromHtml("Your passcode is " +"<b>"+ passcode + "</b>"+". You can use this passcode to book a room from tablet placed inside conference room."))
             return mDialog
         }
-
-
     }
 }

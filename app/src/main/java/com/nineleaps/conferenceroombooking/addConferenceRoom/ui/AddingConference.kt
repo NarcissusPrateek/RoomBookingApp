@@ -1,26 +1,32 @@
 package com.nineleaps.conferenceroombooking.addConferenceRoom.ui
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.Html
 import android.text.TextWatcher
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.util.Log
+import android.view.MotionEvent
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import com.google.android.material.chip.Chip
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.nineleaps.conferenceroombooking.AddConferenceRoom
-import com.nineleaps.conferenceroombooking.BaseApplication
+import com.nineleaps.conferenceroombooking.*
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
-import com.nineleaps.conferenceroombooking.R
+import com.nineleaps.conferenceroombooking.Helper.SelectAmenities
 import com.nineleaps.conferenceroombooking.addConferenceRoom.repository.AddConferenceRepository
 import com.nineleaps.conferenceroombooking.addConferenceRoom.viewModel.AddConferenceRoomViewModel
 import com.nineleaps.conferenceroombooking.checkConnection.NoInternetConnectionActivity
@@ -28,7 +34,7 @@ import com.nineleaps.conferenceroombooking.utils.*
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_adding_conference.*
 import javax.inject.Inject
-
+@RequiresApi(Build.VERSION_CODES.M)
 @Suppress("DEPRECATION")
 class AddingConference : AppCompatActivity() {
     /**
@@ -44,20 +50,10 @@ class AddingConference : AppCompatActivity() {
     @BindView(R.id.conference_capacity)
     lateinit var roomCapacity: EditText
 
-    @BindView(R.id.monitor_check_box)
-    lateinit var monitor: CheckBox
+    @BindView(R.id.amenities_linear_layout)
+    lateinit var amenitiesLinearLayout: LinearLayout
 
-    @BindView(R.id.whiteboard_marker_check_box)
-    lateinit var whiteboard: CheckBox
-
-    @BindView(R.id.speaker_check_box)
-    lateinit var speaker: CheckBox
-
-    @BindView(R.id.extension_board_check_box)
-    lateinit var extensionBoard: CheckBox
-
-    @BindView(R.id.projector_check_box)
-    lateinit var projector: CheckBox
+    lateinit var checkBox: CheckBox
 
     @BindView(R.id.permission_required)
     lateinit var switchButton: SwitchMaterial
@@ -66,12 +62,32 @@ class AddingConference : AppCompatActivity() {
     lateinit var floorEditText: EditText
 
     private lateinit var mAddConferenceRoomViewModel: AddConferenceRoomViewModel
+
     private var mConferenceRoom = AddConferenceRoom()
+
     private lateinit var progressDialog: ProgressDialog
+
+    private var amenityName = ArrayList<String>()
+
+    private var amenityId = ArrayList<Int>()
+
+    private lateinit var amenitiesIdForEdit: MutableList<Int>
+
+    private lateinit var amenities: HashMap<Int, String>
+
+    private var checkboxList = ArrayList<CheckBox>()
+
     private var flag = false
+
     var roomId = 0
+
     var floor = 0
+
     private var mEditRoomDetails = EditRoomDetails()
+
+    private var selectedAmenities = ArrayList<Int>()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_adding_conference)
@@ -83,10 +99,9 @@ class AddingConference : AppCompatActivity() {
 
     private fun softKeyboard() {
         conferenceRoomEditText.requestFocus()
-        HideSoftKeyboard.setUpUI(findViewById(R.id.add_conference_nestedScroll),this)
-        HideSoftKeyboard.childUI(findViewById(R.id.add_conference_nestedScroll),this)
-        HideSoftKeyboard.childUI(findViewById(R.id.aminities_list),this)
-        HideSoftKeyboard.setUpUI(findViewById(R.id.permission_required),this)
+        HideSoftKeyboard.setUpUI(findViewById(R.id.add_conference_nestedScroll), this)
+        HideSoftKeyboard.childUI(findViewById(R.id.add_conference_nestedScroll), this)
+        HideSoftKeyboard.setUpUI(findViewById(R.id.permission_required), this)
     }
 
     /**
@@ -98,6 +113,7 @@ class AddingConference : AppCompatActivity() {
         initTextChangeListener()
         initLateInitializerVariables()
         initRoomRepository()
+        getAllAmenities()
         softKeyboard()
     }
 
@@ -107,7 +123,6 @@ class AddingConference : AppCompatActivity() {
         textChangeListenerOnRoomCapacity()
         textChangeListenerOnRoomFloor()
     }
-
 
 
     private fun initComponent() {
@@ -125,20 +140,20 @@ class AddingConference : AppCompatActivity() {
             mEditRoomDetails = intent.getSerializableExtra(Constants.EXTRA_INTENT_DATA) as EditRoomDetails
             roomId = mEditRoomDetails.mRoomDetail!!.roomId!!
             roomCapacity.text = mEditRoomDetails.mRoomDetail!!.capacity.toString().toEditable()
-            val name = mEditRoomDetails.mRoomDetail!!.roomName!!.split(" ")[0].toEditable()
-            conferenceRoomEditText.text = name
-//            val floor = mEditRoomDetails.mRoomDetail!!.roomName!!.split(" ")[1].toEditable()
-        //    floorEditText.text = floor
+            val array = mEditRoomDetails.mRoomDetail!!.roomName!!.split(" ")
+            conferenceRoomEditText.text = array[0].toEditable()
+            Log.i("@@@@@", array.toString())
+            if (array.size < 2 || array[1].trim().isEmpty())
+                floorEditText.text = "0".toEditable()
+            else
+                floorEditText.text = array[1].toEditable()
+            amenities = mEditRoomDetails.mRoomDetail!!.amenities!!
+            Log.i("@@@", amenities.toString())
+            amenitiesIdForEdit = amenities.keys.toMutableList()
+
+            Log.i("@@@@!", checkboxList.toString())
             switchButton.isChecked = mEditRoomDetails.mRoomDetail!!.permission!! != false
-            for (amenity in mEditRoomDetails.mRoomDetail!!.amenities!!) {
-                when (amenity) {
-                    Constants.PROJECTOR -> projector.isChecked = true
-                    Constants.MONITOR -> monitor.isChecked = true
-                    Constants.SPEAKER -> speaker.isChecked = true
-                    Constants.WHITEBOARD_MARKER -> whiteboard.isChecked = true
-                    Constants.EXTENSION_BOARD -> extensionBoard.isChecked = true
-                }
-            }
+
         } else {
             add_conference_room.text = getString(R.string.ADD)
         }
@@ -159,6 +174,7 @@ class AddingConference : AppCompatActivity() {
     /**
      * observing data for adding conference
      */
+    @RequiresApi(Build.VERSION_CODES.M)
     fun observeData() {
         mAddConferenceRoomViewModel.returnSuccessForAddingRoom().observe(this, Observer {
             progressDialog.dismiss()
@@ -182,7 +198,10 @@ class AddingConference : AppCompatActivity() {
         mAddConferenceRoomViewModel.returnFailureForUpdateRoom().observe(this, Observer {
             progressDialog.dismiss()
             when (it) {
-                Constants.UNPROCESSABLE, Constants.INVALID_TOKEN, Constants.FORBIDDEN  -> ShowDialogForSessionExpired.showAlert(this, AddingConference())
+                Constants.UNPROCESSABLE, Constants.INVALID_TOKEN, Constants.FORBIDDEN -> ShowDialogForSessionExpired.showAlert(
+                    this,
+                    AddingConference()
+                )
                 Constants.UNAVAILABLE_SLOT -> Toasty.info(
                     this,
                     getString(R.string.room_name_conflict_message),
@@ -192,6 +211,52 @@ class AddingConference : AppCompatActivity() {
                 else -> ShowToast.show(this, it as Int)
             }
         })
+
+
+        mAddConferenceRoomViewModel.returnSuccesForGetAmenitiesList().observe(this, Observer {
+            progressDialog.dismiss()
+            initCheckBox(it)
+        })
+
+        mAddConferenceRoomViewModel.returnFailureForGetAllAmeneties().observe(this, Observer {
+            progressDialog.dismiss()
+            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
+                ShowDialogForSessionExpired.showAlert(this, AddingConference())
+            } else {
+                ShowToast.show(this, it as Int)
+            }
+        })
+    }
+
+
+    private fun initCheckBox(amenitiesList: List<GetAllAmenities>?) {
+        for (amenity in amenitiesList!!) {
+            amenityName.add(amenity.amenityName!!)
+            amenityId.add(amenity.amenityId!!)
+        }
+
+        for (name in amenityName.indices) {
+            checkBox = CheckBox(this)
+            checkBox.text = amenityName[name]
+            checkBox.setTextColor(getColor(R.color.textColorGray))
+            if (flag && amenitiesIdForEdit.contains(amenityId[name])) {
+                checkBox.isChecked = true
+            }
+            checkboxList.add(checkBox)
+            amenitiesLinearLayout.addView(checkBox)
+
+        }
+
+
+    }
+
+    private fun checkedCheckBoxList() {
+        for (checkbox in checkboxList.indices) {
+            if (checkboxList[checkbox].isChecked) {
+                selectedAmenities.add(amenityId[checkbox])
+            }
+        }
+
     }
 
     /**
@@ -199,6 +264,7 @@ class AddingConference : AppCompatActivity() {
      */
     @OnClick(R.id.add_conference_room)
     fun addRoomButton() {
+        checkedCheckBoxList()
         HideSoftKeyboard.hideKeyboard(this)
         if (validateInputs()) {
             if (NetworkState.appIsConnectedToInternet(this)) {
@@ -242,13 +308,12 @@ class AddingConference : AppCompatActivity() {
             val bundle: Bundle? = intent.extras
             mConferenceRoom.bId = bundle!!.get(Constants.EXTRA_BUILDING_ID)!!.toString().toInt()
         }
-        mConferenceRoom.roomName = conferenceRoomEditText.text.toString().trim() +" "+ floorEditText.text.toString()+Floor.FloorToString(floorEditText.text.toString().trim().toInt())
+        mConferenceRoom.roomName =
+            conferenceRoomEditText.text.toString().trim() + " " + floorEditText.text.toString() + Floor.FloorToString(
+                floorEditText.text.toString().trim().toInt()
+            )
         mConferenceRoom.capacity = roomCapacity.text.toString().toInt()
-        mConferenceRoom.monitor = monitor.isChecked
-        mConferenceRoom.speaker = speaker.isChecked
-        mConferenceRoom.whiteBoardMarker = whiteboard.isChecked
-        mConferenceRoom.extensionBoard = extensionBoard.isChecked
-        mConferenceRoom.projector = projector.isChecked
+        mConferenceRoom.amenities = selectedAmenities.toMutableList()
         mConferenceRoom.permission = switchButton.isChecked
     }
 
@@ -321,6 +386,11 @@ class AddingConference : AppCompatActivity() {
         mAddConferenceRoomViewModel.addConferenceDetails(mConferenceRoom)
     }
 
+    private fun getAllAmenities() {
+        progressDialog.show()
+        mAddConferenceRoomViewModel.getAmenitiesList()
+    }
+
     /**
      * add text change listener for the room name
      */
@@ -375,4 +445,5 @@ class AddingConference : AppCompatActivity() {
             }
         })
     }
+
 }

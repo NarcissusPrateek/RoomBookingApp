@@ -2,6 +2,7 @@ package com.nineleaps.conferenceroombooking.Helper
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +16,14 @@ import com.nineleaps.conferenceroombooking.model.RoomDetails
 class RoomAdapter(
     private var roomDetailsList: ArrayList<RoomDetails>,
     val mContext: Context,
-    val listener: ItemClickListener
-) : androidx.recyclerview.widget.RecyclerView.Adapter<RoomAdapter.ViewHolder>() {
+    val listener: ItemClickListener,
+    private val mMoreListener: MoreAminitiesListner
 
+) : androidx.recyclerview.widget.RecyclerView.Adapter<RoomAdapter.ViewHolder>() {
+    companion object{
+        var mMoreAminitiesListener: MoreAminitiesListner? = null
+
+    }
     /**
      * this override function will set a view for the recyclerview items
      */
@@ -31,39 +37,36 @@ class RoomAdapter(
      */
     @SuppressLint("SetTextI18n", "NewApi")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        mMoreAminitiesListener = mMoreListener
 
-        val amiList = roomDetailsList[position].amenities
-//        if(roomDetailsList[position].permission == 1) {
-//            holder.permissionTextView.visibility = View.VISIBLE
-//        }
-        for (i in amiList!!.indices) {
-            when (i) {
-                0 -> {
-                    setDrawable(roomDetailsList[position].amenities!![i], holder.amenity1)
-                    holder.amenity1.visibility = View.VISIBLE
-                }
-                1 -> {
-                    setDrawable(roomDetailsList[position].amenities!![i], holder.amenity2)
-                    holder.amenity2.visibility = View.VISIBLE
-                }
-                2 -> {
-                    setDrawable(roomDetailsList[position].amenities!![i], holder.amenity3)
-                    holder.amenity3.visibility = View.VISIBLE
-                }
-                3 -> {
-                    setDrawable(roomDetailsList[position].amenities!![i], holder.amenity4)
-                    holder.amenity4.visibility = View.VISIBLE
-                }
-                4 -> {
-                    setDrawable(roomDetailsList[position].amenities!![i], holder.amenity5)
-                    holder.amenity5.visibility = View.VISIBLE
-                }
+        val amenities = roomDetailsList[position].amenities!!.values.toMutableList()
+        for (i in amenities.indices) {
+            if (i > 3) {
+                setDrawable("More", holder.amenity3)
+                holder.amenity3.text = "More"
+                holder.amenity3.setTextColor(Color.parseColor("#0072BC"))
+                holder.amenity3.visibility = View.VISIBLE
+            } else if (i == 3) {
+                setDrawable(amenities[3], holder.amenity3)
+                holder.amenity3.text = roomDetailsList[position].amenities!!.getValue(3)
+                holder.amenity3.setTextColor(Color.parseColor("#4F4F4F"))
+                holder.amenity3.visibility = View.VISIBLE
+            }
+            if (i == 0) {
+                setDrawable(amenities[0], holder.amenity0)
+                holder.amenity0.visibility = View.VISIBLE
+            } else if (i == 1) {
+                setDrawable(amenities[1], holder.amenity1)
+                holder.amenity1.visibility = View.VISIBLE
+            } else if (i == 2) {
+                setDrawable(amenities[2], holder.amenity2)
+                holder.amenity2.visibility = View.VISIBLE
             }
         }
         if (roomDetailsList[position].status == "Unavailable") {
             holder.roomNameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unavailable, 0, 0, 0)
             holder.roomNameTextView.setTextColor(mContext.getResources().getColor(R.color.aminities))
-           // holder.permissionTextView.setTextColor(mContext.getResources().getColor(R.color.aminities))
+            // holder.permissionTextView.setTextColor(mContext.getResources().getColor(R.color.aminities))
             holder.buildingNameTextView.setTextColor(mContext.getResources().getColor(R.color.aminities))
             holder.mainCard.elevation = 0.75F
         }
@@ -76,6 +79,11 @@ class RoomAdapter(
                     roomDetailsList[position].roomName,
                     roomDetailsList[position].buildingName
                 )
+            }
+        }
+        holder.amenity3.setOnClickListener {
+            if (holder.amenity3.text == "More") {
+                mMoreListener.moreAmenities(position)
             }
         }
     }
@@ -97,10 +105,18 @@ class RoomAdapter(
             "Extension Board" -> {
                 targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_extension_board, 0, 0, 0)
             }
+            "TV", "tv" -> {
+                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_tv_black_24dp, 0, 0, 0)
+            }
+            "More" -> {
+                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unfold_more_black_24dp, 0, 0, 0)
+            }
+            else -> {
+                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_devices_other_black_24dp, 0, 0, 0)
+            }
         }
         targetTextView.text = amitie
     }
-
 
 
     /**
@@ -113,13 +129,13 @@ class RoomAdapter(
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         var buildingNameTextView: TextView = itemView.findViewById(R.id.building_name)
         var roomNameTextView: TextView = itemView.findViewById(R.id.room_name)
-     //   var permissionTextView: TextView = itemView.findViewById(R.id.permission_required_text_view)
+        //   var permissionTextView: TextView = itemView.findViewById(R.id.permission_required_text_view)
         val mainCard: CardView = itemView.findViewById(R.id.main_card)
-        var amenity1: TextView = itemView.findViewById(R.id.ami_room1)
-        var amenity2: TextView = itemView.findViewById(R.id.ami_room2)
-        var amenity3: TextView = itemView.findViewById(R.id.ami_room3)
-        var amenity4: TextView = itemView.findViewById(R.id.ami_room4)
-        var amenity5: TextView = itemView.findViewById(R.id.ami_room5)
+        var amenity0: TextView = itemView.findViewById(R.id.ami_room1)
+        var amenity1: TextView = itemView.findViewById(R.id.ami_room2)
+        var amenity2: TextView = itemView.findViewById(R.id.ami_room3)
+        var amenity3: TextView = itemView.findViewById(R.id.ami_room4)
+
         var roomDetails: RoomDetails? = null
     }
 
@@ -129,8 +145,10 @@ class RoomAdapter(
     @SuppressLint("SetTextI18n")
     private fun setDataToFields(holder: ViewHolder, position: Int) {
         holder.roomDetails = roomDetailsList[position]
-        holder.buildingNameTextView.text = roomDetailsList[position].buildingName + ", " + roomDetailsList[position].place
-        holder.roomNameTextView.text = roomDetailsList[position].roomName + " [${roomDetailsList[position].capacity} people]"
+        holder.buildingNameTextView.text =
+            roomDetailsList[position].buildingName + ", " + roomDetailsList[position].place
+        holder.roomNameTextView.text =
+            roomDetailsList[position].roomName + " [${roomDetailsList[position].capacity} people]"
     }
 
     /**
@@ -144,5 +162,7 @@ class RoomAdapter(
         this.roomDetailsList = filteredNames
         notifyDataSetChanged()
     }
-
+    interface MoreAminitiesListner {
+        fun moreAmenities(position: Int)
+    }
 }

@@ -2,6 +2,7 @@ package com.nineleaps.conferenceroombooking.booking.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
@@ -119,16 +120,15 @@ class InputDetailsForBookingFragment : Fragment() {
     private fun clickListenerOnSearchButton() {
         if (NetworkState.appIsConnectedToInternet(activity!!)) {
 
-        search_room.setOnClickListener {
-            HideSoftKeyboard.hideKeyboard(activity!!)
+            search_room.setOnClickListener {
+                HideSoftKeyboard.hideKeyboard(activity!!)
                 filterSearch()
                 suggestions.visibility = View.GONE
                 roomCapacityEditText.onEditorAction(EditorInfo.IME_ACTION_DONE)
                 validationOnDataEnteredByUser()
             }
 
-        }
-        else{
+        } else {
             val i = Intent(activity!!, NoInternetConnectionActivity::class.java)
             startActivityForResult(i, Constants.RES_CODE)
         }
@@ -178,19 +178,22 @@ class InputDetailsForBookingFragment : Fragment() {
 
     private fun setAdapter(mListOfRooms: List<RoomDetails>) {
         progressDialog.dismiss()
-        if (mListOfRooms.isEmpty())
-        {
+        if (mListOfRooms.isEmpty()) {
             horizontal_line_below_search_button.visibility = View.VISIBLE
             suggestions.visibility = View.VISIBLE
             suggestions.text = getString(R.string.no_rooms_available)
-        }
-        else {
+        } else {
             filter_edit_text.visibility = View.VISIBLE
             roomList.clear()
             roomList.addAll(mListOfRooms)
             customAdapter =
                 RoomAdapter(mListOfRooms as ArrayList<RoomDetails>, activity!!, object : RoomAdapter.ItemClickListener {
-                    override fun onItemClick(roomId: Int?, buidingId: Int?, roomName: String?, buildingName: String?) {
+                    override fun onItemClick(
+                        roomId: Int?,
+                        buidingId: Int?,
+                        roomName: String?,
+                        buildingName: String?
+                    ) {
                         mSetIntentData.buildingName = buildingName
                         mSetIntentData.roomName = roomName
                         mSetIntentData.buildingId = buidingId
@@ -200,12 +203,35 @@ class InputDetailsForBookingFragment : Fragment() {
                         mSetIntentData.isPurposeVisible = true
                         goToSelectMeetingMembersActivity()
                     }
-                })
+                },
+                    object : RoomAdapter.MoreAminitiesListner {
+                        override fun moreAmenities(position: Int) {
+                            showDialogForMoreAminities(roomList[position].amenities!!, position)
+
+                        }
+
+                    })
             mRecyclerView.adapter = customAdapter
             booking_scroll_view.post {
                 scrollView.smoothScrollTo(0, filterEditText.top)
             }
         }
+    }
+
+    private fun showDialogForMoreAminities(items: HashMap<Int, String>, position: Int) {
+        val arrayListOfItems = ArrayList<String>()
+
+        for (item in items) {
+            arrayListOfItems.add(item.value)
+        }
+        val listItems = arrayOfNulls<String>(arrayListOfItems.size)
+        arrayListOfItems.toArray(listItems)
+        val builder = AlertDialog.Builder(activity)
+        builder.setItems(
+            listItems
+        ) { _, _ -> }
+        val mDialog = builder.create()
+        mDialog.show()
     }
 
     /**
@@ -244,7 +270,7 @@ class InputDetailsForBookingFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.RES_CODE && resultCode == Activity.RESULT_OK) {
             getViewModelForConferenceRoomList(mInputDetailsForRoom)
-        }else{
+        } else {
 
         }
     }
@@ -334,7 +360,7 @@ class InputDetailsForBookingFragment : Fragment() {
         })
     }
 
-     /**
+    /**
      * add text change listener for the room name
      */
     private fun textChangeListenerOnRoomCapacity() {
@@ -372,7 +398,7 @@ class InputDetailsForBookingFragment : Fragment() {
         }
     }
 
-     /**
+    /**
      * validations for all input fields for empty condition
      */
     private fun validateFromTime(): Boolean {

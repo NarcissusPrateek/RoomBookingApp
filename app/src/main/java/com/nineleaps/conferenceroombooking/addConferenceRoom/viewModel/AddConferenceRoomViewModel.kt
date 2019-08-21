@@ -3,6 +3,7 @@ package com.nineleaps.conferenceroombooking.addConferenceRoom.viewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nineleaps.conferenceroombooking.AddConferenceRoom
+import com.nineleaps.conferenceroombooking.GetAllAmenities
 import com.nineleaps.conferenceroombooking.addConferenceRoom.repository.AddConferenceRepository
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 
@@ -20,6 +21,9 @@ class AddConferenceRoomViewModel : ViewModel() {
 
     var mSuccessForUpdateRoom = MutableLiveData<Int>()
     var mFailureForUpdateRoom = MutableLiveData<Any>()
+
+    var mGetAllAmenitiesList = MutableLiveData<List<GetAllAmenities>>()
+    var mFailureForGetAllAmenitiesList = MutableLiveData<Any>()
 
     /**
      * initialize repo object
@@ -76,4 +80,25 @@ class AddConferenceRoomViewModel : ViewModel() {
         return mFailureForUpdateRoom
     }
 
+    //--------------------------------------------for update room details ------------------------------------------------
+    fun getAmenitiesList(){
+        mAddConferenceRepository!!.getAmenitiesDetails(object:ResponseListener{
+            override fun onSuccess(success: Any) {
+                mGetAllAmenitiesList.value = success as List<GetAllAmenities>
+            }
+
+            override fun onFailure(failure: Any) {
+                mFailureForGetAllAmenitiesList.value = failure
+            }
+
+        })
+    }
+
+    fun returnSuccesForGetAmenitiesList(): MutableLiveData<List<GetAllAmenities>> {
+        return mGetAllAmenitiesList
+    }
+
+    fun returnFailureForGetAllAmeneties(): MutableLiveData<Any>{
+        return mFailureForGetAllAmenitiesList
+    }
 }

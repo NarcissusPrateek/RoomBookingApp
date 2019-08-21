@@ -19,9 +19,11 @@ import butterknife.OnClick
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.nineleaps.conferenceroombooking.BaseApplication
+import com.nineleaps.conferenceroombooking.ConferenceRoomDashboard.ui.ConferenceDashBoard
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
 import com.nineleaps.conferenceroombooking.Models.ConferenceList
 import com.nineleaps.conferenceroombooking.R
+import com.nineleaps.conferenceroombooking.blockDashboard.ui.BlockedDashboard
 import com.nineleaps.conferenceroombooking.blockRoom.repository.BlockRoomRepository
 import com.nineleaps.conferenceroombooking.blockRoom.viewModel.BlockRoomViewModel
 import com.nineleaps.conferenceroombooking.checkConnection.NoInternetConnectionActivity
@@ -43,9 +45,6 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
     @Inject
     lateinit var mBlockRoomRepo: BlockRoomRepository
 
-    @Inject
-    lateinit var mBuildingRepo: BuildingsRepository
-
     @BindView(R.id.block_conference_room_progress_bar)
     lateinit var mProgressDialog: ProgressBar
     @BindView(R.id.fromTime_b)
@@ -61,9 +60,6 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
     private lateinit var mBuildingViewModel: BuildingViewModel
     private lateinit var progressDialog: ProgressDialog
-    private var mBuildingName = "Select Building"
-    private var mRoomName = "Select Room"
-    private var mBuildingId = -1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spinner)
@@ -81,21 +77,14 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
         initTextChangeListener()
         initComponent()
         initLateInitializerVariables()
-        initBuildingRepo()
         initBlockRoomRepo()
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
-        if(NetworkState.appIsConnectedToInternet(this)) {
-            getBuilding()
-        } else {
-            val i = Intent(this@BlockConferenceRoomActivity, NoInternetConnectionActivity::class.java)
-            startActivityForResult(i, Constants.RES_CODE)
-        }
         softKeyboard()
     }
 
     private fun softKeyboard() {
-        HideSoftKeyboard.setUpUI(findViewById(R.id.block_room),this)
-        HideSoftKeyboard.childUI(findViewById(R.id.block_room),this)
+        HideSoftKeyboard.setUpUI(findViewById(R.id.block_room), this)
+        HideSoftKeyboard.childUI(findViewById(R.id.block_room), this)
     }
 
     private fun initComponent() {
@@ -104,10 +93,6 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
 
     private fun initBlockRoomRepo() {
         mBlockRoomViewModel.setBlockRoomRepo(mBlockRoomRepo)
-    }
-
-    private fun initBuildingRepo() {
-        mBuildingViewModel.setBuildingRepository(mBuildingRepo)
     }
 
     private fun initActionBar() {
@@ -129,46 +114,16 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
         mBlockRoomViewModel = ViewModelProviders.of(this).get(BlockRoomViewModel::class.java)
     }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                Constants.RES_CODE -> getBuilding()
-
-                Constants.RES_CODE2 -> {
-                    conferenceRoomListFromBackend(mBuildingId)
-                }
-            }
-        }
-    }
-
     /**
      * observing data for building list
      */
     private fun observeData() {
-        mBuildingViewModel.returnMBuildingSuccess().observe(this, Observer {
-            mProgressDialog.visibility = View.GONE
-            buildingListFromBackend(it)
-        })
-
-        mBuildingViewModel.returnMBuildingFailure().observe(this, Observer {
-            mProgressDialog.visibility = View.GONE
-            when (it) {
-                Constants.INVALID_TOKEN, Constants.UNPROCESSABLE, Constants.FORBIDDEN -> ShowDialogForSessionExpired.showAlert(this, BlockConferenceRoomActivity())
-                Constants.NO_CONTENT_FOUND -> Toast.makeText(this, getString(R.string.empty_building_list), Toast.LENGTH_SHORT).show()
-                else -> {
-                    ShowToast.show(this, it as Int)
-                    finish()
-                }
-            }
-
-        })
-
         // observer for Block room
         mBlockRoomViewModel.returnSuccessForBlockRoom().observe(this, Observer {
             progressDialog.dismiss()
             Toasty.success(this, getString(R.string.room_is_blocked), Toast.LENGTH_SHORT, true).show()
-            finish()
+            goToBlockDashBoardActivity()
+            // finish()
         })
 
         mBlockRoomViewModel.returnResponseErrorForBlockRoom().observe(this, Observer {
@@ -185,16 +140,18 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
             progressDialog.dismiss()
             if (it.mStatus == 0) {
                 blockConfirmed(room)
+                goToBlockDashBoardActivity()
             } else {
                 val builder = AlertDialog.Builder(this@BlockConferenceRoomActivity)
                 builder.setTitle(getString(R.string.blockingStatus))
                 val name = it.name
                 val purpose = it.purpose
                 builder.setMessage(
-                        "Room is Booked by Employee '$name' for '$purpose'.\nAre you sure the 'BLOCKING' is Necessary?"
+                    "Room is Booked by Employee '$name'.\nAre you sure the 'BLOCKING' is Necessary?"
                 )
                 builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
                     blockConfirmed(room)
+                    goToBlockDashBoardActivity()
                 }
                 builder.setNegativeButton(getString(R.string.no)) { _, _ ->
                     /**
@@ -217,24 +174,6 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
                 finish()
             }
         })
-
-        // observer for conference room list
-
-        mBlockRoomViewModel.returnConferenceRoomList().observe(this, Observer {
-            mProgressDialog.visibility = View.GONE
-            setSpinnerToConferenceList(it)
-        })
-
-        mBlockRoomViewModel.returnResponseErrorForConferenceRoom().observe(this, Observer {
-            mProgressDialog.visibility = View.GONE
-            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
-                ShowDialogForSessionExpired.showAlert(this, BlockConferenceRoomActivity())
-            } else {
-                ShowToast.show(this, it as Int)
-                finish()
-            }
-        })
-
     }
 
     /**
@@ -246,6 +185,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
         if (validateInput()) {
             validationOnDataEnteredByUser()
         }
+        //startActivity(Intent(this@BlockConferenceRoomActivity,BlockedDashboard::class.java))
     }
 
     /**
@@ -259,6 +199,8 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
         room.purpose = purposeEditText.text.toString()
         room.fromTime = FormatTimeAccordingToZone.formatDateAsUTC(startTime)
         room.toTime = FormatTimeAccordingToZone.formatDateAsUTC(endTime)
+        room.bId = intent.getIntExtra(Constants.BUILDING_ID, -1)
+        room.cId = intent.getIntExtra(Constants.ROOM_ID, -1)
         room.status = getString(R.string.block_room)
     }
 
@@ -282,13 +224,10 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
 
     }
 
-    /**
-     * function calls the ViewModel of getbuilding
-     */
-    private fun getBuilding() {
-        mProgressDialog.visibility = View.VISIBLE
-        // make api call
-        mBuildingViewModel.getBuildingList()
+    fun goToBlockDashBoardActivity() {
+        val intent = Intent(this@BlockConferenceRoomActivity, BlockedDashboard::class.java)
+        intent.putExtra(Constants.EXTRA_BUILDING_ID, room.bId.toString())
+        startActivity(intent)
     }
 
     /**
@@ -306,95 +245,6 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
         progressDialog.show()
         mBlockRoomViewModel.blockRoom(mRoom)
     }
-
-    /**
-     * function calls the ViewModel of getConference for the Selected Building
-     */
-    fun conferenceRoomListFromBackend(buildingId: Int) {
-        mProgressDialog.visibility = View.VISIBLE
-        mBlockRoomViewModel.getRoomList(buildingId)
-    }
-
-    /**
-     *Setting the empty text to the Spinner if the data is empty
-     */
-    private fun buildingListFromBackend(it: List<Building>) {
-        sendDataForSpinner(it)
-    }
-
-    /**
-     * Setting the Building Data to the Spinner if the data is not empty
-     */
-    private fun sendDataForSpinner(it: List<Building>) {
-        val items = mutableListOf<String>()
-        val itemsId = mutableListOf<Int>()
-        items.add(getString(R.string.select_building))
-        itemsId.add(-1)
-        for (item in it) {
-            items.add(item.buildingName!!)
-            itemsId.add(item.buildingId!!.toInt())
-        }
-        buiding_Spinner.adapter =
-                ArrayAdapter<String>(this@BlockConferenceRoomActivity, R.layout.spinner_icon, R.id.spinner_text, items)
-        buiding_Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                /**
-                 * It selects the first building
-                 */
-            }
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                room.bId = itemsId[position]
-                mBuildingName = items[position]
-                mBuildingId = itemsId[position]
-                error_spinner_building_text_view.visibility = View.INVISIBLE
-                if(NetworkState.appIsConnectedToInternet(this@BlockConferenceRoomActivity)) {
-                    conferenceRoomListFromBackend(itemsId[position])
-                } else {
-                    val i = Intent(this@BlockConferenceRoomActivity, NoInternetConnectionActivity::class.java)
-                    startActivityForResult(i, Constants.RES_CODE2)
-                }
-            }
-        }
-    }
-
-    /**
-     * Setting the Conference Data to the Spinner
-     */
-    private fun setSpinnerToConferenceList(it: List<ConferenceList>) {
-        val conferencename = mutableListOf<String>()
-        val conferenceid = mutableListOf<Int>()
-        if (it.isEmpty()) {
-            conferencename.add(getString(R.string.no_room_in_building))
-            conferenceid.add(-1)
-        } else {
-            conferencename.add(getString(R.string.select_room))
-        }
-        conferenceid.add(-1)
-        for (item in it) {
-            conferencename.add(item.roomName!!)
-            conferenceid.add(item.roomId!!)
-        }
-        conference_Spinner.adapter =
-                ArrayAdapter<String>(
-                        this@BlockConferenceRoomActivity,
-                        R.layout.spinner_icon,
-                        R.id.spinner_text,
-                        conferencename
-                )
-        conference_Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                /**
-                 * It selects the first conference room
-                 */
-            }
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                room.cId = conferenceid[position]
-                mRoomName = conferencename[position]
-                error_spinner_room_text_view.visibility = View.INVISIBLE
-            }
-        }
-    }
-
 
     /**
      * validate from time field
@@ -452,34 +302,8 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * validate building spinner
-     */
-    private fun validateBuildingSpinner(): Boolean {
-        return if (mBuildingName == getString(R.string.select_building)) {
-            error_spinner_building_text_view.visibility = View.VISIBLE
-            false
-        } else {
-            error_spinner_building_text_view.visibility = View.INVISIBLE
-            true
-        }
-    }
-
-    /**
-     * validate conference room spinner
-     */
-    private fun validateRoomSpinner(): Boolean {
-        return if (mRoomName == getString(R.string.select_room)) {
-            error_spinner_room_text_view.visibility = View.VISIBLE
-            false
-        } else {
-            error_spinner_room_text_view.visibility = View.INVISIBLE
-            true
-        }
-    }
-
     private fun validateInput(): Boolean {
-        if (!validateFromTime() or !validateToTime() or !validateDate() or !validatePurpose() or !validateBuildingSpinner() or !validateRoomSpinner()) {
+        if (!validateFromTime() or !validateToTime() or !validateDate() or !validatePurpose()) {
             return false
         }
         return true
@@ -498,9 +322,9 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
         builder.setTitle(getString(R.string.check))
         try {
             val (elapsed, elapsed2) = ConvertTimeInMillis.calculateTimeInMilliseconds(
-                    startTime,
-                    endTime,
-                    date_block.text.toString()
+                startTime,
+                endTime,
+                date_block.text.toString()
             )
             if (room.cId!!.compareTo(-1) == 0) {
                 Toast.makeText(this, R.string.invalid_conference_room, Toast.LENGTH_SHORT).show()
@@ -534,7 +358,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
             }
         } catch (e: Exception) {
             Toast.makeText(this@BlockConferenceRoomActivity, getString(R.string.details_invalid), Toast.LENGTH_LONG)
-                    .show()
+                .show()
         }
     }
 
@@ -549,12 +373,15 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
 
     private fun blockLogFirebaseAnalytics() {
         val blockBundle = Bundle()
-        mFirebaseAnalytics.logEvent(getString(R.string.Block_Room),blockBundle)
+        mFirebaseAnalytics.logEvent(getString(R.string.Block_Room), blockBundle)
         mFirebaseAnalytics.setAnalyticsCollectionEnabled(true)
         mFirebaseAnalytics.setMinimumSessionDuration(5000)
         mFirebaseAnalytics.setSessionTimeoutDuration(1000000)
         mFirebaseAnalytics.setUserId(room.email)
-        mFirebaseAnalytics.setUserProperty(getString(R.string.Roll_Id),GetPreference.getRoleIdFromPreference().toString())
+        mFirebaseAnalytics.setUserProperty(
+            getString(R.string.Roll_Id),
+            GetPreference.getRoleIdFromPreference().toString()
+        )
     }
 
     /**

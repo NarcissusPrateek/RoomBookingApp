@@ -164,31 +164,42 @@
                     android:ellipsize="end"/>
         </LinearLayout>
         <View
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_below="@+id/linear_layout_3"
-            android:id="@+id/line"
-            android:background="@color/horizontal_view_color"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"/>
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_below="@+id/linear_layout_3"
+                android:id="@+id/line"
+                android:background="@color/horizontal_view_color"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"/>
         <TextView
-            android:layout_below="@+id/line"
-            android:layout_alignParentLeft="true"
-            android:text="Edit"
-            android:textColor="@color/colorPrimary"
-            android:id="@+id/edit_room_text_view"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+                android:layout_below="@+id/line"
+                android:layout_alignParentLeft="true"
+                android:text="Edit"
+                android:textColor="@color/colorPrimary"
+                android:id="@+id/edit_room_text_view"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         <TextView
-            android:layout_below="@+id/line"
-            android:layout_toRightOf="@id/edit_room_text_view"
-            android:textColor="@color/error_color"
-            android:text="Delete"
-            android:id="@+id/delete_room_text_view"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+                android:layout_below="@+id/line"
+                android:layout_toRightOf="@id/edit_room_text_view"
+                android:textColor="@color/error_color"
+                android:text="Delete"
+                android:id="@+id/delete_room_text_view"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:layout_below="@+id/line"
+                android:layout_toRightOf="@id/delete_room_text_view"
+                android:textColor="@color/colorPrimary"
+                android:text="Block"
+                android:id="@+id/block_room_text_view"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

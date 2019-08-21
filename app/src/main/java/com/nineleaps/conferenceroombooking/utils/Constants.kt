@@ -125,6 +125,12 @@ class Constants {
 
         const val BUILDING_NAME = "buildingName"
 
+        const val ROOM_NAME = "buildingName"
+
+        const val ROOM_ID = "roomId"
+
         const val BUILDING_PLACE = "buildingPlace"
+
+        const val LOCATION_ID = "locationId"
     }
 }

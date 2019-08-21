@@ -34,6 +34,7 @@ import com.nineleaps.conferenceroombooking.model.Dashboard
 import com.nineleaps.conferenceroombooking.model.GetIntentDataFromActvity
 import com.nineleaps.conferenceroombooking.updateBooking.ui.UpdateBookingActivity
 import com.nineleaps.conferenceroombooking.utils.*
+import com.nineleaps.conferenceroombooking.utils.GetAleretDialog.Companion.getDialogBoxForAminities
 import com.orhanobut.hawk.Hawk
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_upcoming_booking.*
@@ -158,6 +159,12 @@ class UpcomingBookingFragment : Fragment() {
                 override fun editBooking(mGetIntentDataFromActvity: GetIntentDataFromActvity) {
                     intentToUpdateBookingActivity(mGetIntentDataFromActvity)
                 }
+            },
+            object : UpcomingBookingAdapter.MoreAminitiesListner {
+                override fun moreAmenities(position: Int) {
+                    showDialogForMoreAminities(finalList[position].amenities!!, position)
+                }
+
             }
         )
         dashBord_recyclerView1.adapter = mBookingListAdapter
@@ -175,6 +182,7 @@ class UpcomingBookingFragment : Fragment() {
             }
         })
     }
+
 
     /**
      * add refresh listener on pull down
@@ -237,9 +245,10 @@ class UpcomingBookingFragment : Fragment() {
 //            finalList.clear()
             finalList.remove(finalList[cardPosition])
             dashBord_recyclerView1.adapter?.notifyDataSetChanged()
-            mBookingDashBoardViewModel.getBookingList(
-                mBookingDashboardInput
-            )
+            progressDialog.dismiss()
+//            mBookingDashBoardViewModel.getBookingList(
+//                mBookingDashboardInput
+//            )
         })
 
         mBookingDashBoardViewModel.returnCancelFailed().observe(this, Observer {
@@ -273,6 +282,24 @@ class UpcomingBookingFragment : Fragment() {
         mDialog.show()
     }
 
+    private fun showDialogForMoreAminities(items: List<String>, position: Int) {
+
+            val arrayListOfItems = ArrayList<String>()
+
+            for (item in items) {
+                arrayListOfItems.add(item)
+            }
+            val listItems = arrayOfNulls<String>(arrayListOfItems.size)
+            arrayListOfItems.toArray(listItems)
+            val builder = AlertDialog.Builder(activity!!)
+            builder.setItems(
+                listItems
+            ) { _, _ -> }
+            val mDialog = builder.create()
+            mDialog.show()
+
+
+    }
 
     /**
      * this function will call a function which will filter the data after that set the filtered data to adapter

@@ -20,8 +20,8 @@
         <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:id="@+id/add_conference_linear_layout"
+                android:orientation="vertical"
                 android:layout_margin="@dimen/dp_16">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -30,6 +30,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
+                    android:focusableInTouchMode="true"
                     android:paddingStart="@dimen/dp_8"
                     app:counterEnabled="true"
                     app:counterMaxLength="30"
@@ -59,8 +60,8 @@
                         android:layout_width="@dimen/dp_0"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        app:counterEnabled="true"
                         android:paddingStart="@dimen/dp_8"
+                        app:counterEnabled="true"
                         app:counterMaxLength="3"
                         android:background="@color/white"
                         android:layout_marginTop="@dimen/dp_8"
@@ -76,7 +77,7 @@
                             android:textColor="@color/textColorGray"
                             android:drawableStart="@drawable/ic_schedule_black_24dp"
                             android:drawablePadding="@dimen/dp_5"
-                            android:maxLength="3"
+                            android:maxLength="50"
                             android:hint="Capacity"/>
                 </com.google.android.material.textfield.TextInputLayout>
                 <com.google.android.material.textfield.TextInputLayout
@@ -85,8 +86,8 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:background="@color/white"
+                        android:layout_marginLeft="@dimen/dp_20"
                         android:layout_marginTop="@dimen/dp_8"
-                        android:paddingStart="@dimen/dp_8"
                         app:counterEnabled="true"
                         app:counterMaxLength="1"
                         app:errorEnabled="true"
@@ -96,9 +97,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:maxLength="1"
                             android:textColor="@color/textColorGray"
                             android:inputType="number"
+                            android:maxLength="1"
                             android:hint="Floor"
                             android:drawableStart="@drawable/ic_schedule_black_24dp"
                             android:drawablePadding="@dimen/dp_5"/>
@@ -108,7 +109,7 @@
                     android:id="@+id/permission_required"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingStart="@dimen/dp_10"
+                    android:padding="@dimen/dp_8"
                     android:checked="false"
                     android:textSize="@dimen/sp_18"
                     android:textColor="@color/textColorGray"
@@ -118,66 +119,15 @@
                     android:id="@+id/aminities"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text="@string/amenities"
-                    android:paddingStart="@dimen/dp_10"
+                    android:paddingStart="@dimen/dp_8"
+                    android:layout_below="@id/permission_required"
                     android:textSize="@dimen/sp_20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-            <LinearLayout
-                    android:orientation="vertical"
-                    android:id="@+id/aminities_list"
-                    android:layout_below="@id/aminities"
-                    android:layout_margin="@dimen/dp_8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
 
-                <CheckBox
-                        android:id="@+id/projector_check_box"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/projector"
-                        android:paddingStart="@dimen/dp_12"
-                        android:textSize="@dimen/sp_18"
-                        android:textColor="@color/textColorGray"
-                />
-                <CheckBox
-                        android:id="@+id/monitor_check_box"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingStart="@dimen/dp_12"
-                        android:text="@string/monitor"
-                        android:textSize="@dimen/sp_18"
-                        android:textColor="@color/textColorGray"/>
-
-                <CheckBox
-                        android:id="@+id/speaker_check_box"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/speaker"
-                        android:paddingStart="@dimen/dp_12"
-                        android:textSize="@dimen/sp_18"
-                        android:textColor="@color/textColorGray"/>
-                <CheckBox
-                        android:id="@+id/extension_board_check_box"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/extension_board"
-                        android:paddingStart="@dimen/dp_12"
-                        android:textSize="@dimen/sp_18"
-                        android:textColor="@color/textColorGray"/>
-                <CheckBox
-                        android:id="@+id/whiteboard_marker_check_box"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/whiteboard_marker"
-                        android:paddingStart="@dimen/dp_12"
-                        android:textSize="@dimen/sp_18"
-                        android:textColor="@color/textColorGray"/>
-
-            </LinearLayout>
-
+            <include layout="@layout/checkbox"/>
             <Button android:id="@+id/add_conference_room"
-                    android:layout_below="@id/aminities_list"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/ADD"
@@ -187,4 +137,3 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.core.widget.NestedScrollView>
-

@@ -4,6 +4,7 @@ import com.example.conferenceroomapp.model.InputDetailsForRoom
 import com.example.conferenceroomapp.model.ManagerConference
 import com.nineleaps.conferenceroombooking.AddConferenceRoom
 import com.nineleaps.conferenceroombooking.Blocked
+import com.nineleaps.conferenceroombooking.GetAllAmenities
 import com.nineleaps.conferenceroombooking.Models.ConferenceList
 import com.nineleaps.conferenceroombooking.model.*
 import okhttp3.ResponseBody
@@ -23,16 +24,20 @@ interface ConferenceService {
     ): Call<List<RoomDetails>>
 
 
+    @POST("api/availableRoomsForRecurring")
+    fun getConferenceRoomListForRecurring(
+        @Body availableRoom: ManagerConference
+    ):Call<List<RoomDetails>>
 //    @POST("api/SuggestedRooms")
 //    fun getSuggestedRooms(
 //        @Body availableRoom: InputDetailsForRoom
 //    ): Call<List<RoomDetails1>>
 
 
-    @POST("api/SuggestionRecurringMeeting")
-    fun getSuggestedRoomsForRecurring(
-        @Body availableRoom: ManagerConference
-    ): Call<List<RoomDetails>>
+//    @POST("api/SuggestionRecurringMeeting")
+//    fun getSuggestedRoomsForRecurring(
+//        @Body availableRoom: ManagerConference
+//    ): Call<List<RoomDetails>>
 
     @GET("api/Login")
     fun getRequestCode(
@@ -157,5 +162,10 @@ interface ConferenceService {
     @GET("api/getAllLocation")
     fun getAllLocation(
 
-    ):Call<List<Location>>
+    ): Call<List<Location>>
+
+    @GET("api/getAllAmenities")
+    fun getAllAmenities(
+
+    ): Call<List<GetAllAmenities>>
 }

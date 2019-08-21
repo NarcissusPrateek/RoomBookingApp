@@ -144,6 +144,7 @@ class BuildingDashboard : AppCompatActivity() {
                                 intent.putExtra(Constants.BUILDING_ID, it[position].buildingId!!.toInt())
                                 intent.putExtra(Constants.BUILDING_NAME, it[position].buildingName)
                                 intent.putExtra(Constants.BUILDING_PLACE, it[position].buildingPlace)
+                                intent.putExtra(Constants.LOCATION_ID,it[position].locationId!!.toInt())
                                 intent.putExtra(Constants.FLAG, true)
                                 startActivity(intent)
                             }

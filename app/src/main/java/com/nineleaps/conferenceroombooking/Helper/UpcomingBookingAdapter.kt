@@ -2,6 +2,7 @@ package com.nineleaps.conferenceroombooking.Helper
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -25,7 +26,8 @@ class UpcomingBookingAdapter(
     val mContext: Context,
     private val btnListener: CancelBtnClickListener,
     private val mShowMembers: ShowMembersListener,
-    private val mEditBooking: EditBookingListener
+    private val mEditBooking: EditBookingListener,
+    private val mMoreListener: MoreAminitiesListner
 ) : androidx.recyclerview.widget.RecyclerView.Adapter<UpcomingBookingAdapter.ViewHolder>() {
 
     private var mIntentData = GetIntentDataFromActvity()
@@ -37,6 +39,8 @@ class UpcomingBookingAdapter(
         var mCancelBookingClickListener: CancelBtnClickListener? = null
         var mShowMembersListener: ShowMembersListener? = null
         var mEditBookingListener: EditBookingListener? = null
+        var mMoreAminitiesListener: MoreAminitiesListner? = null
+        var count = 0
     }
 
     /**
@@ -53,11 +57,11 @@ class UpcomingBookingAdapter(
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Log.i("@@@@",dashboardItemList.toString())
+        Log.i("@@@@", dashboardItemList.toString())
         mCancelBookingClickListener = btnListener
         mShowMembersListener = mShowMembers
         mEditBookingListener = mEditBooking
-
+        mMoreAminitiesListener = mMoreListener
         val fromTime = dashboardItemList[position].fromTime
         val toTime = dashboardItemList[position].toTime
         val fromDate = fromTime!!.split("T")
@@ -81,28 +85,32 @@ class UpcomingBookingAdapter(
             holder.statusTextView.visibility = View.GONE
         }
         for (i in dashboardItemList[position].amenities!!.indices) {
-            when (i) {
-                0 -> {
-                    setDrawable(dashboardItemList[position].amenities!![i], holder.amenity1)
-                    holder.amenity1.visibility = View.VISIBLE
+            if (i > 3) {
+                setDrawable("More", holder.amenity3)
+                holder.amenity3.text = "More"
+                holder.amenity3.setTextColor(Color.parseColor("#0072BC"))
+                holder.amenity3.visibility = View.VISIBLE
+            } else if (i == 3) {
+                setDrawable(dashboardItemList[position].amenities!![i], holder.amenity3)
+                holder.amenity3.text = dashboardItemList[position].amenities!![3]
+                holder.amenity3.setTextColor(Color.parseColor("#4F4F4F"))
+                holder.amenity3.visibility = View.VISIBLE
+            }
 
-                }
-                1 -> {
-                    setDrawable(dashboardItemList[position].amenities!![i], holder.amenity2)
-                    holder.amenity2.visibility = View.VISIBLE
-                }
-                2 -> {
-                    setDrawable(dashboardItemList[position].amenities!![i], holder.amenity3)
-                    holder.amenity3.visibility = View.VISIBLE
-                }
-                3 -> {
-                    setDrawable(dashboardItemList[position].amenities!![i], holder.amenity4)
-                    holder.amenity4.visibility = View.VISIBLE
-                }
-                4 -> {
-                    setDrawable(dashboardItemList[position].amenities!![i], holder.amenity5)
-                    holder.amenity5.visibility = View.VISIBLE
-                }
+            if (i == 0) {
+                setDrawable(dashboardItemList[position].amenities!![i], holder.amenity0)
+                holder.amenity0.visibility = View.VISIBLE
+            } else if (i == 1) {
+                setDrawable(dashboardItemList[position].amenities!![i], holder.amenity1)
+                holder.amenity1.visibility = View.VISIBLE
+            } else if (i == 2) {
+                setDrawable(dashboardItemList[position].amenities!![i], holder.amenity2)
+                holder.amenity2.visibility = View.VISIBLE
+            }
+        }
+        holder.amenity3.setOnClickListener {
+            if (holder.amenity3.text == "More") {
+                mMoreListener.moreAmenities(position)
             }
         }
         setDataToFields(holder, position)
@@ -135,7 +143,17 @@ class UpcomingBookingAdapter(
             "Extension Board" -> {
                 targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_extension_board, 0, 0, 0)
             }
+            "TV", "tv" -> {
+                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_tv_black_24dp, 0, 0, 0)
+            }
+            "More" -> {
+                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unfold_more_black_24dp, 0, 0, 0)
+            }
+            else -> {
+                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_devices_other_black_24dp, 0, 0, 0)
+            }
         }
+
         targetTextView.text = amitie
     }
 
@@ -169,11 +187,11 @@ class UpcomingBookingAdapter(
         var attendeeTextView: TextView = itemView.findViewById(R.id.attendee_text_view)
         var actionLayout: LinearLayout = itemView.findViewById(R.id.action_button_linear_layout)
         var landingView: View = itemView.findViewById(R.id.view_landing)
-        var amenity1: TextView = itemView.findViewById(R.id.ani_1)
-        var amenity2: TextView = itemView.findViewById(R.id.ani_2)
-        var amenity3: TextView = itemView.findViewById(R.id.ani_3)
-        var amenity4: TextView = itemView.findViewById(R.id.ani_4)
-        var amenity5: TextView = itemView.findViewById(R.id.ani_5)
+        var amenity0: TextView = itemView.findViewById(R.id.ani_1)
+        var amenity1: TextView = itemView.findViewById(R.id.ani_2)
+        var amenity2: TextView = itemView.findViewById(R.id.ani_3)
+        var amenity3: TextView = itemView.findViewById(R.id.ani_4)
+        var amenity4: TextView = itemView.findViewById(R.id.ani_5)
         var dashboard: Dashboard? = null
     }
 
@@ -184,7 +202,7 @@ class UpcomingBookingAdapter(
     private fun setDataToFields(holder: ViewHolder, position: Int) {
         holder.dashboard = dashboardItemList[position]
         holder.roomNameTextView.text =
-              "${dashboardItemList[position].roomName}, ${dashboardItemList[position].buildingName}"
+            "${dashboardItemList[position].roomName}, ${dashboardItemList[position].buildingName}"
         holder.purposeTextView.text = dashboardItemList[position].purpose
         holder.showButton.setOnClickListener {
             setMeetingMembers(position)
@@ -195,7 +213,9 @@ class UpcomingBookingAdapter(
      * send employee List to the activity using interface which will display the list of employee names in the alert dialog
      */
     private fun setMeetingMembers(position: Int) {
-        mShowMembers.showMembers(dashboardItemList[position].name!!, position)
+        if (dashboardItemList[position].name != null)
+            mShowMembers.showMembers(dashboardItemList[position].name!!, position)
+
     }
 
     /**
@@ -251,6 +271,10 @@ class UpcomingBookingAdapter(
 
     interface EditBookingListener {
         fun editBooking(mGetIntentDataFromActvity: GetIntentDataFromActvity)
+    }
+
+    interface MoreAminitiesListner {
+        fun moreAmenities(position: Int)
     }
 
     /**

@@ -2,16 +2,13 @@ package com.example.conferenceroomapp.model
 
 import com.google.gson.annotations.SerializedName
 
-class ManagerConference {
+data class ManagerConference(
     @SerializedName("startTime")
-    var fromTime = ArrayList<String>()
+    var fromTime: ArrayList<String>?= null,
 
     @SerializedName("endTime")
-    var toTime = ArrayList<String>()
-
-    @SerializedName("buildingId")
-    var buildingId : Int? = 0
+    var toTime: ArrayList<String>? = null,
 
     @SerializedName("capacity")
-    var capacity: Int? = 0
-}
+    var capacity: Int? =0
+)

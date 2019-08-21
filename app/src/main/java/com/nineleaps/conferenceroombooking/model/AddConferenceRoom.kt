@@ -5,37 +5,37 @@ import java.io.Serializable
 
 //Model Class Of the AddConference
 data class AddConferenceRoom(
-   @SerializedName("buildingId")
-   var  bId:Int?= 0,
+    @SerializedName("buildingId")
+    var bId: Int? = 0,
 
-   @SerializedName("roomId")
-   var roomId: Int? = 0,
+    @SerializedName("roomId")
+    var roomId: Int? = 0,
 
-   @SerializedName("newRoomName")
-   var newRoomName: String? = null,
+    @SerializedName("newRoomName")
+    var newRoomName: String? = null,
 
-   @SerializedName("roomName")
-   var roomName :String?=null,
+    @SerializedName("roomName")
+    var roomName: String? = null,
 
-   @SerializedName("capacity")
-   var capacity :Int? = 0,
+    @SerializedName("capacity")
+    var capacity: Int? = 0,
 
-   @SerializedName("projector")
-   var projector: Boolean? = null,
+    @SerializedName("amenities")
+    var amenities:List<Int>? = null,
 
-   @SerializedName("monitor")
-   var monitor: Boolean? = null,
+    @SerializedName("permission")
+    var permission: Boolean? = false
 
-   @SerializedName("speaker")
-   var speaker: Boolean? = null,
+) : Serializable
 
-   @SerializedName("extensionBoard")
-   var extensionBoard: Boolean? = null,
+data class GetAllAmenities(
+    @SerializedName("amenityId")
+    var amenityId: Int? = 0,
+    @SerializedName("amenityName")
+    var amenityName: String? = null
+) : Serializable
 
-   @SerializedName("whiteBoardMarker")
-   var whiteBoardMarker: Boolean? = null,
-
-   @SerializedName("permission")
-   var permission: Boolean? = false
-
-): Serializable
+data class Amenities(
+    var amenityId: Int? =0,
+    var amenityName: String? = null
+)

@@ -21,7 +21,7 @@ data class ConferenceList(
         var buildingId: Int? = null,
 
         @SerializedName("amenities")
-        var amenities : List<String>? = null,
+        var amenities : HashMap<Int,String>? = null,
 
         @SerializedName("place")
         var place : String? = null,

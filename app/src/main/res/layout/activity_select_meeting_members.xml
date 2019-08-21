@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"/>
-    <HorizontalScrollView
+    <ScrollView
             android:id="@+id/scroll_view"
             android:padding="@dimen/dp_2"
             android:paddingBottom="@dimen/dp_6"
@@ -24,7 +24,7 @@
                 android:layout_margin="@dimen/dp_5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-    </HorizontalScrollView>
+    </ScrollView>
     <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/purpose_layout"
             android:layout_width="match_parent"

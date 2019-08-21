@@ -30,7 +30,7 @@ class ShowDialogForSessionExpired {
          * sign out from application
          */
         fun signOut(mContext: Context, activity: Activity) {
-            Hawk.init(activity).build()
+            Hawk.init(mContext).build()
            val mGoogleSignInClient = GoogleGSO.getGoogleSignInClient(mContext)
             mGoogleSignInClient.signOut()
                 .addOnCompleteListener(activity) {

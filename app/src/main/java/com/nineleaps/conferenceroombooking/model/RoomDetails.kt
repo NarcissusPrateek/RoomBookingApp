@@ -26,7 +26,7 @@ data class RoomDetails(
     var place: String? = null,
 
     @SerializedName("amenities")
-    var amenities: List<String>? = null,
+    var amenities: HashMap<Int,String>? = null,
 
     @SerializedName("permission")
     var permission: Boolean? = false

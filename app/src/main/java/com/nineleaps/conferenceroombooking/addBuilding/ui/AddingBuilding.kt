@@ -94,6 +94,8 @@ class AddingBuilding : AppCompatActivity() {
             mUpdateBuildingDetails.buildingId = intent.getIntExtra(Constants.BUILDING_ID, 0)
             buildingNameEditText.text =
                 Editable.Factory.getInstance().newEditable(intent.getStringExtra(Constants.BUILDING_NAME))
+            locationName = intent.getStringExtra(Constants.BUILDING_PLACE)
+            locationId = intent.getIntExtra(Constants.LOCATION_ID,0)
             }
     }
 
@@ -136,7 +138,7 @@ class AddingBuilding : AppCompatActivity() {
             if (NetworkState.appIsConnectedToInternet(this)) {
                 if (flag) {
                     mUpdateBuildingDetails.buildingName = buildingNameEditText.text.toString().trim()
-                   // mUpdateBuildingDetails.place = buildingPlaceEditText.text.toString().trim()
+                    mUpdateBuildingDetails.place = locationId
                     updateBuildingDetails(mUpdateBuildingDetails)
                 } else {
                     addDataToObject(mAddBuilding)
@@ -243,6 +245,11 @@ class AddingBuilding : AppCompatActivity() {
         }
         location_Spinner.adapter =
             ArrayAdapter<String>(this, R.layout.spinner_icon, R.id.spinner_text, locationNameList)
+        if (flag){
+            val mAdapter = location_Spinner.adapter as ArrayAdapter<String>
+            val postion = mAdapter.getPosition(locationName)
+            location_Spinner.setSelection(postion)
+        }
         location_Spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 /**

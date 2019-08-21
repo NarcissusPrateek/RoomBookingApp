@@ -1,6 +1,7 @@
 package com.nineleaps.conferenceroombooking.ConferenceRoomDashboard.ui
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -24,6 +25,7 @@ import com.nineleaps.conferenceroombooking.Helper.NetworkState
 import com.nineleaps.conferenceroombooking.Models.ConferenceList
 import com.nineleaps.conferenceroombooking.R
 import com.nineleaps.conferenceroombooking.addConferenceRoom.ui.AddingConference
+import com.nineleaps.conferenceroombooking.blockRoom.ui.BlockConferenceRoomActivity
 import com.nineleaps.conferenceroombooking.bookingDashboard.ui.UserBookingsDashboardActivity
 import com.nineleaps.conferenceroombooking.checkConnection.NoInternetConnectionActivity
 import com.nineleaps.conferenceroombooking.utils.*
@@ -163,9 +165,43 @@ class ConferenceDashBoard : AppCompatActivity() {
                         showAlertDialogForDelete(mConferenceList[position].roomId)
                     }
 
+                },
+                object : ConferenceRecyclerAdapter.BlockClickListner{
+                    override fun blockRoom(position: Int) {
+                        val intent = Intent(this@ConferenceDashBoard,BlockConferenceRoomActivity::class.java)
+                        intent.putExtra(Constants.BUILDING_ID,mConferenceList[position].buildingId!!.toInt())
+                        intent.putExtra(Constants.ROOM_NAME,mConferenceList[position].roomName)
+                        intent.putExtra(Constants.ROOM_ID,mConferenceList[position].roomId!!.toInt())
+                        startActivity(intent)
+
+                    }
+
+                },
+                object : ConferenceRecyclerAdapter.MoreAminitiesListner{
+                    override fun moreAmenities(position: Int) {
+                        showDialogForMoreAminities(mConferenceList[position].amenities!!, position)
+                    }
+
                 })
         recyclerView.adapter = conferenceRoomAdapter
     }
+
+    private fun showDialogForMoreAminities(items: HashMap<Int, String>, position: Int) {
+        val arrayListOfItems = ArrayList<String>()
+
+        for (item in items) {
+            arrayListOfItems.add(item.value)
+        }
+        val listItems = arrayOfNulls<String>(arrayListOfItems.size)
+        arrayListOfItems.toArray(listItems)
+        val builder = AlertDialog.Builder(this)
+        builder.setItems(
+            listItems
+        ) { _, _ -> }
+        val mDialog = builder.create()
+        mDialog.show()
+    }
+
 
     private fun showAlertDialogForDelete(roomId: Int?) {
         val dialog = GetAleretDialog.getDialog(this, "Delete", "Are you sure you wnat to delete the Room")
