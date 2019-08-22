@@ -267,9 +267,16 @@ class UpcomingBookingFragment : Fragment() {
      */
     fun showMeetingMembers(mEmployeeList: List<String>, position: Int) {
         val arrayListOfNames = ArrayList<String>()
-        arrayListOfNames.add(finalList[position].organizer + getString(R.string.organizer))
-        for (item in mEmployeeList) {
-            arrayListOfNames.add(item)
+
+        if (mEmployeeList.isEmpty()) {
+            arrayListOfNames.add(finalList[position].organizer + getString(R.string.organizer))
+
+        } else {
+            arrayListOfNames.add(finalList[position].organizer + getString(R.string.organizer))
+
+            for (item in mEmployeeList) {
+                arrayListOfNames.add(item)
+            }
         }
         val listItems = arrayOfNulls<String>(arrayListOfNames.size)
         arrayListOfNames.toArray(listItems)
@@ -283,19 +290,19 @@ class UpcomingBookingFragment : Fragment() {
 
     private fun showDialogForMoreAminities(items: List<String>, position: Int) {
 
-            val arrayListOfItems = ArrayList<String>()
+        val arrayListOfItems = ArrayList<String>()
 
-            for (item in items) {
-                arrayListOfItems.add(item)
-            }
-            val listItems = arrayOfNulls<String>(arrayListOfItems.size)
-            arrayListOfItems.toArray(listItems)
-            val builder = AlertDialog.Builder(activity!!)
-            builder.setItems(
-                listItems
-            ) { _, _ -> }
-            val mDialog = builder.create()
-            mDialog.show()
+        for (item in items) {
+            arrayListOfItems.add(item)
+        }
+        val listItems = arrayOfNulls<String>(arrayListOfItems.size)
+        arrayListOfItems.toArray(listItems)
+        val builder = AlertDialog.Builder(activity!!)
+        builder.setItems(
+            listItems
+        ) { _, _ -> }
+        val mDialog = builder.create()
+        mDialog.show()
 
 
     }

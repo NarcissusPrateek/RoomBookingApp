@@ -1,4 +1,5 @@
 package com.nineleaps.conferenceroombooking
+
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
@@ -24,6 +25,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.iid.FirebaseInstanceId
 import com.nineleaps.conferenceroombooking.Helper.GoogleGSO
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
@@ -36,7 +39,7 @@ import com.nineleaps.conferenceroombooking.utils.*
 import com.orhanobut.hawk.Hawk
 import javax.inject.Inject
 
-class SignIn : AppCompatActivity()  {
+class SignIn : AppCompatActivity() {
 
     @Inject
     lateinit var mCheckRegistrationRepo: CheckRegistrationRepository
@@ -48,11 +51,15 @@ class SignIn : AppCompatActivity()  {
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
     private lateinit var progressDialog: ProgressDialog
     private lateinit var mCheckRegistrationViewModel: CheckRegistrationViewModel
+    private lateinit var auth: FirebaseAuth
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signin)
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
-       // crashHandler()
+        auth = FirebaseAuth.getInstance()
+        // crashHandler()
         ButterKnife.bind(this)
         initialize()
         observeData()
@@ -77,6 +84,7 @@ class SignIn : AppCompatActivity()  {
     fun signIn() {
         startIntentToGoogleSignIn()
     }
+
     /**
      * function intialize all items of UI, sharedPreference and calls the setAnimationToLayout function to set the animation to the layouts
      */
@@ -93,27 +101,31 @@ class SignIn : AppCompatActivity()  {
     private fun initComponentForSignIn() {
         (application as BaseApplication).getmAppComponent()?.inject(this)
     }
+
     private fun initRegistrationRepo() {
         mCheckRegistrationViewModel.setCheckRegistrationRepo(mCheckRegistrationRepo)
     }
+
     /**
      * function will starts a explict intent for the google sign in
      */
     private fun startIntentToGoogleSignIn() {
-        val signInIntent = mGoogleSignInClient!!.signInIntent
+        val signInIntent =mGoogleSignInClient!!.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
+
     /**
      * function will initialize the GoogleSignInClient
      */
     private fun initializeGoogleSignIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestIdToken("518733103153-e8q3p435l90dghf61ctrdtjtd9kl85hv.apps.googleusercontent.com")
-                .build()
+            .requestIdToken("878830033208-04iofjt86ut811cfvvunr53enfo9n0bk.apps.googleusercontent.com")
+            .requestEmail()
+            .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
     }
+
     /**
      * function will automatically invoked once the control will return from the explict intent and than call another
      * method to do further task
@@ -128,14 +140,15 @@ class SignIn : AppCompatActivity()  {
             checkRegistration()
         }
     }
+
     /**
      * function will call a another function which connects to the backend.
      */
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            setTokenToAccessToken(account!!.idToken)
-            if(NetworkState.appIsConnectedToInternet(this)) {
+            firebaseAuthWithGoogle(account!!)
+            if (NetworkState.appIsConnectedToInternet(this)) {
                 checkRegistration()
             } else {
                 val i = Intent(this@SignIn, NoInternetConnectionActivity::class.java)
@@ -145,19 +158,29 @@ class SignIn : AppCompatActivity()  {
             Log.w(getString(R.string.sign_in_error), "signInResult:failed code=" + e.statusCode)
         }
     }
+    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
+
+        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
+
+        setTokenToAccessToken(acct.idToken)
+        Log.i("account",acct.idToken.toString())
+        Log.i("Credential",credential.toString())
+
+    }
     /**
      * Sign out from application
      */
     private fun signOut() {
         val mGoogleSignInClient = GoogleGSO.getGoogleSignInClient(this)
         mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this) {
-                }
+            .addOnCompleteListener(this) {
+            }
     }
 
     private fun saveCustomToken(idToken: String?) {
-        Hawk.put(getString(R.string.token),"Bearer $idToken")
+        Hawk.put(getString(R.string.token), "Bearer $idToken")
     }
+
     /**
      * on back pressed the function will clear the activity stack and will close the application
      */
@@ -165,19 +188,21 @@ class SignIn : AppCompatActivity()  {
         finishAffinity()
         super.onBackPressed()
     }
+
     /**
      * this function will check whether the user is registered or not
      * if not registered than make an intent to registration activity
      */
     private fun checkRegistration() {
         progressDialog.show()
-        Hawk.put("Device",FirebaseInstanceId.getInstance().getToken())
+        Hawk.put("Device", FirebaseInstanceId.getInstance().getToken())
         mCheckRegistrationViewModel.checkRegistration(Hawk.get("Device"))
     }
 
     private fun setTokenToAccessToken(idToken: String?) {
-        Hawk.put(getString(R.string.token),idToken)
+        Hawk.put(getString(R.string.token), idToken)
     }
+
     /**
      * observe data from server
      */
@@ -196,16 +221,18 @@ class SignIn : AppCompatActivity()  {
             signOut()
         })
     }
+
     /**
      * a function which will set the value in shared preference
      */
     private fun setValueForSharedPreference(it: SignIn?) {
-        Hawk.put(Constants.ROLE_CODE,it!!.statusCode!!.toInt())
-        val code : String = it.statusCode.toString()
+        Hawk.put(Constants.ROLE_CODE, it!!.statusCode!!.toInt())
+        val code: String = it.statusCode.toString()
         saveCustomToken(it.token)
         GetPreference.setJWTToken(this, it.refreshToken!!, it.token!!)
         intentToNextActivity(code.toInt())
     }
+
     /**
      * this function will intent to some activity according to the received data from backend
      */
@@ -217,7 +244,7 @@ class SignIn : AppCompatActivity()  {
             }
             else -> {
                 val builder =
-                        GetAleretDialog.getDialog(this, getString(R.string.error), getString(R.string.restart_app))
+                    GetAleretDialog.getDialog(this, getString(R.string.error), getString(R.string.restart_app))
                 builder.setPositiveButton(getString(R.string.ok)) { _, _ ->
                     finish()
                 }

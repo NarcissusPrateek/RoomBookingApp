@@ -22,13 +22,13 @@ data class ManagerBooking(
     @SerializedName("endTime")
     var toTime: ArrayList<String>? = null,
 
-    @SerializedName("purposeEditText")
+    @SerializedName("purpose")
     var purpose: String? = null,
 
     @SerializedName("capacity")
     var capacity: Int? = 0,
 
     @SerializedName("attendee")
-    var cCMail: String? = null
+    var cCMail: List<String>? = null
 
 )

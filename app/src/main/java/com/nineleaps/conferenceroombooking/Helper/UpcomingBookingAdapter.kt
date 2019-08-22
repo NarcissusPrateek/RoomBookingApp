@@ -215,6 +215,8 @@ class UpcomingBookingAdapter(
     private fun setMeetingMembers(position: Int) {
         if (dashboardItemList[position].name != null)
             mShowMembers.showMembers(dashboardItemList[position].name!!, position)
+        else
+            mShowMembers.showMembers(emptyList(),position)
 
     }
 

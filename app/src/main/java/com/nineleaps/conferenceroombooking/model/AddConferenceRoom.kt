@@ -35,7 +35,3 @@ data class GetAllAmenities(
     var amenityName: String? = null
 ) : Serializable
 
-data class Amenities(
-    var amenityId: Int? =0,
-    var amenityName: String? = null
-)

@@ -5,10 +5,12 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
 class NotificationService : FirebaseMessagingService() {
-    override fun onMessageReceived(remoteMessage: RemoteMessage?) {
+    override fun onMessageReceived(p0: RemoteMessage) {
+
+        Log.i("NOTIFICATION",p0.toString())
         // Check if message contains a data payload.
-        if (remoteMessage!!.data.isNotEmpty()) {
-            Log.i("--------------", remoteMessage.notification!!.body.toString())
+        if (p0.data.isNotEmpty()) {
+//            Log.i("Notification", p0.notification!!.body.toString())
         }
     }
 }

@@ -278,8 +278,11 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
                 emailString += ","
             }
         }
-        attendee = emailString.split(",").toMutableList()
-        mBooking.cCMail = attendee
+        if(!emailString.isEmpty())
+            attendee = emailString.split(",").toMutableList()
+        else
+            attendee = emptyList<String>().toMutableList()
+            mBooking.cCMail = attendee
         //mGetIntentDataFromActivity.emailOfSelectedEmployees = emailString
         // show alert before booking
         if (validatePurpose()) {

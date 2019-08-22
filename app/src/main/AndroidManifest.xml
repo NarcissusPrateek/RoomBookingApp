@@ -23,7 +23,7 @@
                 android:value="dfb427f6e30bbedadb01b9ab540f56eb9aeaa4ce"/>
 
         <service
-                android:name=".NotificationService"
+                    android:name=".NotificationService"
                 android:enabled="true"
                 android:exported="true">
             <intent-filter>

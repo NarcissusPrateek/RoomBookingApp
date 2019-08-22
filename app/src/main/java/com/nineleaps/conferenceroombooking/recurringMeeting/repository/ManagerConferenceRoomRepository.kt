@@ -17,39 +17,12 @@ class ManagerConferenceRoomRepository @Inject constructor() {
      * function will initialize the MutableLivedata Object and than call a function for api call
      * Passing the Context and model and call API, In return sends the status of LiveData
      */
-    fun getConferenceRoomList(mRoom: ManagerConference, listener: ResponseListener) {
+    fun getConferenceRoomListForRecurringMeeting(mRoom: ManagerConference, listener: ResponseListener) {
         /**
          * api call using retrofit
          */
         val requestCall: Call<List<RoomDetails>> =
-            RestClient.getWebServiceData()?.getMangerConferenceRoomList(mRoom)!!
-        requestCall.enqueue(object : Callback<List<RoomDetails>> {
-            override fun onFailure(call: Call<List<RoomDetails>>, t: Throwable) {
-                listener.onFailure(Constants.INTERNAL_SERVER_ERROR)
-            }
-
-            override fun onResponse(call: Call<List<RoomDetails>>, response: Response<List<RoomDetails>>) {
-
-                if ((response.code() == Constants.OK_RESPONSE) or (response.code() == Constants.SUCCESSFULLY_CREATED)) {
-                    listener.onSuccess(response.body()!!)
-                } else {
-                    listener.onFailure(response.code())
-                }
-            }
-        })
-    }
-
-
-    /**
-     * function will initialize the MutableLivedata Object and than make API Call
-     * Passing the Context and model and call API, In return sends the status of LiveData
-     */
-    fun getSuggestedRooms(mInputDetailsForRoom: ManagerConference, listener: ResponseListener) {
-        /**
-         * api call using Retrofit
-         */
-        val requestCall: Call<List<RoomDetails>> =
-            RestClient.getWebServiceData()?.getSuggestedRoomsForRecurring(mInputDetailsForRoom)!!
+            RestClient.getWebServiceData()?.getConferenceRoomListForRecurring(mRoom)!!
         requestCall.enqueue(object : Callback<List<RoomDetails>> {
             override fun onFailure(call: Call<List<RoomDetails>>, t: Throwable) {
                 when (t) {
@@ -66,6 +39,7 @@ class ManagerConferenceRoomRepository @Inject constructor() {
             }
 
             override fun onResponse(call: Call<List<RoomDetails>>, response: Response<List<RoomDetails>>) {
+
                 if ((response.code() == Constants.OK_RESPONSE) or (response.code() == Constants.SUCCESSFULLY_CREATED)) {
                     listener.onSuccess(response.body()!!)
                 } else {

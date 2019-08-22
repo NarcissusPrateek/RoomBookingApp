@@ -12,6 +12,7 @@ import android.text.Html
 import android.text.TextWatcher
 import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -54,22 +55,42 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
     lateinit var mBookingRepo: ManagerBookingRepository
 
     val employeeList = ArrayList<EmployeeList>()
+
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
+
     private val selectedName = ArrayList<String>()
+
     private val selectedEmail = ArrayList<String>()
+
     private lateinit var customAdapter: SelectMembers
+
     @BindView(R.id.select_meeting_members_progress_bar)
     lateinit var mProgressBar: ProgressBar
+
+    @BindView(R.id.event_name_text_view)
+    lateinit var purposeEditText: EditText
+
     @BindView(R.id.search_edit_text)
     lateinit var searchEditText: EditText
+
     @BindView(R.id.add_email)
     lateinit var addEmailButton: Button
+
     private lateinit var mSelectMemberViewModel: SelectMemberViewModel
+
     lateinit var progressDialog: ProgressDialog
+
     private lateinit var mManagerBookingViewModel: ManagerBookingViewModel
+
     private lateinit var acct: GoogleSignInAccount
+
+    private lateinit var attendee: MutableList<String>
+
     private var mManagerBooking = ManagerBooking()
 
+    companion object {
+        var selectedCapacity = 0
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_meeting_members)
@@ -112,6 +133,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
         initActionBar()
         initComponentForSelectMembers()
         initLateInitializerVariables()
+        textChangeListenerOnPurposeEditText()
         initManagerSelectMembers()
         initManagerBooking()
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
@@ -146,6 +168,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
 
     private fun initLateInitializerVariables() {
         acct = GoogleSignIn.getLastSignedInAccount(applicationContext)!!
+
         mManagerBookingViewModel = ViewModelProviders.of(this).get(ManagerBookingViewModel::class.java)
         progressDialog = GetProgress.getProgressDialog(getString(R.string.progress_message), this)
         mSelectMemberViewModel = ViewModelProviders.of(this).get(SelectMemberViewModel::class.java)
@@ -213,7 +236,9 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
         mManagerBooking.buildingId = mGetIntentDataFromActvity.buildingId!!.toInt()
         mManagerBooking.fromTime = mGetIntentDataFromActvity.fromTimeList
         mManagerBooking.toTime = mGetIntentDataFromActvity.toTimeList
-        mManagerBooking.purpose = mGetIntentDataFromActvity.purpose
+        selectedCapacity = mGetIntentDataFromActvity.capacity!!.toInt()
+
+        mManagerBooking.purpose = purposeEditText.text.toString()
         mManagerBooking.roomName = mGetIntentDataFromActvity.roomName
     }
 
@@ -228,6 +253,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
 
     @OnClick(R.id.next_activity)
     fun onClick() {
+        purposeEditText.onEditorAction(EditorInfo.IME_ACTION_DONE)
         var emailString = ""
         val size = selectedName.size
         selectedEmail.indices.forEach { index ->
@@ -236,7 +262,8 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
                 emailString += ","
             }
         }
-        mManagerBooking.cCMail = emailString
+        attendee = emailString.split(",").toMutableList()
+        mManagerBooking.cCMail = attendee
         val dialog =
             GetAleretDialog.getDialog(this, getString(R.string.confirm), getString(R.string.book_confirmation_message))
         dialog.setPositiveButton(getString(R.string.book)) { _, _ ->
@@ -301,7 +328,37 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
     private fun getIntentData(): GetIntentDataFromActvity {
         return intent.extras!!.get(Constants.EXTRA_INTENT_DATA) as GetIntentDataFromActvity
     }
+    /**
+     * add text change listener for the purposeEditText edit text
+     */
+    private fun textChangeListenerOnPurposeEditText() {
+        purposeEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // nothing here
+            }
 
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // nothing here
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                validatePurpose()
+            }
+        })
+    }
+
+    /**
+     * validate all input fields
+     */
+    private fun validatePurpose(): Boolean {
+        return if (purposeEditText.text.toString().trim().isEmpty()) {
+            purpose_layout.error = getString(R.string.field_cant_be_empty)
+            false
+        } else {
+            purpose_layout.error = null
+            true
+        }
+    }
     /**
      * clear text in search bar whenever clear drawable clicked
      */

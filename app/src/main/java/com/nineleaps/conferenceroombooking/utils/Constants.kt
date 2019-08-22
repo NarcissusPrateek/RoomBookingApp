@@ -27,10 +27,10 @@ class Constants {
          */
         const val EXTRA_BUILDING_ID = "com.example.conferencerommapp.Activity.EXTRA_BUILDING_ID"
 
-        /**
+        /**http://192.168.3.188/CRB/
          * ip address for api call
          */
-        var IP_ADDRESS = "http://192.168.3.188/CRB/"
+        var IP_ADDRESS = "http://ec2-3-15-196-10.us-east-2.compute.amazonaws.com"
 
 
         const val FLAG = "FLAG"

@@ -23,6 +23,7 @@ class BaseApplication: Application(){
 
     private var mAppComponent: AppComponent? = null
 
+    private var token:String? = null
     private val appModule: AppModule
         get() = AppModule(this)
 
@@ -37,7 +38,9 @@ class BaseApplication: Application(){
                 }
                 // Get new Instance ID token
                 Hawk.init(applicationContext).build()
+                val token = task.result?.token
             })
+
     }
 
 
