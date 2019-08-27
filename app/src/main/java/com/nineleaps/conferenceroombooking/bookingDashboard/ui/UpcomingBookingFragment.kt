@@ -4,14 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -34,7 +33,6 @@ import com.nineleaps.conferenceroombooking.model.Dashboard
 import com.nineleaps.conferenceroombooking.model.GetIntentDataFromActvity
 import com.nineleaps.conferenceroombooking.updateBooking.ui.UpdateBookingActivity
 import com.nineleaps.conferenceroombooking.utils.*
-import com.orhanobut.hawk.Hawk
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_upcoming_booking.*
 import javax.inject.Inject
@@ -43,21 +41,45 @@ class UpcomingBookingFragment : Fragment() {
 
     @Inject
     lateinit var mBookedDashboardRepo: BookingDashboardRepository
+
     private lateinit var mProgressBar: ProgressBar
+
     private var finalList = ArrayList<Dashboard>()
+
     private lateinit var mBookingDashBoardViewModel: BookingDashboardViewModel
+
     private lateinit var acct: GoogleSignInAccount
+
     private lateinit var progressDialog: ProgressDialog
+
     private lateinit var mBookingListAdapter: UpcomingBookingAdapter
+
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
+
+    private var recurringArrayList = ArrayList<Dashboard>()
+
     private var bookingId = 0
+
     lateinit var email: String
+
     private var recurringmeetingId: String? = null
+
     private var makeApiCallOnResume = false
+
     private var cardPosition = -1
+
     var pagination: Int = 1
+
     var hasMoreItem: Boolean = false
+
+    var currentPage: Int = 0
+
+    var checkStatus: Boolean = false
+
+    var isScrolledState: Boolean = false
+
     var mBookingDashboardInput = BookingDashboardInput()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         HideSoftKeyboard.hideKeyboard(activity!!)
         return inflater.inflate(R.layout.fragment_upcoming_booking, container, false)
@@ -93,7 +115,6 @@ class UpcomingBookingFragment : Fragment() {
      */
     @SuppressLint("ResourceAsColor")
     fun init() {
-        Log.i("Role", Hawk.get<Int>(Constants.ROLE_CODE).toString())
         mProgressBar = activity!!.findViewById(R.id.upcoming_main_progress_bar)
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(activity!!)
         initRecyclerView()
@@ -132,8 +153,6 @@ class UpcomingBookingFragment : Fragment() {
 
     private fun signInAnalyticFirebase() {
         mFirebaseAnalytics.setAnalyticsCollectionEnabled(true)
-        mFirebaseAnalytics.setMinimumSessionDuration(5000)
-        mFirebaseAnalytics.setSessionTimeoutDuration(1000000)
         mFirebaseAnalytics.setUserId(email)
         mFirebaseAnalytics.setUserProperty("Roll Id", GetPreference.getRoleIdFromPreference().toString())
     }
@@ -161,7 +180,7 @@ class UpcomingBookingFragment : Fragment() {
             },
             object : UpcomingBookingAdapter.MoreAminitiesListner {
                 override fun moreAmenities(position: Int) {
-                    showDialogForMoreAminities(finalList[position].amenities!!, position)
+                    showDialogForMoreAminities(finalList[position].amenities!!)
                 }
 
             }
@@ -170,6 +189,14 @@ class UpcomingBookingFragment : Fragment() {
         dashBord_recyclerView1.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
+                    isScrolledState = true
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE)
+                    isScrolledState = false
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
                 if (!recyclerView.canScrollVertically(1) && hasMoreItem) {
                     pagination++
                     mBookingDashboardInput.pageNumber = pagination
@@ -177,9 +204,13 @@ class UpcomingBookingFragment : Fragment() {
                     mBookingDashBoardViewModel.getBookingList(
                         mBookingDashboardInput
                     )
+                } else if (!recyclerView.canScrollVertically(1) && isScrolledState && !checkStatus ) {
+                    ShowToast.show(activity!!, Constants.NO_CONTENT_FOUND)
                 }
             }
         })
+
+
     }
 
 
@@ -188,6 +219,7 @@ class UpcomingBookingFragment : Fragment() {
      */
     private fun refreshOnPullDown() {
         booking_refresh_layout.setOnRefreshListener {
+            checkStatus = true
             finalList.clear()
             pagination = 1
             mBookingDashboardInput.pageNumber = pagination
@@ -200,6 +232,7 @@ class UpcomingBookingFragment : Fragment() {
                 startActivityForResult(i, Constants.RES_CODE)
             }
         }
+
     }
 
     /**
@@ -217,8 +250,11 @@ class UpcomingBookingFragment : Fragment() {
             mProgressBar.visibility = View.GONE
             progressDialog.dismiss()
             hasMoreItem = it.paginationMetaData!!.nextPage!!
+            currentPage = it.paginationMetaData!!.currentPage!!
             setFilteredDataToAdapter(it.dashboard!!)
+            checkStatus = false
         })
+
         mBookingDashBoardViewModel.returnFailure().observe(this, Observer {
             upcoming_booking_progress_bar.visibility = View.GONE
             booking_refresh_layout.isRefreshing = false
@@ -239,15 +275,19 @@ class UpcomingBookingFragment : Fragment() {
          */
         mBookingDashBoardViewModel.returnBookingCancelled().observe(this, Observer {
             Toasty.success(activity!!, getString(R.string.cancelled_successful), Toast.LENGTH_SHORT, true).show()
-//            pagination = 1
-//            mBookingDashboardInput.pageNumber = pagination
-//            finalList.clear()
-            finalList.remove(finalList[cardPosition])
+            checkStatus = true
+            if (recurringmeetingId == null && finalList.size != 0)
+                finalList.remove(finalList[cardPosition])
+            else {
+                finalList.removeAll(recurringArrayList)
+                recurringArrayList.clear()
+            }
+            if (finalList.size == 0) {
+                upcoming_empty_view.visibility = View.VISIBLE
+                r1_dashboard.setBackgroundColor(Color.parseColor("#F7F7F7"))
+            }
             dashBord_recyclerView1.adapter?.notifyDataSetChanged()
             progressDialog.dismiss()
-//            mBookingDashBoardViewModel.getBookingList(
-//                mBookingDashboardInput
-//            )
         })
 
         mBookingDashBoardViewModel.returnCancelFailed().observe(this, Observer {
@@ -260,7 +300,6 @@ class UpcomingBookingFragment : Fragment() {
         })
 
     }
-
 
     /**
      * Display the list of employee names in the alert dialog
@@ -288,7 +327,7 @@ class UpcomingBookingFragment : Fragment() {
         mDialog.show()
     }
 
-    private fun showDialogForMoreAminities(items: List<String>, position: Int) {
+    private fun showDialogForMoreAminities(items: List<String>) {
 
         val arrayListOfItems = ArrayList<String>()
 
@@ -326,6 +365,16 @@ class UpcomingBookingFragment : Fragment() {
     }
 
 
+    private fun recurringCancellationList() {
+        if (finalList.isNotEmpty()) {
+            for (i in finalList.indices) {
+                if (finalList[i].recurringmeetingId == recurringmeetingId) {
+                    recurringArrayList.add(finalList[i])
+                }
+            }
+        }
+    }
+
     /**
      * show a dialog to confirm cancel of booking
      * if ok button is pressed than cancelBooking function is called
@@ -340,7 +389,7 @@ class UpcomingBookingFragment : Fragment() {
     }
 
     private fun recurringCancellationMetting(position: Int) {
-        var selectedList = mutableListOf<Int>()
+        val selectedList = mutableListOf<Int>()
         val items = arrayOf<CharSequence>("Cancel All")
         val builder =
             GetAleretDialog.getDialogforRecurring(
@@ -371,6 +420,7 @@ class UpcomingBookingFragment : Fragment() {
                 bookingId = finalList[position].bookingId!!
                 recurringmeetingId = finalList[position].recurringmeetingId
                 if (NetworkState.appIsConnectedToInternet(activity!!)) {
+                    recurringCancellationList()
                     recurringCancelBooking(bookingId, recurringmeetingId)
                     recurringCancelLogFirebaseAnalytics()
                 } else {
@@ -382,7 +432,7 @@ class UpcomingBookingFragment : Fragment() {
         }
 
         builder.setNegativeButton(getString(R.string.no)) { _, _ ->
-
+            recurringArrayList.clear()
         }
         val dialog = GetAleretDialog.showDialog(builder)
         ColorOfDialogButton.setColorOfDialogButton(dialog)
@@ -392,8 +442,6 @@ class UpcomingBookingFragment : Fragment() {
         val cancellation = Bundle()
         mFirebaseAnalytics.logEvent(getString(R.string.recurring_cancellation), cancellation)
         mFirebaseAnalytics.setAnalyticsCollectionEnabled(true)
-        mFirebaseAnalytics.setMinimumSessionDuration(5000)
-        mFirebaseAnalytics.setSessionTimeoutDuration(1000000)
         mFirebaseAnalytics.setUserId(email)
         mFirebaseAnalytics.setUserProperty(
             getString(R.string.Roll_Id),
@@ -439,8 +487,6 @@ class UpcomingBookingFragment : Fragment() {
         val cancellation = Bundle()
         mFirebaseAnalytics.logEvent(getString(R.string.single_cancellation), cancellation)
         mFirebaseAnalytics.setAnalyticsCollectionEnabled(true)
-        mFirebaseAnalytics.setMinimumSessionDuration(5000)
-        mFirebaseAnalytics.setSessionTimeoutDuration(1000000)
         mFirebaseAnalytics.setUserId(email)
         mFirebaseAnalytics.setUserProperty(
             getString(R.string.Roll_Id),
@@ -466,5 +512,6 @@ class UpcomingBookingFragment : Fragment() {
             makeApiCallOnResume = false
         }
     }
+
 }
 

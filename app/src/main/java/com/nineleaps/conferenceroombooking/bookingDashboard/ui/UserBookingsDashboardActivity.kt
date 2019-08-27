@@ -1,6 +1,7 @@
 package com.nineleaps.conferenceroombooking.bookingDashboard.ui
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -16,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import butterknife.BindView
+import butterknife.ButterKnife
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -50,17 +53,17 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
 
     @Inject
     lateinit var mBookingDahBoardRepo: BookingDashboardRepository
-    lateinit var mProgressBar: ProgressBar
+    @BindView(R.id.user_booking_dashboard_progress_bar)
+    lateinit var mProgressBar:ProgressBar
     private lateinit var acct: GoogleSignInAccount
     private lateinit var mBookingDashBoardViewModel: BookingDashboardViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
+        ButterKnife.bind(this)
         setNavigationViewItem()
-     //   crashHandler()
         softKeyBoard()
         init()
-        mProgressBar = findViewById(R.id.user_booking_dashboard_progress_bar)
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
             var selectedFragment: Fragment? = null
             when (item.itemId) {
@@ -88,20 +91,9 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
     }
 
     private fun softKeyBoard() {
-
         HideSoftKeyboard.hideKeyboard(this)
     }
 
-//    private fun crashHandler() {
-//        val foreground: ForegroundCounter = ForegroundCounter().createAndInstallCallbacks(application)
-//        val defaultHandler: Thread.UncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
-//        Thread.setDefaultUncaughtExceptionHandler { t: Thread?, e: Throwable? ->
-//            if (foreground.inForeground())
-//                defaultHandler.uncaughtException(t, e)
-//            else
-//                startActivity(Intent(this, SplashScreen::class.java))
-//        }
-//    }
 
     private fun init() {
         initComponentForBookingDashBoard()
@@ -121,6 +113,7 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
 
 
     private fun getPasscode() {
+        //progressDialog.show()
         mProgressBar.visibility = View.VISIBLE
         mBookingDashBoardViewModel.getPasscode(false, acct.email!!)
     }
@@ -133,10 +126,12 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
          * observing data for booking list
          */
         mBookingDashBoardViewModel.returnPasscode().observe(this, androidx.lifecycle.Observer {
+            //progressDialog.dismiss()
             mProgressBar.visibility = View.GONE
             showAlertForPasscode(it)
         })
         mBookingDashBoardViewModel.returnPasscodeFailed().observe(this, androidx.lifecycle.Observer {
+           // progressDialog.dismiss()
             mProgressBar.visibility = View.GONE
             if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 showAlert()
@@ -159,6 +154,7 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
         dialog.setPositiveButton(R.string.ok) { _, _ ->
         }
         dialog.setNeutralButton(getString(R.string.get_new_passcode)) { _, _ ->
+            mProgressBar.visibility = View.VISIBLE
             mBookingDashBoardViewModel.getPasscode(true, acct.email!!)
         }
         val builder = GetAleretDialog.showDialog(dialog)

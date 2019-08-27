@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.AbsListView
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -45,6 +46,8 @@ class CancelledBookingFragment : Fragment() {
     var mBookingDashboardInput = BookingDashboardInput()
     var pagination: Int = 1
     var hasMoreItem: Boolean = false
+    var isScrolledState: Boolean = false
+    var currentPage: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         HideSoftKeyboard.hideKeyboard(activity!!)
@@ -63,7 +66,7 @@ class CancelledBookingFragment : Fragment() {
      */
     @SuppressLint("ResourceAsColor")
     fun init() {
-       // HideSoftKeyboard.hideSoftKeyboard(activity!!)
+        // HideSoftKeyboard.hideSoftKeyboard(activity!!)
         mProgressBar = activity!!.findViewById(R.id.cancelled_main_progress_bar)
         initRecyclerView()
         initComponentForCancelledFragment()
@@ -126,13 +129,23 @@ class CancelledBookingFragment : Fragment() {
         cancelled_recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
+                    isScrolledState = true
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE)
+                    isScrolledState = false
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
                 if (!recyclerView.canScrollVertically(1) && hasMoreItem) {
-                    cancelled_progress_bar.visibility = View.VISIBLE
                     pagination++
+                    cancelled_progress_bar.visibility = View.VISIBLE
                     mBookingDashboardInput.pageNumber = pagination
                     mBookingDashBoardViewModel.getBookingList(
                         mBookingDashboardInput
                     )
+                } else if (!recyclerView.canScrollVertically(1) && currentPage > 1 && isScrolledState) {
+                    ShowToast.show(activity!!, Constants.NO_CONTENT_FOUND)
                 }
             }
         })
@@ -164,8 +177,10 @@ class CancelledBookingFragment : Fragment() {
             cancelled_progress_bar.visibility = View.GONE
             cancelled_booking_refresh_layout.isRefreshing = false
             mProgressBar.visibility = View.GONE
-            setFilteredDataToAdapter(it.dashboard!!)
+            currentPage = it.paginationMetaData!!.currentPage!!
             hasMoreItem = it.paginationMetaData!!.nextPage!!
+            setFilteredDataToAdapter(it.dashboard!!)
+
         })
         mBookingDashBoardViewModel.returnFailure().observe(this, Observer {
             cancelled_progress_bar.visibility = View.GONE

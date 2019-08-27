@@ -91,6 +91,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
     companion object {
         var selectedCapacity = 0
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_meeting_members)
@@ -136,6 +137,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
         textChangeListenerOnPurposeEditText()
         initManagerSelectMembers()
         initManagerBooking()
+        hideSoftKeyBoard()
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         if (NetworkState.appIsConnectedToInternet(this)) {
@@ -144,6 +146,10 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
             val i = Intent(this, NoInternetConnectionActivity::class.java)
             startActivityForResult(i, Constants.RES_CODE)
         }
+    }
+
+    private fun hideSoftKeyBoard() {
+        HideSoftKeyboard.setUpUI(findViewById(R.id.relative_layout_of_manager_select_meeting_members),this)
     }
 
     private fun initComponentForSelectMembers() {
@@ -217,7 +223,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
         })
         mManagerBookingViewModel.returnFailureForBooking().observe(this, Observer {
             progressDialog.dismiss()
-            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
+            if (it != Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN ) {
                 ShowDialogForSessionExpired.showAlert(this, ManagerSelectMeetingMembers())
             } else {
                 ShowToast.show(this, it as Int)
@@ -262,25 +268,20 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
                 emailString += ","
             }
         }
-        attendee = emailString.split(",").toMutableList()
+        if (emailString.isEmpty())
+            attendee = emptyList<String>().toMutableList()
+        else
+            attendee = emailString.split(",").toMutableList()
         mManagerBooking.cCMail = attendee
-        val dialog =
-            GetAleretDialog.getDialog(this, getString(R.string.confirm), getString(R.string.book_confirmation_message))
-        dialog.setPositiveButton(getString(R.string.book)) { _, _ ->
-            if (NetworkState.appIsConnectedToInternet(this)) {
-                addDataToObject()
-                addBooking()
-                recurringBookingLog()
-            } else {
-                val i = Intent(this@ManagerSelectMeetingMembers, NoInternetConnectionActivity::class.java)
-                startActivityForResult(i, Constants.RES_CODE2)
-            }
+        if (NetworkState.appIsConnectedToInternet(this)) {
+            addDataToObject()
+            addBooking()
+            recurringBookingLog()
+        } else {
+            val i = Intent(this@ManagerSelectMeetingMembers, NoInternetConnectionActivity::class.java)
+            startActivityForResult(i, Constants.RES_CODE2)
         }
-        dialog.setNegativeButton(R.string.no) { _, _ ->
-            // do nothing
-        }
-        val builder = GetAleretDialog.showDialog(dialog)
-        ColorOfDialogButton.setColorOfDialogButton(builder)
+
     }
 
     private fun recurringBookingLog() {
@@ -317,6 +318,9 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
             }
             selectedName.add(name)
             selectedEmail.add(email)
+            scroll_view.post {
+                scroll_view.smoothScrollBy(0,chip_group.bottom)
+            }
         } else {
             Toast.makeText(this, getString(R.string.already_selected), Toast.LENGTH_SHORT).show()
         }
@@ -328,6 +332,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
     private fun getIntentData(): GetIntentDataFromActvity {
         return intent.extras!!.get(Constants.EXTRA_INTENT_DATA) as GetIntentDataFromActvity
     }
+
     /**
      * add text change listener for the purposeEditText edit text
      */
@@ -359,6 +364,7 @@ class ManagerSelectMeetingMembers : AppCompatActivity() {
             true
         }
     }
+
     /**
      * clear text in search bar whenever clear drawable clicked
      */

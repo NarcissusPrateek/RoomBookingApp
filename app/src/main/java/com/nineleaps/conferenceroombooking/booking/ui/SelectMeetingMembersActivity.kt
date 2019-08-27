@@ -109,6 +109,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
         searchEditText.onRightDrawableClicked {
             it.text.clear()
         }
+
     }
 
     private fun initToolBar() {
@@ -233,7 +234,6 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
     private fun addDataToObject() {
         val acct = GoogleSignIn.getLastSignedInAccount(applicationContext)
         val mBookingDetails = getIntentData()
-        Log.i("IntentDataSelectMeeting", mBookingDetails.toString())
         mBooking.email = acct!!.email
         mBooking.purpose = purposeEditText.text.toString()
         mBooking.roomId = mBookingDetails.roomId!!.toInt()
@@ -278,34 +278,21 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
                 emailString += ","
             }
         }
-        if(!emailString.isEmpty())
+        if (!emailString.isEmpty())
             attendee = emailString.split(",").toMutableList()
         else
             attendee = emptyList<String>().toMutableList()
-            mBooking.cCMail = attendee
-        //mGetIntentDataFromActivity.emailOfSelectedEmployees = emailString
+        mBooking.cCMail = attendee
         // show alert before booking
         if (validatePurpose()) {
-            val dialog = GetAleretDialog.getDialog(
-                this,
-                getString(R.string.confirm),
-                getString(R.string.book_confirmation_message)
-            )
-            dialog.setPositiveButton(getString(R.string.book)) { _, _ ->
-                if (NetworkState.appIsConnectedToInternet(this)) {
-                    addDataToObject()
-                    addBooking()
-                    bookingLogFirebaseAnalytics()
-                } else {
-                    val i = Intent(this@SelectMeetingMembersActivity, NoInternetConnectionActivity::class.java)
-                    startActivityForResult(i, Constants.RES_CODE2)
-                }
+            if (NetworkState.appIsConnectedToInternet(this)) {
+                addDataToObject()
+                addBooking()
+                bookingLogFirebaseAnalytics()
+            } else {
+                val i = Intent(this@SelectMeetingMembersActivity, NoInternetConnectionActivity::class.java)
+                startActivityForResult(i, Constants.RES_CODE2)
             }
-            dialog.setNegativeButton(R.string.no) { _, _ ->
-                // do nothing
-            }
-            val builder = GetAleretDialog.showDialog(dialog)
-            ColorOfDialogButton.setColorOfDialogButton(builder)
         }
 
     }
@@ -342,9 +329,13 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
                 chip_group.removeView(chip)
                 count--
             }
+
             selectedName.add(name)
             selectedEmail.add(email)
             count++
+            scroll_view.post {
+                scroll_view.smoothScrollBy(0,chip_group.bottom)
+            }
         } else {
             Toast.makeText(this, getString(R.string.already_selected), Toast.LENGTH_SHORT).show()
         }

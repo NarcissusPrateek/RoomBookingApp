@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import ca.antonious.materialdaypicker.MaterialDayPicker
 import com.example.conferenceroomapp.model.ManagerConference
 import com.nineleaps.conferenceroombooking.BaseApplication
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
@@ -31,6 +32,7 @@ import com.nineleaps.conferenceroombooking.model.GetIntentDataFromActvity
 import com.nineleaps.conferenceroombooking.model.RoomDetails
 import com.nineleaps.conferenceroombooking.recurringMeeting.repository.ManagerConferenceRoomRepository
 import com.nineleaps.conferenceroombooking.utils.*
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_project_manager_input.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -63,30 +65,33 @@ class RecurringBookingInputDetails : AppCompatActivity() {
 
     @BindView(R.id.manager_recycler_view_room_list)
     lateinit var mRecyclerView: RecyclerView
-//
-//    @BindView(R.id.manager_building_name_spinner)
-//    lateinit var buildingSpineer: Spinner
+
 
     @BindView(R.id.manager_room_capacity)
     lateinit var roomCapacityEditText: EditText
 
-//    @BindView(R.id.manager_event_name_text_view)
-//    lateinit var purposeEditText: EditText
-
     private lateinit var mManagerConferecneRoomViewModel: ManagerConferenceRoomViewModel
+
     private lateinit var customAdapter: RoomAdapter
+
     private lateinit var mIntentDataFromActivity: GetIntentDataFromActvity
+
     private lateinit var mBuildingsViewModel: BuildingViewModel
+
     private var listOfDays = ArrayList<String>()
+
     private var dataList = ArrayList<String>()
+
     private var fromTimeList = ArrayList<String>()
+
     private var toTimeList = ArrayList<String>()
+
     var mRoom = ManagerConference()
+
+    private var dateFlag = 0
+
     var mSetIntentData = GetIntentDataFromActvity()
-//    private var mSuggestedRoomApiIsCallled = false
-//    var mBuildingName = "Select Building"
-//    var mBuildingId = -1
-//    var buildingId = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project_manager_input)
@@ -103,7 +108,12 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         initRoomRepo()
         setPickerToEditTexts()
         setTextChangeListener()
-        makeApiCall()
+        hideSoftKeyBoard()
+    }
+
+    private fun hideSoftKeyBoard() {
+        HideSoftKeyboard.setUpUI(findViewById(R.id.reurring_booking_scroll_view), this)
+        HideSoftKeyboard.setUpUI(findViewById(R.id.manager_search_room), this)
     }
 
     private fun initComponentForManagerBooking() {
@@ -142,25 +152,7 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         textChangeListenerOnFromDateEditText()
         textChangeListenerOnToDateEditText()
         textChangeListenerOnRoomCapacity()
-//        textChangeListenerOnPurposeEditText()
-
-    }
-
-    //make api call if connection is alive
-    private fun makeApiCall() {
-        if (NetworkState.appIsConnectedToInternet(this)) {
-            //getViewModelForBuildingList()
-        } else {
-            val i = Intent(this@RecurringBookingInputDetails, NoInternetConnectionActivity::class.java)
-            startActivityForResult(i, Constants.RES_CODE)
-        }
-    }
-
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == Constants.RES_CODE && resultCode == Activity.RESULT_OK) {
-            //getViewModelForBuildingList()
-        }
+        selectChangeListenerOnDaySlector()
     }
 
     @OnClick(R.id.manager_search_room)
@@ -230,25 +222,10 @@ class RecurringBookingInputDetails : AppCompatActivity() {
             fromTimeList.add(FormatTimeAccordingToZone.formatDateAsUTC("$item $start"))
             toTimeList.add(FormatTimeAccordingToZone.formatDateAsUTC("$item $end"))
         }
-
     }
 
     //observe data from view model
     private fun observerData() {
-//        mBuildingsViewModel.returnMBuildingSuccess().observe(this, Observer {
-//            progressBar.visibility = View.GONE
-//            setBuildingSpinner(it)
-//        })
-//        mBuildingsViewModel.returnMBuildingFailure().observe(this, Observer {
-//            progressBar.visibility = View.GONE
-//            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
-//                ShowDialogForSessionExpired.showAlert(this, RecurringBookingInputDetails())
-//            } else {
-//                ShowToast.show(this, it as Int)
-//            }
-//        })
-
-
         //positive response
         mManagerConferecneRoomViewModel.returnSuccess().observe(this, Observer {
             checkForStatusOfRooms(it)
@@ -256,55 +233,17 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         // Negative response
         mManagerConferecneRoomViewModel.returnFailure().observe(this, Observer {
             progressBar.visibility = View.GONE
-            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
+            if ( it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, RecurringBookingInputDetails())
-            } else {
+            }else{
                 ShowToast.show(this, it as Int)
-                finish()
+
             }
         })
-
-//        // positive response for suggested rooms
-//        mManagerConferecneRoomViewModel.returnSuccessForSuggested().observe(this, Observer {
-//            manager_horizontal_line_below_search_button.visibility = View.VISIBLE
-//            manager_suggestions.visibility = View.VISIBLE
-//            if (it.isEmpty()) {
-//                manager_suggestions.text = getString(R.string.no_rooms_available)
-//            } else {
-//                manager_suggestions.text = getString(R.string.suggestion_message)
-//            }
-//            setAdapter(it)
-//        })
-//        // negative response for suggested rooms
-//        mManagerConferecneRoomViewModel.returnFailureForSuggestedRooms().observe(this, Observer {
-//            progressBar.visibility = View.GONE
-//            if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
-//                ShowDialogForSessionExpired.showAlert(this, RecurringBookingInputDetails())
-//            } else {
-//                ShowToast.show(this, it as Int)
-//                finish()
-//            }
-//        })
     }
 
     private fun checkForStatusOfRooms(mListOfRooms: List<RoomDetails>?) {
-//        var count = 0
-//        for (room in mListOfRooms!!) {
-//            if (room.status == getString(R.string.unavailable)) {
-//                count++
-//            }
-//        }
-//        if (count == mListOfRooms.size) {
-//            if (NetworkState.appIsConnectedToInternet(this)) {
-//                makeCallToApiForSuggestedRooms()
-//            } else {
-//                val i = Intent(this, NoInternetConnectionActivity::class.java)
-//                startActivityForResult(i, Constants.RES_CODE3)
-//            }
-//        } else {
-//        }
         setAdapter(mListOfRooms!!)
-
     }
 
     private fun setAdapter(mListOfRooms: List<RoomDetails>) {
@@ -325,22 +264,20 @@ class RecurringBookingInputDetails : AppCompatActivity() {
                     mSetIntentData.fromTimeList.addAll(fromTimeList)
                     mSetIntentData.toTimeList.addAll(toTimeList)
                     mSetIntentData.capacity = roomCapacityEditText.text.toString()
-//                    mSetIntentData.purpose = purposeEditText.text.toString()
                     goToSelectMeetingMembersActivity()
                 }
-            },object : RoomAdapter.MoreAminitiesListner{
+            }, object : RoomAdapter.MoreAminitiesListner {
                 override fun moreAmenities(position: Int) {
-                    showDialogForMoreAminities(mListOfRooms[position].amenities!!, position)
+                    showDialogForMoreAminities(mListOfRooms[position].amenities!!)
 
                 }
 
             })
         mRecyclerView.adapter = customAdapter
-//        reurring_booking_scroll_view.fullScroll(ScrollView.FOCUS_DOWN)
 
     }
 
-    private fun showDialogForMoreAminities(items: HashMap<Int, String>, position: Int) {
+    private fun showDialogForMoreAminities(items: HashMap<Int, String>) {
         val arrayListOfItems = ArrayList<String>()
 
         for (item in items) {
@@ -361,21 +298,6 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         intent.putExtra(Constants.EXTRA_INTENT_DATA, mSetIntentData)
         startActivity(intent)
     }
-
-    private fun makeCallToApiForSuggestedRooms() {
-//        mSuggestedRoomApiIsCallled = true
-//        mManagerConferecneRoomViewModel.getSuggestedConferenceRoomList(
-//            mRoom
-//        )
-    }
-
-    /**
-     * get the object of ViewModel using ViewModelProviders and observers the data from backend
-     */
-//    private fun getViewModelForBuildingList() {
-//        progressBar.visibility = View.VISIBLE
-//        mBuildingsViewModel.getBuildingList()
-//    }
 
     /**
      *  add text change listener for the room name
@@ -436,13 +358,15 @@ class RecurringBookingInputDetails : AppCompatActivity() {
          * set Date picker for the EditText dateEditText
          */
         dateFromEditText.setOnClickListener {
+            dateFlag = 1
             DateAndTimePicker.getDatePickerDialog(this, dateFromEditText)
         }
         /**
          * set Date picker for the EditText dateToEditText
          */
         dateToEditText.setOnClickListener {
-            DateAndTimePicker.getDatePickerDialog(this, dateToEditText)
+            if (validateFromDateForToDate())
+                DateAndTimePicker.getDatePickerDialogForOneMonth(this, dateToEditText, dateFromEditText.text.toString())
         }
     }
 
@@ -455,10 +379,12 @@ class RecurringBookingInputDetails : AppCompatActivity() {
             manager_from_time_layout.error = getString(R.string.field_cant_be_empty)
             false
         } else {
+
             manager_from_time_layout.error = null
             true
         }
     }
+
 
     /**
      * validate to-time for non empty condition
@@ -477,7 +403,7 @@ class RecurringBookingInputDetails : AppCompatActivity() {
     /**
      * validate to-date for non empty condition
      */
-    private fun validateToDate(): Boolean {
+    private fun validateFromDate(): Boolean {
         val input = dateFromEditText.text.toString().trim()
         return if (input.isEmpty()) {
             manager_from_date_layout.error = getString(R.string.field_cant_be_empty)
@@ -488,10 +414,21 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         }
     }
 
+    private fun validateFromDateForToDate(): Boolean {
+        val input = dateFromEditText.text.toString().trim()
+        return if (input.isEmpty()) {
+            manager_to_date_layout.error = "Enter Start Date"
+            false
+        } else {
+            manager_to_date_layout.error = null
+            true
+        }
+    }
+
     /**
      * validate from-date for non empty condition
      */
-    private fun validateFromDate(): Boolean {
+    private fun validateToDate(): Boolean {
         val input = dateToEditText.text.toString().trim()
         return if (input.isEmpty()) {
             manager_to_date_layout.error = getString(R.string.field_cant_be_empty)
@@ -514,23 +451,10 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         return true
     }
 
-    /**
-     * validate building spinner
-     */
-//    private fun validateBuildingSpinner(): Boolean {
-//        return if (mBuildingName == getString(R.string.select_building)) {
-//            manager_text_view_error_spinner_building.visibility = View.VISIBLE
-//            false
-//        } else {
-//            manager_text_view_error_spinner_building.visibility = View.INVISIBLE
-//            true
-//        }
-//    }
-
 
     /**
      * this function ensures that user entered values for all editable fields
-     *///!validateBuildingSpinner() !validatePurpose()
+     */
     private fun validate(): Boolean {
         if (!validateFromTime() or !validateToTime() or !validateFromDate() or !validateToDate() or !validateSelectedDayList() or !validateRoomCapacity()) {
             return false
@@ -557,7 +481,7 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         /**
          * setting a alert dialog instance for the current context
          */
-        val builder = android.app.AlertDialog.Builder(this@RecurringBookingInputDetails)
+        val builder = AlertDialog.Builder(this@RecurringBookingInputDetails)
         builder.setTitle("Check...")
         try {
 
@@ -603,10 +527,9 @@ class RecurringBookingInputDetails : AppCompatActivity() {
                 val dialog = GetAleretDialog.showDialog(builder)
                 ColorOfDialogButton.setColorOfDialogButton(dialog)
             }
-        }
-        catch (e: Exception) {
-            Log.e("er--",e.toString())
-            Toast.makeText(this@RecurringBookingInputDetails, getString(R.string.invalid_details), Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Toast.makeText(this@RecurringBookingInputDetails, getString(R.string.invalid_details), Toast.LENGTH_LONG)
+                .show()
         }
     }
 
@@ -625,10 +548,12 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         )
         mRoom.fromTime?.clear()
         mRoom.toTime?.clear()
+        if (fromTimeList.isEmpty() || toTimeList.isEmpty())
+            getLists(fromTimeEditText.text.toString(),
+                toTimeEditText.text.toString())
         mRoom.fromTime = fromTimeList
         mRoom.toTime = toTimeList
         mRoom.capacity = roomCapacityEditText.text.toString().toInt()
-//        mRoom.buildingId = mBuildingId
         if (dataList.isEmpty()) {
             Toast.makeText(this, getString(R.string.messgae_for_day_selector_when_nothing_selected), Toast.LENGTH_SHORT)
                 .show()
@@ -672,6 +597,7 @@ class RecurringBookingInputDetails : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 validateFromTime()
+
             }
         })
     }
@@ -709,7 +635,7 @@ class RecurringBookingInputDetails : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validateToDate()
+                validateFromDate()
 
             }
         })
@@ -729,67 +655,21 @@ class RecurringBookingInputDetails : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validateFromDate()
+                validateToDate()
             }
         })
     }
 
-    /**
-     * add text change listener for the purposeEditText edit text
-     */
-//    private fun textChangeListenerOnPurposeEditText() {
-//        purposeEditText.addTextChangedListener(object : TextWatcher {
-//            override fun afterTextChanged(s: Editable?) {
-//                // nothing here
-//            }
-//
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//                // nothing here
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                validatePurpose()
-//            }
-//        })
-//    }
+    private fun selectChangeListenerOnDaySlector() {
+        day_picker.setDaySelectionChangedListener {
+            if (it.isEmpty())
+                error_day_selector_text_view.visibility = View.VISIBLE
+            else
+                error_day_selector_text_view.visibility = View.GONE
+        }
 
-    /**
-     * validate all input fields
-     */
-//    private fun validatePurpose(): Boolean {
-//        return if (purposeEditText.text.toString().trim().isEmpty()) {
-//            manager_purpose_layout.error = getString(R.string.field_cant_be_empty)
-//            false
-//        } else {
-//            manager_purpose_layout.error = null
-//            true
-//        }
-//    }
+    }
 
-//    private fun setBuildingSpinner(mBuildingList: List<Building>) {
-//        val buildingNameList = mutableListOf<String>()
-//        val buildingIdList = mutableListOf<Int>()
-//
-//        buildingNameList.add(getString(R.string.select_building))
-//        buildingIdList.add(-1)
-//        for (mBuilding in mBuildingList) {
-//            buildingNameList.add(mBuilding.buildingName!!)
-//            buildingIdList.add(mBuilding.buildingId!!.toInt())
-//        }
-//        val adapter = ArrayAdapter<String>(this, R.layout.spinner_icon, R.id.spinner_text, buildingNameList)
-//        buildingSpineer.adapter = adapter
-//        buildingSpineer.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//                mBuildingName = buildingNameList[position]
-//                mBuildingId = buildingIdList[position]
-//                manager_text_view_error_spinner_building.visibility = View.INVISIBLE
-//            }
-//
-//            override fun onNothingSelected(adapterView: AdapterView<*>) {
-//                mBuildingName = getString(R.string.select_building)
-//            }
-//        }
-//    }
 }
 
 

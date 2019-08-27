@@ -5,8 +5,10 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.graphics.Color
 import android.text.Editable
+import android.util.Log
 import android.widget.EditText
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 
 class DateAndTimePicker {
@@ -47,7 +49,7 @@ class DateAndTimePicker {
             val datePicker =
                 DatePickerDialog(context, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
 
-                        val selectedDate = Calendar.getInstance()
+                    val selectedDate = Calendar.getInstance()
                     selectedDate.set(Calendar.YEAR, year)
                     selectedDate.set(Calendar.MONTH, month)
                     selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
@@ -57,6 +59,38 @@ class DateAndTimePicker {
                 }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH))
 
             datePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000)
+
+            now.add(Calendar.MONTH,3)
+            datePicker.datePicker.maxDate = (now.timeInMillis)
+            datePicker.show()
+        }
+
+        fun getDatePickerDialogForOneMonth(context: Context, setDate: EditText, toDate: String) {
+            val dateFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+            val now = Calendar.getInstance()
+            val arrayDate = toDate.split("-").toMutableList()
+            for (i in arrayDate.indices){
+                if (i ==1)
+                arrayDate[i] = (arrayDate[1].toInt()+1).toString()
+            }
+            val updatedDate = arrayDate.joinToString(separator = "-")
+            val date = dateFormat.parse(toDate)
+            val time = date.time
+            val date1 = dateFormat.parse(updatedDate)
+            val datePicker =
+                DatePickerDialog(context, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+
+                    val selectedDate = Calendar.getInstance()
+                    selectedDate.set(Calendar.YEAR, year)
+                    selectedDate.set(Calendar.MONTH, month)
+                    selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                    val nowDate: String = dateFormat.format(selectedDate.time).toString()
+                    setDate.text = Editable.Factory.getInstance().newEditable(nowDate)
+                }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH))
+
+            datePicker.datePicker.minDate = time
+            datePicker.datePicker.maxDate = date1.time
             datePicker.show()
         }
     }

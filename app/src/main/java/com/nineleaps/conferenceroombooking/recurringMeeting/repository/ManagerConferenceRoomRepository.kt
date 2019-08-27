@@ -1,5 +1,6 @@
 package com.nineleaps.conferenceroombooking.recurringMeeting.repository
 
+import android.util.Log
 import com.example.conferenceroomapp.model.ManagerConference
 import com.nineleaps.conferenceroombooking.model.RoomDetails
 import com.nineleaps.conferenceroombooking.services.ResponseListener
@@ -11,6 +12,10 @@ import retrofit2.Response
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import android.R.string
+import org.json.JSONObject
+import java.lang.Exception
+
 
 class ManagerConferenceRoomRepository @Inject constructor() {
     /**
@@ -39,12 +44,10 @@ class ManagerConferenceRoomRepository @Inject constructor() {
             }
 
             override fun onResponse(call: Call<List<RoomDetails>>, response: Response<List<RoomDetails>>) {
-
                 if ((response.code() == Constants.OK_RESPONSE) or (response.code() == Constants.SUCCESSFULLY_CREATED)) {
                     listener.onSuccess(response.body()!!)
-                } else {
+                } else
                     listener.onFailure(response.code())
-                }
             }
         })
     }

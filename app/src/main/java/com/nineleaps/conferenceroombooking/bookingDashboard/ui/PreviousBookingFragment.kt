@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -45,6 +46,9 @@ class PreviousBookingFragment : Fragment() {
     var pagination: Int = 1
     var hasMoreItem: Boolean = false
     var isApiCalled: Boolean = true
+    var isScrolledState: Boolean = false
+    var currentPage: Int = 0
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         HideSoftKeyboard.hideKeyboard(activity!!)
@@ -106,7 +110,6 @@ class PreviousBookingFragment : Fragment() {
 
     private fun getViewModel() {
         mProgressBar.visibility = View.VISIBLE
-        //progressDialog.show()
         mBookingDashBoardViewModel.getBookingList(
             mBookingDashboardInput
         )
@@ -127,6 +130,13 @@ class PreviousBookingFragment : Fragment() {
         previous__recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
+                    isScrolledState = true
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE)
+                    isScrolledState = false
+            }
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
                 if (!recyclerView.canScrollVertically(1) && !isApiCalled && hasMoreItem) {
                     isApiCalled = true
                     pagination++
@@ -135,6 +145,8 @@ class PreviousBookingFragment : Fragment() {
                     mBookingDashBoardViewModel.getBookingList(
                         mBookingDashboardInput
                     )
+                } else if (currentPage > 1 && isScrolledState ) {
+                    ShowToast.show(activity!!, Constants.NO_CONTENT_FOUND)
                 }
             }
         })
@@ -165,16 +177,15 @@ class PreviousBookingFragment : Fragment() {
             previous_progress_bar.visibility = View.GONE
             previous__booking_refresh_layout.isRefreshing = false
             mProgressBar.visibility = View.GONE
-            //progressDialog.dismiss()
             previous__empty_view.visibility = View.GONE
             hasMoreItem = it.paginationMetaData!!.nextPage!!
+            currentPage = it.paginationMetaData!!.currentPage!!
             setFilteredDataToAdapter(it.dashboard!!)
         })
         mBookingDashBoardViewModel.returnFailure().observe(this, Observer {
             previous_progress_bar.visibility = View.GONE
             previous__booking_refresh_layout.isRefreshing = false
             mProgressBar.visibility = View.GONE
-            //progressDialog.dismiss()
             if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else if (it == Constants.NO_CONTENT_FOUND && finalList.size == 0) {

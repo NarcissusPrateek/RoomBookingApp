@@ -59,26 +59,16 @@ class SignIn : AppCompatActivity() {
         setContentView(R.layout.activity_signin)
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         auth = FirebaseAuth.getInstance()
-        // crashHandler()
         ButterKnife.bind(this)
         initialize()
         observeData()
         Hawk.init(this).build()
         Firebase.FirebaseDeviceId()
-
+        Firebase.FirebaseToken()
     }
 
 
-//    private fun crashHandler() {
-//        val foreground :ForegroundCounter= ForegroundCounter().createAndInstallCallbacks(application)
-//        val defaultHandler:Thread.UncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
-//        Thread.setDefaultUncaughtExceptionHandler{ t: Thread?, e: Throwable? ->
-//            if (foreground.inForeground())
-//                defaultHandler.uncaughtException(t,e)
-//            else
-//                Handler(Looper.getMainLooper()).postAtFrontOfQueue ({ Runtime.getRuntime().exit(0) })
-//        }
-//    }
+
 
     @OnClick(R.id.sign_in_button)
     fun signIn() {
@@ -159,13 +149,7 @@ class SignIn : AppCompatActivity() {
         }
     }
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-
-        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
-
-        setTokenToAccessToken(acct.idToken)
-        Log.i("account",acct.idToken.toString())
-        Log.i("Credential",credential.toString())
-
+          setTokenToAccessToken(acct.idToken)
     }
     /**
      * Sign out from application
@@ -195,7 +179,7 @@ class SignIn : AppCompatActivity() {
      */
     private fun checkRegistration() {
         progressDialog.show()
-        Hawk.put("Device", FirebaseInstanceId.getInstance().getToken())
+        Hawk.put("Device", FirebaseInstanceId.getInstance().token)
         mCheckRegistrationViewModel.checkRegistration(Hawk.get("Device"))
     }
 

@@ -1,5 +1,6 @@
 package com.nineleaps.conferenceroombooking.recurringMeeting.repository
 
+import android.util.Log
 import com.nineleaps.conferenceroombooking.model.ManagerBooking
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
@@ -39,9 +40,11 @@ class ManagerBookingRepository @Inject constructor() {
             }
 
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+
                 if ((response.code() == Constants.OK_RESPONSE) or (response.code() == Constants.SUCCESSFULLY_CREATED)) {
                     listener.onSuccess(response.code())
                 } else {
+
                     listener.onFailure(response.code())
                 }
             }

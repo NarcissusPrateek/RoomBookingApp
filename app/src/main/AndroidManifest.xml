@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_PROFILE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <application
             android:name=".BaseApplication"
@@ -22,15 +23,25 @@
                 android:name="io.fabric.ApiKey"
                 android:value="dfb427f6e30bbedadb01b9ab540f56eb9aeaa4ce"/>
 
-        <service
-                    android:name=".NotificationService"
+        <!--
+         android:permission="com.google.android.c2dm.permission.SEND"
                 android:enabled="true"
-                android:exported="true">
+                 android:exported="true"
+        -->
+        <service  android:name=".NotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/ic_menu_send" />
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_color"
+                android:resource="@color/colorAccent" />
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_channel_id"
+                android:value="Notification" />
         <activity
                 android:name=".checkConnection.NoInternetConnectionActivity"
                 android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"/>

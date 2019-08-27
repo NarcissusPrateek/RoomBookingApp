@@ -26,7 +26,8 @@ class ShowToast {
                 Constants.NOT_FOUND to mContext.getString(R.string.not_found),
                 Constants.INTERNAL_SERVER_ERROR to mContext.getString(R.string.internal_server_error),
                 Constants.UNAVAILABLE_SLOT to mContext.getString(R.string.slot_unavailable),
-                Constants.POOR_INTERNET_CONNECTION to mContext.getString(R.string.poor_internet_connection)
+                Constants.POOR_INTERNET_CONNECTION to mContext.getString(R.string.poor_internet_connection),
+                Constants.UNPROCESSABLE to "Invalid Start Time and End Time"
             )
             if (statusCodeMap[errorCode]==null)
                 return mContext.getString(R.string.internal_server_error)

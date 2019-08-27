@@ -190,7 +190,8 @@ dependencies {
 
     //Hawk for the Shared Preference
     implementation "com.orhanobut:hawk:2.0.1"
-
+    //MaxHeight ScrollView Library
+    implementation "com.bskim:maxheightscrollview:1.0.0@aar"
 
 }
 sonarqube {

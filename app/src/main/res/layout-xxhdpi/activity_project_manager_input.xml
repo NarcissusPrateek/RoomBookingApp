@@ -150,33 +150,6 @@
                     android:layout_marginStart="@dimen/dp_16"
                     android:textSize="@dimen/sp_12"
                     android:text="@string/selected_days_list_can_t_be_empty"/>
-
-            <!--<com.google.android.material.textfield.TextInputLayout-->
-            <!--android:id="@+id/manager_purpose_layout"-->
-            <!--android:layout_below="@id/error_day_selector_text_view"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_marginStart="@dimen/dp_8"-->
-            <!--android:layout_marginEnd="@dimen/dp_8"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:focusable="true"-->
-            <!--android:focusableInTouchMode="true"-->
-            <!--android:background="@color/white"-->
-            <!--android:layout_marginTop="@dimen/dp_10"-->
-            <!--app:errorEnabled="true"-->
-            <!--style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">-->
-            <!--<com.google.android.material.textfield.TextInputEditText-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:id="@+id/manager_event_name_text_view"-->
-            <!--android:maxLines="1"-->
-            <!--android:singleLine="true"-->
-            <!--android:textColor="@color/textColorGray"-->
-            <!--android:hint="@string/purpose"-->
-            <!--android:drawableStart="@drawable/ic_local_offer_black_24dp"-->
-            <!--android:drawablePadding="@dimen/dp_8"/>-->
-            <!--</com.google.android.material.textfield.TextInputLayout>-->
-
-
             <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/manager_capacity_layout"
                     android:layout_below="@id/error_day_selector_text_view"
@@ -205,31 +178,6 @@
                         android:drawableStart="@drawable/ic_person_black_24dp"
                         android:drawablePadding="@dimen/dp_8"/>
             </com.google.android.material.textfield.TextInputLayout>
-
-            <!--<Spinner-->
-            <!--android:layout_below="@+id/manager_capacity_layout"-->
-            <!--android:layout_marginStart="@dimen/dp_8"-->
-            <!--android:layout_marginEnd="@dimen/dp_8"-->
-            <!--android:id="@+id/manager_building_name_spinner"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:paddingBottom="@dimen/dp_16"-->
-            <!--android:paddingTop="@dimen/dp_16"-->
-            <!--android:drawablePadding="@dimen/drawable_padding_5dp"-->
-            <!--android:layout_marginTop="@dimen/dp_16"-->
-            <!--android:background="@drawable/spinner_rect"/>-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/manager_text_view_error_spinner_building"-->
-            <!--android:layout_below="@id/manager_building_name_spinner"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textColor="@color/error_color"-->
-            <!--android:visibility="invisible"-->
-            <!--android:layout_marginStart="@dimen/dp_16"-->
-            <!--android:textSize="@dimen/sp_12"-->
-            <!--android:text="@string/select_building"/>-->
-
             <Button
                     android:text="search"
                     android:layout_below="@+id/manager_capacity_layout"
@@ -273,6 +221,7 @@
             <ProgressBar
                     android:layout_centerInParent="true"
                     android:visibility="gone"
+                    android:elevation="@dimen/dp_2"
                     android:id="@+id/project_manager_progress_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
