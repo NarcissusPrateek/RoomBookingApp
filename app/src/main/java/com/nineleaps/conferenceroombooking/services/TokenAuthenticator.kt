@@ -20,12 +20,10 @@ class TokenAuthenticator : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
         val mContext = BaseApplication.appContext
         Hawk.init(mContext).build()
-        val preference = mContext?.getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE)
         val mToken = RefreshToken(
             Hawk.get<String>(mContext!!.getString(R.string.token)),
             Hawk.get<String>(Constants.REFRESH_TOKEN)
-//            preference?.getString(mContext.getString(R.string.token), "Not set"),
-//            preference?.getString(Constants.REFRESH_TOKEN, "Not set")
+
         )
         val retrofitResponse = RestClient.getWebServiceData()?.getNewToken(mToken)?.execute()
         if (retrofitResponse != null && retrofitResponse.code() == 200) {
@@ -34,7 +32,6 @@ class TokenAuthenticator : Authenticator {
                 retrofitResponse.body()?.refreshToken!!,
                 retrofitResponse.body()?.jwtToken!!
             )
-            Log.i("RefershToken",Hawk.get(Constants.REFRESH_TOKEN))
             return response.request().newBuilder()
                 .header(mContext.getString(R.string.authorization), "Bearer ${retrofitResponse.body()?.jwtToken!!}")
                 .build()

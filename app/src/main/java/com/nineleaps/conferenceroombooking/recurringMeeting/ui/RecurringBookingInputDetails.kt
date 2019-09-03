@@ -58,7 +58,7 @@ class RecurringBookingInputDetails : BaseActivity() {
     lateinit var mRecyclerView: RecyclerView
 
     @BindView(R.id.manager_filter_edit_text)
-    lateinit var filterEditText: EditText
+    lateinit var filterSearchEditText: EditText
 
     @BindView(R.id.manager_room_capacity)
     lateinit var roomCapacityEditText: EditText
@@ -115,7 +115,7 @@ class RecurringBookingInputDetails : BaseActivity() {
         setTextChangeListener()
         initRecyclerView()
         setClickListenerOnEditText()
-        filterEditText.onRightDrawableClicked {
+        filterSearchEditText.onRightDrawableClicked {
             it.text.clear()
         }
         hideSoftKeyBoard()
@@ -343,7 +343,7 @@ class RecurringBookingInputDetails : BaseActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validateRoomCapacity()
+                validateRecurringRoomCapacity()
             }
         })
     }
@@ -351,7 +351,7 @@ class RecurringBookingInputDetails : BaseActivity() {
     /**
      * validation for spinner
      */
-    private fun validateRoomCapacity(): Boolean {
+    private fun validateRecurringRoomCapacity(): Boolean {
         return if (roomCapacityEditText.text.toString().trim().isEmpty()) {
             manager_capacity_layout.error = getString(R.string.field_cant_be_empty)
             false
@@ -486,7 +486,7 @@ class RecurringBookingInputDetails : BaseActivity() {
      * this function ensures that user entered values for all editable fields
      */
     private fun validate(): Boolean {
-        if (!validateFromTime() or !validateToTime() or !validateFromDate() or !validateToDate() or !validateSelectedDayList() or !validateRoomCapacity()) {
+        if (!validateFromTime() or !validateToTime() or !validateFromDate() or !validateToDate() or !validateSelectedDayList() or !validateRecurringRoomCapacity()) {
             return false
         }
         return true
@@ -704,7 +704,7 @@ class RecurringBookingInputDetails : BaseActivity() {
      * take input from edit text and set addTextChangedListener
      */
     private fun setClickListenerOnEditText() {
-        filterEditText.addTextChangedListener(object : TextWatcher {
+        filterSearchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 /**
                  * Nothing Here
@@ -713,18 +713,18 @@ class RecurringBookingInputDetails : BaseActivity() {
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 when {
-                    charSequence.isEmpty() -> filterEditText.setCompoundDrawablesWithIntrinsicBounds(
+                    charSequence.isEmpty() -> filterSearchEditText.setCompoundDrawablesWithIntrinsicBounds(
                         0,
                         0,
                         R.drawable.ic_search,
                         0
                     )
-                    else -> filterEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
+                    else -> filterSearchEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
                 }
             }
 
             override fun afterTextChanged(editable: Editable) {
-                filter(editable.toString())
+                filterSearch(editable.toString())
             }
         })
     }
@@ -732,7 +732,7 @@ class RecurringBookingInputDetails : BaseActivity() {
     /**
      * filter matched data from employee list and set updated list to adapter
      */
-    fun filter(text: String) {
+    fun filterSearch(text: String) {
         val filterName = java.util.ArrayList<RoomDetails>()
         for (s in mListOfRooms) {
             if (s.roomName!!.toLowerCase().contains(text.toLowerCase()) || s.buildingName!!.toLowerCase().contains(text.toLowerCase())) {

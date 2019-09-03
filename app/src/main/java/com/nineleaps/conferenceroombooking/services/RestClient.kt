@@ -27,8 +27,8 @@ class RestClient {
         init {
             try {
                 clientLogin.addInterceptor(logger)
-                clientLogin.readTimeout(120, TimeUnit.SECONDS)
-                    .connectTimeout(120, TimeUnit.SECONDS)
+                clientLogin.readTimeout(40, TimeUnit.SECONDS)
+                    .connectTimeout(30, TimeUnit.SECONDS)
                 clientLogin.addInterceptor { chain ->
                     var request = chain.request()
                     request = request.newBuilder()

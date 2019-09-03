@@ -3,6 +3,7 @@ package com.nineleaps.conferenceroombooking.signIn.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import androidx.lifecycle.Observer
@@ -156,6 +157,7 @@ class SignIn : BaseActivity() {
                 startActivityForResult(i, Constants.RES_CODE)
             }
         } catch (e: ApiException) {
+            Log.i("GoogleAPIException",e.toString())
         }
     }
 

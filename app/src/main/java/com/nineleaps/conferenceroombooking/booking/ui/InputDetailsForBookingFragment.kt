@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.nineleaps.conferenceroombooking.booking.ui
 
 import android.annotation.SuppressLint
@@ -49,7 +51,7 @@ import kotlinx.android.synthetic.main.activity_booking_input_from_user.suggestio
 import javax.inject.Inject
 
 
-@Suppress("DEPRECATION")
+
 class InputDetailsForBookingFragment : Fragment() {
 
     @Inject
@@ -179,7 +181,7 @@ class InputDetailsForBookingFragment : Fragment() {
         mConferenceRoomViewModel.getConferenceRoomList(mInputDetailsForRoom)
     }
 
-    fun initRecyclerView() {
+    private fun initRecyclerView() {
         customAdapter =
             RoomAdapter(roomList, activity!!, object : RoomAdapter.ItemClickListener {
                 override fun onItemClick(
@@ -200,7 +202,7 @@ class InputDetailsForBookingFragment : Fragment() {
             },
                 object : RoomAdapter.MoreAminitiesListner {
                     override fun moreAmenities(position: Int) {
-                        showDialogForMoreAminities(roomList[position].amenities!!, position)
+                        showDialogForMoreAminities(roomList[position].amenities!!)
 
                     }
 
@@ -208,7 +210,7 @@ class InputDetailsForBookingFragment : Fragment() {
         mRecyclerView.adapter = customAdapter
     }
 
-    private fun showDialogForMoreAminities(items: HashMap<Int, String>, position: Int) {
+    private fun showDialogForMoreAminities(items: HashMap<Int, String>) {
         val arrayListOfItems = ArrayList<String>()
 
         for (item in items) {
@@ -277,8 +279,6 @@ class InputDetailsForBookingFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.RES_CODE && resultCode == Activity.RESULT_OK) {
             getViewModelForConferenceRoomList(mInputDetailsForRoom)
-        } else {
-
         }
     }
 

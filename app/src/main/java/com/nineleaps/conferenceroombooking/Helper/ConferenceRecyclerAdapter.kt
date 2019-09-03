@@ -41,8 +41,8 @@ class ConferenceRecyclerAdapter(
         mMoreAminitiesListener = mMoreListener
 
         holder.conferenceName.text =
-            conferencceList[position].roomName + " [${conferencceList[position].capacity} people]"
-        //   holder.roomCapacity.text = " [${conferencceList[position].capacity} people]"
+            conferencceList[position].roomName
+           holder.roomCapacity.text =  "${conferencceList[position].capacity} people"
         if (conferencceList[position].permission!! == true) {
             holder.permissionTextView.visibility = View.VISIBLE
         } else {
@@ -52,24 +52,24 @@ class ConferenceRecyclerAdapter(
         val amenities = conferencceList[position].amenities!!.values.toMutableList()
         for (i in amenities.indices) {
             if (i > 3) {
-                setDrawable("More", holder.amenity3)
+                SetDrawable.setDrawable("More", holder.amenity3)
                 holder.amenity3.text = "More"
                 holder.amenity3.setTextColor(Color.parseColor("#0072BC"))
                 holder.amenity3.visibility = View.VISIBLE
             } else if (i == 3) {
-                setDrawable(amenities[3], holder.amenity3)
+                SetDrawable.setDrawable(amenities[3], holder.amenity3)
                 holder.amenity3.text = conferencceList[position].amenities!!.getValue(3)
                 holder.amenity3.setTextColor(Color.parseColor("#4F4F4F"))
                 holder.amenity3.visibility = View.VISIBLE
             }
             if (i == 0) {
-                setDrawable(amenities[0], holder.amenity0)
+                SetDrawable.setDrawable(amenities[0], holder.amenity0)
                 holder.amenity0.visibility = View.VISIBLE
             } else if (i == 1) {
-                setDrawable(amenities[1], holder.amenity1)
+                SetDrawable.setDrawable(amenities[1], holder.amenity1)
                 holder.amenity1.visibility = View.VISIBLE
             } else if (i == 2) {
-                setDrawable(amenities[2], holder.amenity2)
+                SetDrawable.setDrawable(amenities[2], holder.amenity2)
                 holder.amenity2.visibility = View.VISIBLE
             }
         }
@@ -100,39 +100,9 @@ class ConferenceRecyclerAdapter(
         var amenity3: TextView = itemView.findViewById(R.id.dashboard_ani_4)
         var deleteRoom: TextView = itemView.findViewById(R.id.delete_room_text_view)
         var editRoom: TextView = itemView.findViewById(R.id.edit_room_text_view)
-        // var roomCapacity: TextView = itemView.findViewById(R.id.room_capacity_text_view)
+        var roomCapacity: TextView = itemView.findViewById(R.id.room_capacity_text_view)
         var blockRoomTextView: TextView = itemView.findViewById(R.id.block_room_text_view)
         var conferencelist: ConferenceList? = null
-    }
-
-    private fun setDrawable(amitie: String, targetTextView: TextView) {
-        when (amitie) {
-            "Projector" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_projector, 0, 0, 0)
-            }
-            "WhiteBoard-Marker" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_white_board2, 0, 0, 0)
-            }
-            "Monitor" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_live_tv_black_24dp, 0, 0, 0)
-            }
-            "Speaker" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_speaker, 0, 0, 0)
-            }
-            "Extension Board" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_extension_board, 0, 0, 0)
-            }
-            "TV", "tv" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_tv_black_24dp, 0, 0, 0)
-            }
-            "More" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unfold_more_black_24dp, 0, 0, 0)
-            }
-            else -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_devices_other_black_24dp, 0, 0, 0)
-            }
-        }
-        targetTextView.text = amitie
     }
 
     /**

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -89,7 +88,8 @@ class UpcomingBookingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
-        observeData()
+        observeDataForListOfBookings()
+        observeDataForCancelationOfBookings()
     }
 
     private fun initBookedDashBoardRepo() {
@@ -114,7 +114,6 @@ class UpcomingBookingFragment : Fragment() {
     /**
      * Initialize all late init fields
      */
-    @SuppressLint("ResourceAsColor")
     fun init() {
         mProgressBar = activity!!.findViewById(R.id.upcoming_main_progress_bar)
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(activity!!)
@@ -122,7 +121,7 @@ class UpcomingBookingFragment : Fragment() {
         initComponentForUpcomingFragment()
         initLateInitializerVariables()
         initBookedDashBoardRepo()
-        booking_refresh_layout.setColorSchemeColors(R.color.colorPrimary)
+        booking_refresh_layout.setColorSchemeColors(ContextCompat.getColor(activity!!,R.color.colorPrimary))
         refreshOnPullDown()
         if (NetworkState.appIsConnectedToInternet(activity!!)) {
             getViewModel()
@@ -170,7 +169,7 @@ class UpcomingBookingFragment : Fragment() {
             },
             object : UpcomingBookingAdapter.ShowMembersListener {
                 override fun showMembers(mEmployeeList: List<String>, position: Int) {
-                    showMeetingMembers(mEmployeeList, position)
+                    ShowAlertDialogForEmployeeList.showEmployeeList(mEmployeeList, position,finalList,activity!!)
                 }
 
             },
@@ -239,7 +238,7 @@ class UpcomingBookingFragment : Fragment() {
     /**
      * all observer for LiveData
      */
-    private fun observeData() {
+    private fun observeDataForListOfBookings() {
 
         /**
          * observing data for booking list
@@ -271,9 +270,15 @@ class UpcomingBookingFragment : Fragment() {
             }
         })
 
-        /**
-         * observing data for cancel booking
-         */
+
+
+
+    }
+
+    /**
+     * observing data for cancel booking
+     */
+    private fun observeDataForCancelationOfBookings(){
         mBookingDashBoardViewModel.returnBookingCancelled().observe(this, Observer {
             Toasty.success(activity!!, getString(R.string.cancelled_successful), Toast.LENGTH_SHORT, true).show()
             checkStatus = true
@@ -299,35 +304,6 @@ class UpcomingBookingFragment : Fragment() {
                 ShowToast.show(activity!!, it as Int)
             }
         })
-
-    }
-
-    /**
-     * Display the list of employee names in the alert dialog
-     */
-    fun showMeetingMembers(mEmployeeList: List<String>, position: Int) {
-        val arrayListOfNames = ArrayList<String>()
-
-        if (mEmployeeList.isEmpty()) {
-            arrayListOfNames.add(finalList[position].organizer + getString(R.string.organizer))
-
-        } else {
-            arrayListOfNames.add(finalList[position].organizer + getString(R.string.organizer))
-
-            for (item in mEmployeeList) {
-                arrayListOfNames.add(item)
-            }
-        }
-        val listItems = arrayOfNulls<String>(arrayListOfNames.size)
-        arrayListOfNames.toArray(listItems)
-        val builder = AlertDialog.Builder(activity!!)
-        builder.setItems(
-            listItems
-        ) { _, _ -> }
-        val mDialog = builder.create()
-        mDialog.setOnShowListener { DialogInterface.OnShowListener { mDialog.show() } }
-        mDialog.show()
-
     }
 
     private fun showDialogForMoreAminities(items: List<String>) {
@@ -340,7 +316,7 @@ class UpcomingBookingFragment : Fragment() {
         val listItems = arrayOfNulls<String>(arrayListOfItems.size)
         arrayListOfItems.toArray(listItems)
         val builder = AlertDialog.Builder(activity!!)
-        builder.setTitle("Amenities:")
+        builder.setTitle(getString(R.string.amenities_title))
         builder.setItems(listItems) { _, _ ->
 
         }

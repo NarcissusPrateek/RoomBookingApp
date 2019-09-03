@@ -272,5 +272,6 @@
     <string name="nav_logout">Logout</string>
     <string name="more_amenity_value">More</string>
     <string name="available">Available</string>
+    <string name="amenities_title">Amenities:</string>
 
 </resources>

@@ -9,10 +9,9 @@ import com.nineleaps.conferenceroombooking.R;
 
 public class ScrollViewWithMaxHeight extends ScrollView {
 
-    public static int WITHOUT_MAX_HEIGHT_VALUE = -1;
+    private static final int WITHOUTMAXVALUE = -1;
 
-    private int maxHeight = WITHOUT_MAX_HEIGHT_VALUE;
-    private final int defaultHeight = 200;
+    private int maxHeight = WITHOUTMAXVALUE;
 
     public ScrollViewWithMaxHeight(Context context) {
         super(context);
@@ -41,7 +40,7 @@ public class ScrollViewWithMaxHeight extends ScrollView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         try {
             int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-            if (maxHeight != WITHOUT_MAX_HEIGHT_VALUE
+            if (maxHeight != WITHOUTMAXVALUE
                     && heightSize > maxHeight) {
                 heightSize = maxHeight;
             }

@@ -324,7 +324,7 @@ class AddingConference : BaseActivity() {
             mConferenceRoom.bId = bundle!!.get(Constants.EXTRA_BUILDING_ID)!!.toString().toInt()
         }
         mConferenceRoom.roomName =
-            conferenceRoomEditText.text.toString().trim() + " " + floorEditText.text.toString() + Floor.FloorToString(
+            conferenceRoomEditText.text.toString().trim() + " " + floorEditText.text.toString() + Floor.floorToString(
                 floorEditText.text.toString().trim().toInt()
             )
         mConferenceRoom.capacity = roomCapacity.text.toString().toInt()

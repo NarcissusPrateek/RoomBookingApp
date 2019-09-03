@@ -122,7 +122,7 @@ class PreviousBookingFragment : Fragment() {
             activity!!,
             object : PreviousBookingAdapter.ShowMembersListener {
                 override fun showMembers(mEmployeeList: List<String>, position: Int) {
-                    showMeetingMembers(mEmployeeList, position)
+                    ShowAlertDialogForEmployeeList.showEmployeeList(mEmployeeList, position,finalList,activity!!)
                 }
 
             }
@@ -197,34 +197,6 @@ class PreviousBookingFragment : Fragment() {
             }
         })
     }
-
-
-    /**
-     * Display the list of employee names in the alert dialog
-     */
-    fun showMeetingMembers(mEmployeeList: List<String>, position: Int) {
-        val arrayListOfNames = ArrayList<String>()
-
-        if (mEmployeeList.isEmpty()) {
-            arrayListOfNames.add(finalList[position].organizer + getString(R.string.organizer))
-
-        } else {
-            arrayListOfNames.add(finalList[position].organizer + getString(R.string.organizer))
-
-            for (item in mEmployeeList) {
-                arrayListOfNames.add(item)
-            }
-        }
-        val listItems = arrayOfNulls<String>(arrayListOfNames.size)
-        arrayListOfNames.toArray(listItems)
-        val builder = AlertDialog.Builder(activity!!)
-        builder.setItems(
-            listItems
-        ) { _, _ -> }
-        val mDialog = builder.create()
-        mDialog.show()
-    }
-
 
     /**
      * this function will call a function which will filter the data after that set the filtered data to adapter

@@ -3,9 +3,7 @@ package com.nineleaps.conferenceroombooking.Helper
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -13,9 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.nineleaps.conferenceroombooking.R
 import com.nineleaps.conferenceroombooking.model.Dashboard
-import com.nineleaps.conferenceroombooking.model.EmployeeList
 import com.nineleaps.conferenceroombooking.model.GetIntentDataFromActvity
-import com.nineleaps.conferenceroombooking.utils.Constants
 import com.nineleaps.conferenceroombooking.utils.FormatDate
 import com.nineleaps.conferenceroombooking.utils.FormatTimeAccordingToZone
 import java.text.SimpleDateFormat
@@ -78,37 +74,12 @@ class UpcomingBookingAdapter(
                 editActivity(position)
             }
         }
-        if (dashboardItemList[position].status == Constants.BOOKING_DASHBOARD_PENDING) {
-            holder.statusTextView.visibility = View.VISIBLE
-        } else {
-            holder.statusTextView.visibility = View.GONE
-        }
-        if (dashboardItemList[position].amenities!!.size == 0)
-            holder.aminity_title.text = mContext.getString(R.string.no_aminities)
+
+        if (dashboardItemList[position].amenities!!.isEmpty())
+            holder.aminityTitle.text = mContext.getString(R.string.no_aminities)
         else
             for (i in dashboardItemList[position].amenities!!.indices) {
-                if (i > 3) {
-                    setDrawable("More", holder.amenity3)
-                    holder.amenity3.text = "More"
-                    holder.amenity3.setTextColor(Color.parseColor("#0072BC"))
-                    holder.amenity3.visibility = View.VISIBLE
-                } else if (i == 3) {
-                    setDrawable(dashboardItemList[position].amenities!![i], holder.amenity3)
-                    holder.amenity3.text = dashboardItemList[position].amenities!![3]
-                    holder.amenity3.setTextColor(Color.parseColor("#4F4F4F"))
-                    holder.amenity3.visibility = View.VISIBLE
-                }
-
-                if (i == 0) {
-                    setDrawable(dashboardItemList[position].amenities!![i], holder.amenity0)
-                    holder.amenity0.visibility = View.VISIBLE
-                } else if (i == 1) {
-                    setDrawable(dashboardItemList[position].amenities!![i], holder.amenity1)
-                    holder.amenity1.visibility = View.VISIBLE
-                } else if (i == 2) {
-                    setDrawable(dashboardItemList[position].amenities!![i], holder.amenity2)
-                    holder.amenity2.visibility = View.VISIBLE
-                }
+                getAmenitiesHolder(holder,i,position)
             }
 
         holder.amenity3.setOnClickListener {
@@ -129,35 +100,36 @@ class UpcomingBookingAdapter(
         setFunctionOnButton(holder, position)
     }
 
-    private fun setDrawable(amitie: String, targetTextView: TextView) {
-        when (amitie) {
-            "Projector" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_projector, 0, 0, 0)
+    private fun getAmenitiesHolder(holder:ViewHolder,i:Int,position: Int){
+        when {
+            i > 3 -> {
+                SetDrawable.setDrawable(mContext.getString(R.string.more_amenity_value), holder.amenity3)
+                holder.amenity3.text = mContext.getString(R.string.more_amenity_value)
+                holder.amenity3.setTextColor(Color.parseColor("#0072BC"))
+                holder.amenity3.visibility = View.VISIBLE
             }
-            "WhiteBoard-Marker" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_white_board2, 0, 0, 0)
+            i == 3 -> {
+                SetDrawable.setDrawable(dashboardItemList[position].amenities!![i], holder.amenity3)
+                holder.amenity3.text = dashboardItemList[position].amenities!![3]
+                holder.amenity3.setTextColor(Color.parseColor("#4F4F4F"))
+                holder.amenity3.visibility = View.VISIBLE
             }
-            "Monitor" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_live_tv_black_24dp, 0, 0, 0)
+        }
+        when (i) {
+            0 -> {
+                SetDrawable.setDrawable(dashboardItemList[position].amenities!![i], holder.amenity0)
+                holder.amenity0.visibility = View.VISIBLE
             }
-            "Speaker" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_speaker, 0, 0, 0)
+            1 -> {
+                SetDrawable.setDrawable(dashboardItemList[position].amenities!![i], holder.amenity1)
+                holder.amenity1.visibility = View.VISIBLE
             }
-            "Extension Board" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_extension_board, 0, 0, 0)
-            }
-            "TV", "tv" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_tv_black_24dp, 0, 0, 0)
-            }
-            "More" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unfold_more_black_24dp, 0, 0, 0)
-            }
-            else -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_devices_other_black_24dp, 0, 0, 0)
+            2 -> {
+                SetDrawable.setDrawable(dashboardItemList[position].amenities!![i], holder.amenity2)
+                holder.amenity2.visibility = View.VISIBLE
             }
         }
 
-        targetTextView.text = amitie
     }
 
     /**
@@ -185,17 +157,15 @@ class UpcomingBookingAdapter(
         var purposeTextView: TextView = itemView.findViewById(R.id.purpose)
         var cancelButton: TextView = itemView.findViewById(R.id.btnCancel)
         var showButton: ImageView = itemView.findViewById(R.id.btnshow)
-        var statusTextView: TextView = itemView.findViewById(R.id.status_text_view)
         var editTextView: TextView = itemView.findViewById(R.id.editBtn)
         var attendeeTextView: TextView = itemView.findViewById(R.id.attendee_text_view)
         var actionLayout: LinearLayout = itemView.findViewById(R.id.action_button_linear_layout)
         var landingView: View = itemView.findViewById(R.id.view_landing)
-        var aminity_title: TextView = itemView.findViewById(R.id.aminities_text_view)
+        var aminityTitle: TextView = itemView.findViewById(R.id.aminities_text_view)
         var amenity0: TextView = itemView.findViewById(R.id.ani_1)
         var amenity1: TextView = itemView.findViewById(R.id.ani_2)
         var amenity2: TextView = itemView.findViewById(R.id.ani_3)
         var amenity3: TextView = itemView.findViewById(R.id.ani_4)
-        var amenity4: TextView = itemView.findViewById(R.id.ani_5)
         var dashboard: Dashboard? = null
     }
 
@@ -283,20 +253,5 @@ class UpcomingBookingAdapter(
         fun moreAmenities(position: Int)
     }
 
-    /**
-     * click listener on right drawable
-     */
-    @SuppressLint("ClickableViewAccessibility")
-    private fun TextView.onRightDrawableClicked(onClicked: (view: TextView) -> Unit) {
-        this.setOnTouchListener { v, event ->
-            var hasConsumed = false
-            if (v is TextView && event.x >= v.width - v.totalPaddingRight) {
-                if (event.action == MotionEvent.ACTION_UP) {
-                    onClicked(this)
-                }
-                hasConsumed = true
-            }
-            hasConsumed
-        }
-    }
+
 }

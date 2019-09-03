@@ -125,58 +125,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-            <!--<LinearLayout-->
-            <!--android:orientation="vertical"-->
-            <!--android:id="@+id/aminities_list"-->
-            <!--android:layout_below="@id/aminities"-->
-            <!--android:layout_margin="@dimen/dp_8"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content">-->
-
-            <!--<CheckBox-->
-            <!--android:id="@+id/projector_check_box"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/projector"-->
-            <!--android:paddingStart="@dimen/dp_12"-->
-            <!--android:textSize="@dimen/sp_18"-->
-            <!--android:textColor="@color/textColorGray"-->
-            <!--/>-->
-            <!--<CheckBox-->
-            <!--android:id="@+id/monitor_check_box"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:paddingStart="@dimen/dp_12"-->
-            <!--android:text="@string/monitor"-->
-            <!--android:textSize="@dimen/sp_18"-->
-            <!--android:textColor="@color/textColorGray"/>-->
-
-            <!--<CheckBox-->
-            <!--android:id="@+id/speaker_check_box"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/speaker"-->
-            <!--android:paddingStart="@dimen/dp_12"-->
-            <!--android:textSize="@dimen/sp_18"-->
-            <!--android:textColor="@color/textColorGray"/>-->
-            <!--<CheckBox-->
-            <!--android:id="@+id/extension_board_check_box"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/extension_board"-->
-            <!--android:paddingStart="@dimen/dp_12"-->
-            <!--android:textSize="@dimen/sp_18"-->
-            <!--android:textColor="@color/textColorGray"/>-->
-            <!--<CheckBox-->
-            <!--android:id="@+id/whiteboard_marker_check_box"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/whiteboard_marker"-->
-            <!--android:paddingStart="@dimen/dp_12"-->
-            <!--android:textSize="@dimen/sp_18"-->
-            <!--android:textColor="@color/textColorGray"/>-->
-
-            <!--</LinearLayout>-->
             <include layout="@layout/checkbox"/>
             <Button android:id="@+id/add_conference_room"
                     android:layout_width="fill_parent"
@@ -189,50 +137,3 @@
     </androidx.cardview.widget.CardView>
 </androidx.core.widget.NestedScrollView>
 
-<!-- <ScrollView
-                    android:id="@+id/aminities_scrollView"
-                    android:padding="@dimen/dp_2"
-                    android:paddingBottom="@dimen/dp_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                <com.google.android.material.chip.ChipGroup
-                        android:layout_margin="@dimen/dp_5"
-                        app:chipSpacing="@dimen/dp_2"
-                        android:id="@+id/aminity_chipGroup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                </com.google.android.material.chip.ChipGroup>
-            </ScrollView>
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/card_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_below="@+id/aminities"
-                    android:focusableInTouchMode="true"
-                    android:focusable="true"
-                    android:background="@color/white"
-                    app:errorEnabled="true"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/search_edit_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:paddingLeft="@dimen/dp_16"
-                        android:singleLine="true"
-                        android:hint="@string/search"
-                        android:layout_marginTop="@dimen/dp_10"
-                        android:drawableEnd="@drawable/ic_search"
-                />
-            </com.google.android.material.textfield.TextInputLayout>
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/amenities_recyclerView"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/select_amenities_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_120">
-
-            </androidx.recyclerview.widget.RecyclerView>-->

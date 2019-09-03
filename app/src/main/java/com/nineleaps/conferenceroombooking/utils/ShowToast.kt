@@ -38,29 +38,3 @@ class ShowToast {
 
 }
 
-/*
-var message = mContext.getString(R.string.something_went_wrong)
-            when (errorCode) {
-                Constants.NOT_ACCEPTABLE -> {
-                    message = mContext.getString(R.string.parameter_missing)
-                }
-                Constants.NOT_MODIFIED -> {
-                    message = mContext.getString(R.string.not_modified_message)
-                }
-                Constants.NO_CONTENT_FOUND -> {
-                    message = mContext.getString(R.string.no_booking_available)
-                }
-                Constants.NOT_FOUND -> {
-                    message = mContext.getString(R.string.not_found)
-                }
-                Constants.INTERNAL_SERVER_ERROR -> {
-                    message = mContext.getString(R.string.internal_server_error)
-                }
-                Constants.UNAVAILABLE_SLOT -> {
-                    message = mContext.getString(R.string.slot_unavailable)
-                }
-                Constants.POOR_INTERNET_CONNECTION -> {
-                    message = mContext.getString(R.string.poor_internet_connection)
-                }
-            }
-        */

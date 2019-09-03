@@ -77,13 +77,13 @@ class RoomAdapter(
     private fun getAmenities(holder:ViewHolder,i:Int,position: Int){
         when {
             i > 3 -> {
-                setDrawable(mContext.getString(R.string.more_amenity_value), holder.amenity3)
+                SetDrawable.setDrawable(mContext.getString(R.string.more_amenity_value), holder.amenity3)
                 holder.amenity3.text = mContext.getString(R.string.more_amenity_value)
                 holder.amenity3.setTextColor(Color.parseColor("#0072BC"))
                 holder.amenity3.visibility = View.VISIBLE
             }
             i == 3 -> {
-                setDrawable(amenities[3], holder.amenity3)
+                SetDrawable.setDrawable(amenities[3], holder.amenity3)
                 holder.amenity3.text = roomDetailsList[position].amenities!!.getValue(3)
                 holder.amenity3.setTextColor(Color.parseColor("#4F4F4F"))
                 holder.amenity3.visibility = View.VISIBLE
@@ -91,49 +91,18 @@ class RoomAdapter(
         }
         when (i) {
             0 -> {
-                setDrawable(amenities[0], holder.amenity0)
+                SetDrawable.setDrawable(amenities[0], holder.amenity0)
                 holder.amenity0.visibility = View.VISIBLE
             }
             1 -> {
-                setDrawable(amenities[1], holder.amenity1)
+                SetDrawable.setDrawable(amenities[1], holder.amenity1)
                 holder.amenity1.visibility = View.VISIBLE
             }
             2 -> {
-                setDrawable(amenities[2], holder.amenity2)
+                SetDrawable.setDrawable(amenities[2], holder.amenity2)
                 holder.amenity2.visibility = View.VISIBLE
             }
         }
-    }
-    
-
-    private fun setDrawable(amitie: String, targetTextView: TextView) {
-        when (amitie) {
-            "Projector" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_projector, 0, 0, 0)
-            }
-            "WhiteBoard-Marker" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_white_board2, 0, 0, 0)
-            }
-            "Monitor" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_live_tv_black_24dp, 0, 0, 0)
-            }
-            "Speaker" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_speaker, 0, 0, 0)
-            }
-            "Extension Board" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_extension_board, 0, 0, 0)
-            }
-            "TV", "tv" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_tv_black_24dp, 0, 0, 0)
-            }
-            "More" -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unfold_more_black_24dp, 0, 0, 0)
-            }
-            else -> {
-                targetTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_devices_other_black_24dp, 0, 0, 0)
-            }
-        }
-        targetTextView.text = amitie
     }
 
 

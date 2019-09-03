@@ -3,9 +3,9 @@ package com.nineleaps.conferenceroombooking.manageConferenceRoom.ui
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -63,7 +63,8 @@ class ConferenceDashBoard : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         init()
-        observeData()
+        observeDataForConferenceRoom()
+        observeDataForDeleteConferenceRoom()
     }
 
     /**
@@ -131,7 +132,7 @@ class ConferenceDashBoard : BaseActivity() {
     /**
      * observe data from server
      */
-    private fun observeData() {
+    private fun observeDataForConferenceRoom() {
         mManageConferenceRoomViewModel.returnConferenceRoomList().observe(this, Observer {
             hideProgressDialog()
             mConferenceList.clear()
@@ -141,7 +142,7 @@ class ConferenceDashBoard : BaseActivity() {
             } else {
 
                 empty_view_blocked1.visibility = View.VISIBLE
-                empty_view_blocked1.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                empty_view_blocked1.setBackgroundColor(ContextCompat.getColor(this,R.color.white))
             }
             setAdapter()
         })
@@ -154,20 +155,25 @@ class ConferenceDashBoard : BaseActivity() {
             else if (it == Constants.NO_CONTENT_FOUND) {
 
                 empty_view_blocked1.visibility = View.VISIBLE
-                empty_view_blocked1.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                empty_view_blocked1.setBackgroundColor(ContextCompat.getColor(this,R.color.white))
             } else {
                 ShowToast.show(this, it as Int)
                 finish()
             }
         })
 
+    }
+    /**
+     * observe data from server for deletion
+     */
+    private fun observeDataForDeleteConferenceRoom(){
         mManageConferenceRoomViewModel.returnSuccessForDeleteRoom().observe(this, Observer {
             hideProgressDialog()
             if (cardPosition != -1)
                 mConferenceList.remove(mConferenceList[cardPosition])
             if (mConferenceList.isEmpty()) {
                 empty_view_blocked1.visibility = View.VISIBLE
-                empty_view_blocked1.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                empty_view_blocked1.setBackgroundColor(ContextCompat.getColor(this,R.color.white))
             }
             conferenceRoomAdapter.notifyDataSetChanged()
             Toasty.success(this, getString(R.string.successfull_deletion)).show()

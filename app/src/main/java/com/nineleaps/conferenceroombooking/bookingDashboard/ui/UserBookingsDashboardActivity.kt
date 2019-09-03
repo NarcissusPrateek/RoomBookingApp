@@ -263,7 +263,6 @@ class UserBookingsDashboardActivity : BaseActivity(), NavigationView.OnNavigatio
      * else the role is normal user
      */
     private fun setItemInDrawerByRole() {
-        val pref = getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE)
         val code = Hawk.get<Int>(Constants.ROLE_CODE)
         val navMenu = nav_view.menu
         if (code != Constants.MANAGER_CODE) {

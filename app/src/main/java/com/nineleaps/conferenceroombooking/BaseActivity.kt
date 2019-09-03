@@ -58,7 +58,6 @@ abstract class BaseActivity : AppCompatActivity() {
         dialogBuilder = AlertDialog.Builder(context)
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val dialogView = inflater.inflate(R.layout.layout_progress_dialog,null)
-        val progressTextView:TextView = dialogView.findViewById(R.id.progress_textView)
         dialogBuilder.setView(dialogView)
         dialogBuilder.setCancelable(false)
         progressBarDialog = dialogBuilder.create()

@@ -42,7 +42,7 @@
                     android:id="@+id/room_capacity_text_view"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:textSize="@dimen/sp_14"
+                    android:textSize="@dimen/sp_12"
                     android:visibility="visible"
                     android:textColor="@color/amenities_color"
                     android:drawablePadding="@dimen/dp_16"
