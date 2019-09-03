@@ -4,6 +4,7 @@ import com.nineleaps.conferenceroombooking.model.EmployeeList
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
 import com.nineleaps.conferenceroombooking.utils.Constants
+import com.nineleaps.conferenceroombooking.utils.ErrorException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,17 +21,7 @@ class EmployeeRepository @Inject constructor(){
         val requestCall: Call<List<EmployeeList>> = RestClient.getWebServiceData()?.getEmployees(email)!!
         requestCall.enqueue(object : Callback<List<EmployeeList>> {
             override fun onFailure(call: Call<List<EmployeeList>>, t: Throwable) {
-                when(t) {
-                    is SocketTimeoutException -> {
-                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
-                    }
-                    is UnknownHostException -> {
-                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
-                    }
-                    else -> {
-                        listener.onFailure(Constants.INTERNAL_SERVER_ERROR)
-                    }
-                }
+                listener.onFailure(ErrorException.error(t))
             }
 
             override fun onResponse(call: Call<List<EmployeeList>>, response: Response<List<EmployeeList>>) {

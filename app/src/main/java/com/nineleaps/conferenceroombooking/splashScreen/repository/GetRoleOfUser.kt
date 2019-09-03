@@ -3,6 +3,7 @@ package com.nineleaps.conferenceroombooking.splashScreen.repository
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
 import com.nineleaps.conferenceroombooking.utils.Constants
+import com.nineleaps.conferenceroombooking.utils.ErrorException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,17 +23,7 @@ class GetRoleOfUser @Inject constructor(){
         val requestCall: Call<Int> = RestClient.getWebServiceData()?.getRole(email)!!
         requestCall.enqueue(object : Callback<Int> {
             override fun onFailure(call: Call<Int>, t: Throwable) {
-                when(t) {
-                    is SocketTimeoutException -> {
-                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
-                    }
-                    is UnknownHostException -> {
-                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
-                    }
-                    else -> {
-                        listener.onFailure(Constants.INTERNAL_SERVER_ERROR)
-                    }
-                }
+                listener.onFailure(ErrorException.error(t))
             }
             override fun onResponse(call: Call<Int>, response: Response<Int>) {
                 if ((response.code() == Constants.OK_RESPONSE) or (response.code() == Constants.SUCCESSFULLY_CREATED)) {

@@ -270,5 +270,7 @@
     <string name="manage_building">Manage Building</string>
     <string name="passcode">Passcode</string>
     <string name="nav_logout">Logout</string>
+    <string name="more_amenity_value">More</string>
+    <string name="available">Available</string>
 
 </resources>

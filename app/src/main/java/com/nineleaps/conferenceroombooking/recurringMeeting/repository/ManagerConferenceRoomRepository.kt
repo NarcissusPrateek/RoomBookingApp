@@ -13,6 +13,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import android.R.string
+import com.nineleaps.conferenceroombooking.utils.ErrorException
 import org.json.JSONObject
 import java.lang.Exception
 
@@ -30,17 +31,7 @@ class ManagerConferenceRoomRepository @Inject constructor() {
             RestClient.getWebServiceData()?.getConferenceRoomListForRecurring(mRoom)!!
         requestCall.enqueue(object : Callback<List<RoomDetails>> {
             override fun onFailure(call: Call<List<RoomDetails>>, t: Throwable) {
-                when (t) {
-                    is SocketTimeoutException -> {
-                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
-                    }
-                    is UnknownHostException -> {
-                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
-                    }
-                    else -> {
-                        listener.onFailure(Constants.INTERNAL_SERVER_ERROR)
-                    }
-                }
+                listener.onFailure(ErrorException.error(t))
             }
 
             override fun onResponse(call: Call<List<RoomDetails>>, response: Response<List<RoomDetails>>) {

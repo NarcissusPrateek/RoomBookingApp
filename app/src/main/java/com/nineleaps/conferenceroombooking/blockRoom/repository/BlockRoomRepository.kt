@@ -6,6 +6,7 @@ import com.nineleaps.conferenceroombooking.model.BlockingConfirmation
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
 import com.nineleaps.conferenceroombooking.utils.Constants
+import com.nineleaps.conferenceroombooking.utils.ErrorException
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,17 +27,7 @@ class BlockRoomRepository @Inject constructor(){
         val requestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.blockconference(mRoom)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                when(t) {
-                    is SocketTimeoutException -> {
-                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
-                    }
-                    is UnknownHostException -> {
-                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
-                    }
-                    else -> {
-                        listener.onFailure(Constants.INTERNAL_SERVER_ERROR)
-                    }
-                }
+                listener.onFailure(ErrorException.error(t))
             }
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if ((response.code() == Constants.OK_RESPONSE) or (response.code() == Constants.SUCCESSFULLY_CREATED)) {
@@ -67,17 +58,7 @@ class BlockRoomRepository @Inject constructor(){
         val requestCall: Call<List<ConferenceList>> = RestClient.getWebServiceData()?.conferenceList(buildingId)!!
         requestCall.enqueue(object : Callback<List<ConferenceList>> {
             override fun onFailure(call: Call<List<ConferenceList>>, t: Throwable) {
-                when(t) {
-                    is SocketTimeoutException -> {
-                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
-                    }
-                    is UnknownHostException -> {
-                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
-                    }
-                    else -> {
-                        listener.onFailure(Constants.INTERNAL_SERVER_ERROR)
-                    }
-                }
+                listener.onFailure(ErrorException.error(t))
             }
 
             override fun onResponse(
@@ -104,17 +85,7 @@ class BlockRoomRepository @Inject constructor(){
         val requestCall: Call<BlockingConfirmation> = RestClient.getWebServiceData()?.blockConfirmation(mRoom)!!
         requestCall.enqueue(object : Callback<BlockingConfirmation> {
             override fun onFailure(call: Call<BlockingConfirmation>, t: Throwable) {
-                when(t) {
-                    is SocketTimeoutException -> {
-                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
-                    }
-                    is UnknownHostException -> {
-                        listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
-                    }
-                    else -> {
-                        listener.onFailure(Constants.INTERNAL_SERVER_ERROR)
-                    }
-                }
+                listener.onFailure(ErrorException.error(t))
             }
 
             override fun onResponse(call: Call<BlockingConfirmation>, response: Response<BlockingConfirmation>) {

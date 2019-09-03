@@ -2,10 +2,12 @@ package com.nineleaps.conferenceroombooking.signIn.ui
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
+import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import butterknife.BindView
 import butterknife.OnClick
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -40,6 +42,9 @@ class SignIn : BaseActivity() {
      */
     @Inject
     lateinit var mCheckRegistrationRepo: CheckRegistrationRepository
+
+    @BindView(R.id.sign_in_progress_bar)
+    lateinit var mProgressBar: ProgressBar
 
     private val RC_SIGN_IN = 0
 
@@ -185,7 +190,7 @@ class SignIn : BaseActivity() {
      * if not registered than make an intent to registration activity
      */
     private fun checkRegistration() {
-        showProgressDialog(this)
+        mProgressBar.visibility = View.VISIBLE
         Hawk.put(getString(R.string.device_Id), FirebaseInstanceId.getInstance().token)
         mCheckRegistrationViewModel.checkRegistration(Hawk.get(getString(R.string.device_Id)))
     }
@@ -200,12 +205,12 @@ class SignIn : BaseActivity() {
     private fun observeData() {
         //positive response from server
         mCheckRegistrationViewModel.returnSuccessCode().observe(this, Observer {
-            hideProgressDialog()
+            mProgressBar.visibility = View.GONE
             setValueForSharedPreference(it)
         })
         // Negative response from server
         mCheckRegistrationViewModel.returnFailureCode().observe(this, Observer {
-            hideProgressDialog()
+            mProgressBar.visibility = View.GONE
             ShowToast.show(this, it as Int)
             signOut()
         })

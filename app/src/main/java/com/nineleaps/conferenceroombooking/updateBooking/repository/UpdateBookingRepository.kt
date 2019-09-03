@@ -4,6 +4,7 @@ import com.nineleaps.conferenceroombooking.model.UpdateBooking
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
 import com.nineleaps.conferenceroombooking.utils.Constants
+import com.nineleaps.conferenceroombooking.utils.ErrorException
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -21,11 +22,7 @@ class UpdateBookingRepository @Inject constructor() {
         val requestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.update(mUpdateBooking)!!
         requestCall.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                if(t is SocketTimeoutException || t is UnknownHostException) {
-                    listener.onFailure(Constants.POOR_INTERNET_CONNECTION)
-                } else {
-                    listener.onFailure(Constants.INTERNAL_SERVER_ERROR)
-                }
+                listener.onFailure(ErrorException.error(t))
             }
 
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
