@@ -31,7 +31,7 @@ class Constants {
          * http://ec2-3-15-196-10.us-east-2.compute.amazonaws.com
          * ip address for api call
          */
-        var IP_ADDRESS = "http://ec2-3-15-196-10.us-east-2.compute.amazonaws.com"
+        var IP_ADDRESS = "http://192.168.3.189/CRB/"
 
 
         const val FLAG = "FLAG"
@@ -92,6 +92,8 @@ class Constants {
                 "A-Z]{2,7}$"
 
         const val UNAVAILABLE_SLOT = 409
+
+        const val BUILDING_PRESENT = 1
 
         const val RES_CODE = 200
 

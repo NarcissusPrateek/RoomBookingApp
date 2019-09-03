@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.nineleaps.conferenceroombooking.Helper.GoogleGSO
 import com.nineleaps.conferenceroombooking.R
-import com.nineleaps.conferenceroombooking.SignIn
+import com.nineleaps.conferenceroombooking.signIn.ui.SignIn
 import com.orhanobut.hawk.Hawk
 
 class ShowDialogForSessionExpired {

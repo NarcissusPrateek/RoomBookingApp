@@ -39,6 +39,7 @@
             android:id="@+id/retry_button"
             android:layout_marginTop="@dimen/dp_24"
             android:layout_below="@+id/no_internet_message2"
+            android:backgroundTint="@color/colorPrimary"
             android:text="Retry"
             android:layout_centerHorizontal="true"
             android:layout_width="@dimen/retry_button_dp_190"

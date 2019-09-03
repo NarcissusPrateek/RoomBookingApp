@@ -20,10 +20,11 @@ class RoomAdapter(
     private val mMoreListener: MoreAminitiesListner
 
 ) : androidx.recyclerview.widget.RecyclerView.Adapter<RoomAdapter.ViewHolder>() {
-    companion object{
+    companion object {
         var mMoreAminitiesListener: MoreAminitiesListner? = null
 
     }
+
     /**
      * this override function will set a view for the recyclerview items
      */
@@ -40,29 +41,33 @@ class RoomAdapter(
         mMoreAminitiesListener = mMoreListener
 
         val amenities = roomDetailsList[position].amenities!!.values.toMutableList()
-        for (i in amenities.indices) {
-            if (i > 3) {
-                setDrawable("More", holder.amenity3)
-                holder.amenity3.text = "More"
-                holder.amenity3.setTextColor(Color.parseColor("#0072BC"))
-                holder.amenity3.visibility = View.VISIBLE
-            } else if (i == 3) {
-                setDrawable(amenities[3], holder.amenity3)
-                holder.amenity3.text = roomDetailsList[position].amenities!!.getValue(3)
-                holder.amenity3.setTextColor(Color.parseColor("#4F4F4F"))
-                holder.amenity3.visibility = View.VISIBLE
+        if (amenities.isEmpty()) {
+            holder.amenity0.text = mContext.getString(R.string.no_aminities)
+            holder.amenity0.visibility = View.VISIBLE
+        } else
+            for (i in amenities.indices) {
+                if (i > 3) {
+                    setDrawable("More", holder.amenity3)
+                    holder.amenity3.text = "More"
+                    holder.amenity3.setTextColor(Color.parseColor("#0072BC"))
+                    holder.amenity3.visibility = View.VISIBLE
+                } else if (i == 3) {
+                    setDrawable(amenities[3], holder.amenity3)
+                    holder.amenity3.text = roomDetailsList[position].amenities!!.getValue(3)
+                    holder.amenity3.setTextColor(Color.parseColor("#4F4F4F"))
+                    holder.amenity3.visibility = View.VISIBLE
+                }
+                if (i == 0) {
+                    setDrawable(amenities[0], holder.amenity0)
+                    holder.amenity0.visibility = View.VISIBLE
+                } else if (i == 1) {
+                    setDrawable(amenities[1], holder.amenity1)
+                    holder.amenity1.visibility = View.VISIBLE
+                } else if (i == 2) {
+                    setDrawable(amenities[2], holder.amenity2)
+                    holder.amenity2.visibility = View.VISIBLE
+                }
             }
-            if (i == 0) {
-                setDrawable(amenities[0], holder.amenity0)
-                holder.amenity0.visibility = View.VISIBLE
-            } else if (i == 1) {
-                setDrawable(amenities[1], holder.amenity1)
-                holder.amenity1.visibility = View.VISIBLE
-            } else if (i == 2) {
-                setDrawable(amenities[2], holder.amenity2)
-                holder.amenity2.visibility = View.VISIBLE
-            }
-        }
         if (roomDetailsList[position].status == "Unavailable") {
             holder.roomNameTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unavailable, 0, 0, 0)
             holder.roomNameTextView.setTextColor(mContext.getResources().getColor(R.color.aminities))
@@ -162,6 +167,7 @@ class RoomAdapter(
         this.roomDetailsList = filteredNames
         notifyDataSetChanged()
     }
+
     interface MoreAminitiesListner {
         fun moreAmenities(position: Int)
     }

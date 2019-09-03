@@ -14,158 +14,218 @@ import com.nineleaps.conferenceroombooking.model.RoomDetails
 
 interface ConferenceService {
 
-    @GET("api/Building")
-    fun getBuildingList(
-    ): Call<List<Building>>
 
-    @POST("api/availableRooms")
+    //-----------------------------Ameneties Api------------------------------------------------------------------------
+    /**
+     * Ameneties Services
+     */
+
+    //Get All Ameneties Api
+    @GET("api/v1/amenities")
+    fun getAllAmenities(
+
+    ): Call<List<GetAllAmenities>>
+
+    //----------------------------Available Rooms for Single Booking Api------------------------------------------------
+    /**
+     * Get Conference Rooms for Booking Service
+     */
+    // Get Available Rooms for Booking, Api
+    @POST("api/v1/availableRooms")
     fun getConferenceRoomList(
         @Body availableRoom: InputDetailsForRoom
     ): Call<List<RoomDetails>>
 
+    //----------------------------Block Rooms Api's---------------------------------------------------------------------
 
-    @POST("api/availableRoomsForRecurring")
-    fun getConferenceRoomListForRecurring(
-        @Body availableRoom: ManagerConference
-    ):Call<List<RoomDetails>>
-//    @POST("api/SuggestedRooms")
-//    fun getSuggestedRooms(
-//        @Body availableRoom: InputDetailsForRoom
-//    ): Call<List<RoomDetails1>>
+    /**
+     * Block Rooms Services
+     */
+    //Block Confirmation for Block Room, Api
+    @POST("api/v1/blockConfirmation")
+    fun blockConfirmation(
+        @Body room: BlockRoom
+    ): Call<BlockingConfirmation>
 
+    //Block Room Api
+    @POST("api/v1/blockRoom")
+    fun blockconference(
+        @Body room: BlockRoom
+    ): Call<ResponseBody>
 
-//    @POST("api/SuggestionRecurringMeeting")
-//    fun getSuggestedRoomsForRecurring(
-//        @Body availableRoom: ManagerConference
-//    ): Call<List<RoomDetails>>
+    //Get the List of Blocked Rooms Api
+    @GET("api/v1/blockRoom")
+    fun getBlockedConference(
+    ): Call<List<Blocked>>
 
-    @GET("api/Login")
-    fun getRequestCode(
-        @Query("deviceId") deviceId: String
-    ): Call<SignIn>
-
-    @POST("api/validateRefreshToken")
-    fun getNewToken(
-        @Body mRefreshToken: RefreshToken
-    ): Call<RefreshToken>
-
-
-    @GET("api/CheckEmployeeRole")
-    fun getRole(
-        @Query("emailId") emailId: String
-    ): Call<Int>
+    //Unblock the Room Api
+    @PATCH("api/v1/blockRoom/{meetId}")
+    fun unBlockingConferenceRoom(
+        @Path("meetId") meetId: Int
+    ): Call<ResponseBody>
 
 
-    @POST("api/Dashboard")
-    fun getDashboard(
-        @Body bookingDashboardInput: BookingDashboardInput
-    ): Call<DashboardDetails>
+    //--------------------------Booking Api's---------------------------------------------------------------------------
+    /**
+     * Booking Functionality Services
+     */
 
-    @POST("api/BookRoom")
+    //Update the Booking Api
+    @PUT("api/v1/booking")
+    fun update(
+        @Body updateBooking: UpdateBooking
+    ): Call<ResponseBody>
+
+    //Book the Room Api
+    @POST("api/v1/booking")
     fun addBookingDetails(
         @Body booking: Booking
     ): Call<ResponseBody>
 
-    @PUT("api/CancelBooking")
+    //Cancel the Booking Api
+    @PATCH("api/v1/booking")
     fun cancelBookedRoom(
         @Query("meetId") meetId: Int?
     ): Call<ResponseBody>
 
-    @PUT("api/CancelBooking")
+    //Canccel the Recurring Booking
+    @PATCH("api/v1/booking")
     fun cancelRecurringBooking(
         @Query("meetId") meetId: Int?,
         @Query("recurringMeetId") recurringMeetId: String
     ): Call<ResponseBody>
 
-    @GET("api/getPasscode")
+
+    //--------------------------Building Api's--------------------------------------------------------------------------
+    /**
+     * Buildings Functionality services
+     */
+    //Get List of Building Api
+    @GET("api/v1/building")
+    fun getBuildingList(
+    ): Call<List<Building>>
+
+    //Add Building Api
+    @POST("api/v1/building")
+    fun addBuilding(
+        @Body newBuilding: AddBuilding
+    ): Call<ResponseBody>
+
+    //Update Building Api
+    @PUT("api/v1/building")
+    fun updateBuilding(
+        @Body newBuilding: AddBuilding
+    ): Call<ResponseBody>
+
+    //Delete Building Api
+    @DELETE("api/v1/building")
+    fun deleteBuilding(
+        @Query("buildingId") id: Int
+    ): Call<ResponseBody>
+
+
+    //--------------------------Conference Rooms Api's------------------------------------------------------------------
+    /**
+     * Conference Rooms services
+     */
+
+    //Add Conference room Api
+    @POST("api/v1/room")
+    fun addConference(
+        @Body newConferenceRoom: AddConferenceRoom
+    ): Call<ResponseBody>
+
+    //Update Conference room Api
+    @PUT("api/v1/room")
+    fun updateConference(
+        @Body newConferenceRoom: AddConferenceRoom
+    ): Call<ResponseBody>
+
+    //Delete Conference room Api
+    @DELETE("api/v1/room")
+    fun deleteRoom(
+        @Query("roomId") id: Int
+    ): Call<ResponseBody>
+
+    //Get Conference Based on BuildingId Api
+    @GET("api/v1/room/{buildingId}")
+    fun conferenceList(
+        @Path("buildingId") id: Int
+    ): Call<List<ConferenceList>>
+
+
+    //---------------------------DashBoard of Booking Rooms Api's------------------------------------------------------
+    /**
+     * Booking DashBoard Services which includes Previous,Cancelled,Upcoming Bookings
+     */
+    //Get Dashboard of Bookings
+    @POST("api/v1/dashboard")
+    fun getDashboard(
+        @Body bookingDashboardInput: BookingDashboardInput
+    ): Call<DashboardDetails>
+
+
+    //------------------------List of Locations Api---------------------------------------------------------------------
+    /**
+     * List of All the Locations Servics
+     */
+    //Get List of All the Location
+    @GET("api/v1/location")
+    fun getAllLocation(
+
+    ): Call<List<Location>>
+
+    //-------------------------- Login Api's----------------------------------------------------------------------------
+    /**
+     *  Login Services
+     */
+    // Login Api
+    @GET("api/v1/login")
+    fun getRequestCode(
+        @Query("deviceId") deviceId: String
+    ): Call<SignIn>
+
+    //validate ResfreshToken Api
+    @POST("api/v1/validateRefreshToken")
+    fun getNewToken(
+        @Body mRefreshToken: RefreshToken
+    ): Call<RefreshToken>
+
+    // Login Using JWT Token Api
+    @GET("api/v1/checkEmployeeRole")
+    fun getRole(
+        @Query("emailId") emailId: String
+    ): Call<Int>
+
+    //Get Passcode Api
+    @GET("api/v1/passCode")
     fun getPasscode(
         @Query("GenerateNewPasscode") generateNewPasscode: Boolean,
         @Query("emailId") emailId: String
     ): Call<String>
 
-    @GET("api/Employee")
-    fun getEmployees(
-        @Query("emailId") emailId: String
-    ): Call<List<EmployeeList>>
+    //--------------------------Recurring Booking Api's-----------------------------------------------------------------
+    /**
+     * Recurring Booking Services
+     */
+    //List of rooms available for Recurring Meeting Api's
+    @POST("api/v1/roomsForRecurring")
+    fun getConferenceRoomListForRecurring(
+        @Body availableRoom: ManagerConference
+    ): Call<List<RoomDetails>>
 
-    @POST("api/BookRecurringMeeting")
+    //Book Rooms For Recurrring Meeting Api's
+    @POST("api/v1/recurringMeeting")
     fun addManagerBookingDetails(
         @Body managerBooking: ManagerBooking
     ): Call<ResponseBody>
 
-    @POST("api/AvailableRoomsForRecurring")
-    fun getMangerConferenceRoomList(
-        @Body availableRoom: ManagerConference
-    ): Call<List<RoomDetails>>
-//    // Pratheek's.....
-
-    @POST("api/AddBuilding")
-    fun addBuilding(
-        @Body newBuilding: AddBuilding
-    ): Call<ResponseBody>
-
-    @PUT("api/UpdateBuilding")
-    fun updateBuilding(
-        @Body newBuilding: AddBuilding
-    ): Call<ResponseBody>
-
-
-    @POST("api/AddRoom")
-    fun addConference(
-        @Body newConferenceRoom: AddConferenceRoom
-    ): Call<ResponseBody>
-
-    @PUT("api/UpdateRoom")
-    fun updateConference(
-        @Body newConferenceRoom: AddConferenceRoom
-    ): Call<ResponseBody>
-
-    @POST("api/BlockConfirmation")
-    fun blockConfirmation(
-        @Body room: BlockRoom
-    ): Call<BlockingConfirmation>
-
-    @POST("api/BlockRoom")
-    fun blockconference(
-        @Body room: BlockRoom
-    ): Call<ResponseBody>
-
-    @GET("api/GetBlockedRooms")
-    fun getBlockedConference(
-    ): Call<List<Blocked>>
-
-    @PUT("api/UnblockRoom")
-    fun unBlockingConferenceRoom(
-        @Body meetId: Int
-    ): Call<ResponseBody>
-
-    @GET("api/roomsById")
-    fun conferenceList(
-        @Query("buildingId") id: Int
-    ): Call<List<ConferenceList>>
-
-    @PUT("api/UpdateBooking")
-    fun update(
-        @Body updateBooking: UpdateBooking
-    ): Call<ResponseBody>
-
-    @DELETE("api/deleteBuilding")
-    fun deleteBuilding(
-        @Query("buildingId") id: Int
-    ): Call<ResponseBody>
-
-    @DELETE("api/deleteRoom")
-    fun deleteRoom(
-        @Query("roomId") id: Int
-    ): Call<ResponseBody>
-
-    @GET("api/getAllLocation")
-    fun getAllLocation(
-
-    ): Call<List<Location>>
-
-    @GET("api/getAllAmenities")
-    fun getAllAmenities(
-
-    ): Call<List<GetAllAmenities>>
+    //----------------------------List of Employee Api------------------------------------------------------------------
+    /**
+     * List of all the Employee
+     */
+    @GET("api/v1/employee")
+    fun getEmployees(
+        @Query("emailId") emailId: String
+    ): Call<List<EmployeeList>>
 }

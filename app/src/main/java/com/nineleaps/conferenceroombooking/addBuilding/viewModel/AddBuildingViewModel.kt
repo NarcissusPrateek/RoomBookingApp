@@ -7,12 +7,12 @@ import com.nineleaps.conferenceroombooking.model.AddBuilding
 import com.nineleaps.conferenceroombooking.model.Location
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 
-open class AddBuildingViewModel : ViewModel() {
+class AddBuildingViewModel : ViewModel() {
 
     /**
      * a object which will hold the reference to the corrosponding repository class
      */
-    var mAddBuildingRepository: AddBuildingRepository? = null
+    private var mAddBuildingRepository: AddBuildingRepository? = null
 
     /**
      * a MutableLivedata variable which will hold the response from server

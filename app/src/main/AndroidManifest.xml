@@ -86,7 +86,7 @@
                 android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-                android:name=".SignIn"
+                android:name=".signIn.ui.SignIn"
                 android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
@@ -95,12 +95,13 @@
                 android:launchMode="singleTop"
                 android:parentActivityName=".manageBuildings.ui.BuildingDashboard"
                 android:screenOrientation="portrait"
+
                 android:windowSoftInputMode="adjustResize|stateVisible">
         </activity>
         <activity
                 android:name=".addConferenceRoom.ui.AddingConference"
                 android:label="Add Conference Room"
-                android:parentActivityName=".ConferenceRoomDashboard.ui.ConferenceDashBoard"
+                android:parentActivityName=".manageConferenceRoom.ui.ConferenceDashBoard"
                 android:screenOrientation="portrait"
                 android:windowSoftInputMode="adjustResize|stateVisible">
 
@@ -112,7 +113,7 @@
         </activity>
         <activity
                 android:name=".blockDashboard.ui.BlockedDashboard"
-                android:parentActivityName=".ConferenceRoomDashboard.ui.ConferenceDashBoard"
+                android:parentActivityName=".manageConferenceRoom.ui.ConferenceDashBoard"
                 android:screenOrientation="portrait"/>
         <activity
                 android:name=".blockRoom.ui.BlockConferenceRoomActivity"
@@ -122,7 +123,7 @@
 
         </activity>
         <activity
-                android:name=".ConferenceRoomDashboard.ui.ConferenceDashBoard"
+                android:name=".manageConferenceRoom.ui.ConferenceDashBoard"
                 android:launchMode="singleTop"
                 android:parentActivityName=".manageBuildings.ui.BuildingDashboard"
                 android:screenOrientation="portrait">

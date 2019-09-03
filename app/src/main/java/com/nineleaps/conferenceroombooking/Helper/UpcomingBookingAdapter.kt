@@ -57,7 +57,6 @@ class UpcomingBookingAdapter(
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Log.i("@@@@", dashboardItemList.toString())
         mCancelBookingClickListener = btnListener
         mShowMembersListener = mShowMembers
         mEditBookingListener = mEditBooking
@@ -84,30 +83,34 @@ class UpcomingBookingAdapter(
         } else {
             holder.statusTextView.visibility = View.GONE
         }
-        for (i in dashboardItemList[position].amenities!!.indices) {
-            if (i > 3) {
-                setDrawable("More", holder.amenity3)
-                holder.amenity3.text = "More"
-                holder.amenity3.setTextColor(Color.parseColor("#0072BC"))
-                holder.amenity3.visibility = View.VISIBLE
-            } else if (i == 3) {
-                setDrawable(dashboardItemList[position].amenities!![i], holder.amenity3)
-                holder.amenity3.text = dashboardItemList[position].amenities!![3]
-                holder.amenity3.setTextColor(Color.parseColor("#4F4F4F"))
-                holder.amenity3.visibility = View.VISIBLE
+        if (dashboardItemList[position].amenities!!.size == 0)
+            holder.aminity_title.text = mContext.getString(R.string.no_aminities)
+        else
+            for (i in dashboardItemList[position].amenities!!.indices) {
+                if (i > 3) {
+                    setDrawable("More", holder.amenity3)
+                    holder.amenity3.text = "More"
+                    holder.amenity3.setTextColor(Color.parseColor("#0072BC"))
+                    holder.amenity3.visibility = View.VISIBLE
+                } else if (i == 3) {
+                    setDrawable(dashboardItemList[position].amenities!![i], holder.amenity3)
+                    holder.amenity3.text = dashboardItemList[position].amenities!![3]
+                    holder.amenity3.setTextColor(Color.parseColor("#4F4F4F"))
+                    holder.amenity3.visibility = View.VISIBLE
+                }
+
+                if (i == 0) {
+                    setDrawable(dashboardItemList[position].amenities!![i], holder.amenity0)
+                    holder.amenity0.visibility = View.VISIBLE
+                } else if (i == 1) {
+                    setDrawable(dashboardItemList[position].amenities!![i], holder.amenity1)
+                    holder.amenity1.visibility = View.VISIBLE
+                } else if (i == 2) {
+                    setDrawable(dashboardItemList[position].amenities!![i], holder.amenity2)
+                    holder.amenity2.visibility = View.VISIBLE
+                }
             }
 
-            if (i == 0) {
-                setDrawable(dashboardItemList[position].amenities!![i], holder.amenity0)
-                holder.amenity0.visibility = View.VISIBLE
-            } else if (i == 1) {
-                setDrawable(dashboardItemList[position].amenities!![i], holder.amenity1)
-                holder.amenity1.visibility = View.VISIBLE
-            } else if (i == 2) {
-                setDrawable(dashboardItemList[position].amenities!![i], holder.amenity2)
-                holder.amenity2.visibility = View.VISIBLE
-            }
-        }
         holder.amenity3.setOnClickListener {
             if (holder.amenity3.text == "More") {
                 mMoreListener.moreAmenities(position)
@@ -187,6 +190,7 @@ class UpcomingBookingAdapter(
         var attendeeTextView: TextView = itemView.findViewById(R.id.attendee_text_view)
         var actionLayout: LinearLayout = itemView.findViewById(R.id.action_button_linear_layout)
         var landingView: View = itemView.findViewById(R.id.view_landing)
+        var aminity_title: TextView = itemView.findViewById(R.id.aminities_text_view)
         var amenity0: TextView = itemView.findViewById(R.id.ani_1)
         var amenity1: TextView = itemView.findViewById(R.id.ani_2)
         var amenity2: TextView = itemView.findViewById(R.id.ani_3)
@@ -216,7 +220,7 @@ class UpcomingBookingAdapter(
         if (dashboardItemList[position].name != null)
             mShowMembers.showMembers(dashboardItemList[position].name!!, position)
         else
-            mShowMembers.showMembers(emptyList(),position)
+            mShowMembers.showMembers(emptyList(), position)
 
     }
 

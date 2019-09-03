@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.AbsListView
 import android.widget.ProgressBar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -144,7 +145,7 @@ class CancelledBookingFragment : Fragment() {
                     mBookingDashBoardViewModel.getBookingList(
                         mBookingDashboardInput
                     )
-                } else if (!recyclerView.canScrollVertically(1) && currentPage > 1 && isScrolledState) {
+                } else if (!recyclerView.canScrollVertically(1) && currentPage >= 1 && isScrolledState) {
                     ShowToast.show(activity!!, Constants.NO_CONTENT_FOUND)
                 }
             }
@@ -190,21 +191,28 @@ class CancelledBookingFragment : Fragment() {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else if (it == Constants.NO_CONTENT_FOUND && finalList.size == 0) {
                 cancelled_empty_view.visibility = View.VISIBLE
+                cancelled_dashboard.setBackgroundColor(ContextCompat.getColor(activity!!,R.color.empty_cancelled_dashboard))
             } else {
                 ShowToast.show(activity!!, it as Int)
             }
         })
     }
 
-
     /**
      * Display the list of employee names in the alert dialog
      */
     fun showMeetingMembers(mEmployeeList: List<String>, position: Int) {
         val arrayListOfNames = ArrayList<String>()
-        arrayListOfNames.add(finalList[position].organizer!! + "(Organizer)")
-        for (item in mEmployeeList) {
-            arrayListOfNames.add(item)
+
+        if (mEmployeeList.isEmpty()) {
+            arrayListOfNames.add(finalList[position].organizer + getString(R.string.organizer))
+
+        } else {
+            arrayListOfNames.add(finalList[position].organizer + getString(R.string.organizer))
+
+            for (item in mEmployeeList) {
+                arrayListOfNames.add(item)
+            }
         }
         val listItems = arrayOfNulls<String>(arrayListOfNames.size)
         arrayListOfNames.toArray(listItems)
@@ -215,6 +223,7 @@ class CancelledBookingFragment : Fragment() {
         val mDialog = builder.create()
         mDialog.show()
     }
+
 
     /**
      * this function will call a function which will filter the data after that set the filtered data to adapter

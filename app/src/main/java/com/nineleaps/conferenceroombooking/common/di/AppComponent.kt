@@ -2,8 +2,8 @@ package com.nineleaps.conferenceroombooking.common.di
 
 
 import com.example.conferenceroomapp.common.di.AppModule
-import com.nineleaps.conferenceroombooking.ConferenceRoomDashboard.ui.ConferenceDashBoard
-import com.nineleaps.conferenceroombooking.SignIn
+import com.nineleaps.conferenceroombooking.manageConferenceRoom.ui.ConferenceDashBoard
+import com.nineleaps.conferenceroombooking.signIn.ui.SignIn
 import com.nineleaps.conferenceroombooking.addBuilding.ui.AddingBuilding
 import com.nineleaps.conferenceroombooking.addConferenceRoom.ui.AddingConference
 import com.nineleaps.conferenceroombooking.blockDashboard.ui.BlockedDashboard

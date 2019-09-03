@@ -7,22 +7,22 @@
         <item
                 android:id="@+id/HR"
                 android:icon="@drawable/block_room"
-                android:title="Block Room"/>
+                android:title="@string/block_dashboard"/>
         <item
                 android:id="@+id/project_manager"
                 android:icon="@drawable/ic_event"
-                android:title="Recurring Meeting"/>
+                android:title="@string/recurring_meeting"/>
         <item
                 android:id="@+id/hr_add"
                 android:icon="@drawable/add_build"
-                android:title="Add"/>
+                android:title="@string/manage_building"/>
         <item
             android:id="@+id/get_passcode"
             android:icon="@drawable/ic_passcode"
-            android:title="Passcode"/>
+            android:title="@string/passcode"/>
         <item
                 android:id="@+id/logout"
                 android:icon="@drawable/ic_logout"
-                android:title="Logout"/>
+                android:title="@string/nav_logout"/>
     </group>
 </menu>

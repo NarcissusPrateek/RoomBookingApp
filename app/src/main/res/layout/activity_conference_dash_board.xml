@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/recycler_view_background"
-        tools:context=".ConferenceRoomDashboard.ui.ConferenceDashBoard">
+        tools:context=".manageConferenceRoom.ui.ConferenceDashBoard">
     <ProgressBar
             android:id="@+id/conference_room_dashboard_progress_bar"
             android:visibility="gone"
@@ -17,9 +17,9 @@
             android:id="@+id/empty_view_blocked1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_centerInParent="true"
             android:visibility="gone"
-            android:src="@drawable/empty_state2"
+            android:src="@drawable/empty_image_for_building"
     />
     <androidx.recyclerview.widget.RecyclerView
             android:layout_marginTop="@dimen/dp_5"

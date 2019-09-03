@@ -14,13 +14,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"/>
-    <com.bskim.maxheightscrollview.widgets.MaxHeightScrollView
+    <com.nineleaps.conferenceroombooking.utils.ScrollViewWithMaxHeight
             android:id="@+id/scroll_view"
             android:padding="@dimen/dp_2"
             android:paddingBottom="@dimen/dp_10"
-            app:maxHeight="@dimen/dp_170"
-            android:layout_width="match_parent"
+            app:maximumHeight="170dp"
+           android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
         <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chip_group"
                 android:layout_margin="@dimen/dp_5"
@@ -28,7 +29,8 @@
                 android:paddingBottom="@dimen/dp_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-    </com.bskim.maxheightscrollview.widgets.MaxHeightScrollView>
+
+    </com.nineleaps.conferenceroombooking.utils.ScrollViewWithMaxHeight>
 
     <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/purpose_layout"
@@ -106,7 +108,7 @@
             app:fab_colorPressed="@color/colorPrimary1"
             app:menu_colorPressed="@color/colorPrimary"
             app:fab_colorNormal="@color/colorPrimary"
-            android:src="@drawable/ic_arrow_forward_black_24dp"
+            android:src="@drawable/ic_check_white_24dp"
             android:id="@+id/next_activity"
     />
 </RelativeLayout>

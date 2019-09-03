@@ -101,8 +101,10 @@ class PreviousBookingAdapter(
      * send employee List to the activity using interface which will display the list of employee names in the alert dialog
      */
     private fun setMeetingMembers(position: Int) {
-        mShowMembers.showMembers(dashboardItemList[position].name!!, position)
-    }
+        if (dashboardItemList[position].name != null)
+            mShowMembers.showMembers(dashboardItemList[position].name!!, position)
+        else
+            mShowMembers.showMembers(emptyList(),position)    }
 
     /**
      * An interface which will be implemented by UserDashboardBookingActivity activity to pass employeeList to the activity

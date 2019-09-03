@@ -7,14 +7,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import butterknife.ButterKnife
 import butterknife.OnClick
+import com.nineleaps.conferenceroombooking.BaseActivity
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
 import com.nineleaps.conferenceroombooking.R
 
-class NoInternetConnectionActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_no_internet_connection)
-        ButterKnife.bind(this)
+class NoInternetConnectionActivity : BaseActivity() {
+    override fun getLayoutResource(): Int {
+        return R.layout.activity_no_internet_connection
     }
 
     @OnClick(R.id.retry_button)

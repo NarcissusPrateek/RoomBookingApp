@@ -32,11 +32,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:src="@drawable/emptystate1"
-            android:layout_marginTop="@dimen/dp_170"
+            android:src="@drawable/cancelled_empty_image"
             android:layout_centerInParent="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerVertical="true"/>
+            />
     <ProgressBar
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
+
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -48,6 +49,7 @@ import kotlinx.android.synthetic.main.activity_booking_input_from_user.suggestio
 import javax.inject.Inject
 
 
+@Suppress("DEPRECATION")
 class InputDetailsForBookingFragment : Fragment() {
 
     @Inject
@@ -152,6 +154,7 @@ class InputDetailsForBookingFragment : Fragment() {
         initLateInitializerVariables()
         initRoomRepository()
         clickListenerOnSearchButton()
+        initRecyclerView()
     }
 
     private fun initComponentForInputDetails() {
@@ -176,46 +179,33 @@ class InputDetailsForBookingFragment : Fragment() {
         mConferenceRoomViewModel.getConferenceRoomList(mInputDetailsForRoom)
     }
 
-    private fun setAdapter(mListOfRooms: List<RoomDetails>) {
-        progressDialog.dismiss()
-        if (mListOfRooms.isEmpty()) {
-            horizontal_line_below_search_button.visibility = View.VISIBLE
-            suggestions.visibility = View.VISIBLE
-            suggestions.text = getString(R.string.no_rooms_available)
-        } else {
-            filter_edit_text.visibility = View.VISIBLE
-            roomList.clear()
-            roomList.addAll(mListOfRooms)
-            customAdapter =
-                RoomAdapter(mListOfRooms as ArrayList<RoomDetails>, activity!!, object : RoomAdapter.ItemClickListener {
-                    override fun onItemClick(
-                        roomId: Int?,
-                        buidingId: Int?,
-                        roomName: String?,
-                        buildingName: String?
-                    ) {
-                        mSetIntentData.buildingName = buildingName
-                        mSetIntentData.roomName = roomName
-                        mSetIntentData.buildingId = buidingId
-                        mSetIntentData.roomId = roomId
-                        mSetIntentData.capacity = roomCapacityEditText.text.toString()
-                        mSetIntentData.date = dateEditText.text.toString()
-                        mSetIntentData.isPurposeVisible = true
-                        goToSelectMeetingMembersActivity()
+    fun initRecyclerView() {
+        customAdapter =
+            RoomAdapter(roomList, activity!!, object : RoomAdapter.ItemClickListener {
+                override fun onItemClick(
+                    roomId: Int?,
+                    buidingId: Int?,
+                    roomName: String?,
+                    buildingName: String?
+                ) {
+                    mSetIntentData.buildingName = buildingName
+                    mSetIntentData.roomName = roomName
+                    mSetIntentData.buildingId = buidingId
+                    mSetIntentData.roomId = roomId
+                    mSetIntentData.capacity = roomCapacityEditText.text.toString()
+                    mSetIntentData.date = dateEditText.text.toString()
+                    mSetIntentData.isPurposeVisible = true
+                    goToSelectMeetingMembersActivity()
+                }
+            },
+                object : RoomAdapter.MoreAminitiesListner {
+                    override fun moreAmenities(position: Int) {
+                        showDialogForMoreAminities(roomList[position].amenities!!, position)
+
                     }
-                },
-                    object : RoomAdapter.MoreAminitiesListner {
-                        override fun moreAmenities(position: Int) {
-                            showDialogForMoreAminities(roomList[position].amenities!!, position)
 
-                        }
-
-                    })
-            mRecyclerView.adapter = customAdapter
-            booking_scroll_view.post {
-                scrollView.smoothScrollTo(0, filterEditText.top)
-            }
-        }
+                })
+        mRecyclerView.adapter = customAdapter
     }
 
     private fun showDialogForMoreAminities(items: HashMap<Int, String>, position: Int) {
@@ -241,7 +231,25 @@ class InputDetailsForBookingFragment : Fragment() {
         //positive response
         mConferenceRoomViewModel.returnSuccess().observe(this, Observer {
             progressDialog.dismiss()
-            checkForStatusOfRooms(it)
+            if (it.isEmpty()) {
+                roomList.clear()
+                customAdapter.notifyDataSetChanged()
+                horizontal_line_below_search_button.visibility = View.VISIBLE
+                suggestions.visibility = View.VISIBLE
+                suggestions.text = getString(R.string.no_rooms_available)
+                filter_edit_text.visibility = View.GONE
+            } else {
+                roomList.clear()
+                progressDialog.dismiss()
+
+                filter_edit_text.visibility = View.VISIBLE
+                roomList.addAll(it)
+                customAdapter.notifyDataSetChanged()
+                booking_scroll_view.post {
+                    scrollView.smoothScrollTo(0, filterEditText.bottom)
+
+                }
+            }
         })
         // Negative response
         mConferenceRoomViewModel.returnFailure().observe(this, Observer {
@@ -254,16 +262,15 @@ class InputDetailsForBookingFragment : Fragment() {
         })
     }
 
+    /**
+     *
+     */
     private fun goToSelectMeetingMembersActivity() {
         mSetIntentData.fromTime = "${dateEditText.text} ${fromTimeEditText.text}"
         mSetIntentData.toTime = "${dateEditText.text} ${toTimeEditText.text}"
         intent = Intent(activity!!, SelectMeetingMembersActivity::class.java)
         intent.putExtra(Constants.EXTRA_INTENT_DATA, mSetIntentData)
         startActivity(intent)
-    }
-
-    private fun checkForStatusOfRooms(mListOfRooms: List<RoomDetails>?) {
-        setAdapter(mListOfRooms!!)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -1,43 +1,33 @@
 package com.nineleaps.conferenceroombooking.blockRoom.ui
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.Html.fromHtml
 import android.text.TextWatcher
-import android.view.View
-import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.EditText
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import butterknife.BindView
-import butterknife.ButterKnife
 import butterknife.OnClick
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.nineleaps.conferenceroombooking.BaseActivity
 import com.nineleaps.conferenceroombooking.BaseApplication
-import com.nineleaps.conferenceroombooking.ConferenceRoomDashboard.ui.ConferenceDashBoard
-import com.nineleaps.conferenceroombooking.Helper.NetworkState
-import com.nineleaps.conferenceroombooking.Models.ConferenceList
 import com.nineleaps.conferenceroombooking.R
 import com.nineleaps.conferenceroombooking.blockDashboard.ui.BlockedDashboard
 import com.nineleaps.conferenceroombooking.blockRoom.repository.BlockRoomRepository
 import com.nineleaps.conferenceroombooking.blockRoom.viewModel.BlockRoomViewModel
-import com.nineleaps.conferenceroombooking.checkConnection.NoInternetConnectionActivity
-import com.nineleaps.conferenceroombooking.manageBuildings.repository.BuildingsRepository
 import com.nineleaps.conferenceroombooking.manageBuildings.viewModel.BuildingViewModel
 import com.nineleaps.conferenceroombooking.model.BlockRoom
-import com.nineleaps.conferenceroombooking.model.Building
 import com.nineleaps.conferenceroombooking.utils.*
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_spinner.*
 import javax.inject.Inject
 
-@Suppress("NAME_SHADOWING", "DEPRECATION")
-class BlockConferenceRoomActivity : AppCompatActivity() {
+class BlockConferenceRoomActivity : BaseActivity() {
+
 
     /**
      * Declaring Global variables and butterknife
@@ -45,35 +35,50 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
     @Inject
     lateinit var mBlockRoomRepo: BlockRoomRepository
 
-    @BindView(R.id.block_conference_room_progress_bar)
-    lateinit var mProgressDialog: ProgressBar
+
     @BindView(R.id.fromTime_b)
     lateinit var fromTimeEditText: EditText
+
     @BindView(R.id.toTime_b)
     lateinit var toTimeEditText: EditText
+
     @BindView(R.id.date_block)
     lateinit var dateEditText: EditText
+
     @BindView(R.id.Purpose)
     lateinit var purposeEditText: EditText
+
     private lateinit var mBlockRoomViewModel: BlockRoomViewModel
+
     var room = BlockRoom()
+
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
+
     private lateinit var mBuildingViewModel: BuildingViewModel
-    private lateinit var progressDialog: ProgressDialog
+
+
+    /**
+     * Passing the Layout Resource to the Base Activity
+     */
+    override fun getLayoutResource(): Int {
+        return R.layout.activity_spinner
+    }
+
+    /**
+     * OnCreate Activity initialize related to the Adding Conference
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_spinner)
-        ButterKnife.bind(this)
         init()
         observeData()
-        setDialogsToInputFields()
     }
 
     /**
      * initialize all lateinit variables
      */
     fun init() {
-        initActionBar()
+        initActionBar(getString(R.string.Block))
+        setDialogsToInputFields()
         initTextChangeListener()
         initComponent()
         initLateInitializerVariables()
@@ -82,24 +87,31 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
         softKeyboard()
     }
 
+    /**
+     * Hide SoftKeyboard On touch other than EditText
+     */
     private fun softKeyboard() {
         HideSoftKeyboard.setUpUI(findViewById(R.id.block_room), this)
-        HideSoftKeyboard.childUI(findViewById(R.id.block_room), this)
+        HideSoftKeyboard.hideKeyboard(this)
     }
 
+    /**
+     *   Dependency Injection of Add Building
+     */
     private fun initComponent() {
         (application as BaseApplication).getmAppComponent()?.inject(this)
     }
 
+    /*
+     Get the BlockRoom Repository instance from the View Model
+    */
     private fun initBlockRoomRepo() {
         mBlockRoomViewModel.setBlockRoomRepo(mBlockRoomRepo)
     }
 
-    private fun initActionBar() {
-        val actionBar = supportActionBar
-        actionBar!!.title = fromHtml("<font color=\"#FFFFFF\">" + getString(R.string.Block) + "</font>")
-    }
-
+    /**
+     * EditText change Listener
+     */
     private fun initTextChangeListener() {
         textChangeListenerOnDateEditText()
         textChangeListenerOnFromTimeEditText()
@@ -108,8 +120,10 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Inititlize View Model
+     */
     private fun initLateInitializerVariables() {
-        progressDialog = GetProgress.getProgressDialog(getString(R.string.progress_message), this)
         mBuildingViewModel = ViewModelProviders.of(this).get(BuildingViewModel::class.java)
         mBlockRoomViewModel = ViewModelProviders.of(this).get(BlockRoomViewModel::class.java)
     }
@@ -120,14 +134,13 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
     private fun observeData() {
         // observer for Block room
         mBlockRoomViewModel.returnSuccessForBlockRoom().observe(this, Observer {
-            progressDialog.dismiss()
+            hideProgressDialog()
             Toasty.success(this, getString(R.string.room_is_blocked), Toast.LENGTH_SHORT, true).show()
             goToBlockDashBoardActivity()
-            // finish()
         })
 
         mBlockRoomViewModel.returnResponseErrorForBlockRoom().observe(this, Observer {
-            progressDialog.dismiss()
+            hideProgressDialog()
             if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, BlockConferenceRoomActivity())
             } else {
@@ -137,15 +150,13 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
 
         // observer for block confirmation
         mBlockRoomViewModel.returnSuccessForConfirmation().observe(this, Observer {
-            progressDialog.dismiss()
+            hideProgressDialog()
             if (it.mStatus == 0) {
                 blockConfirmed(room)
-                goToBlockDashBoardActivity()
             } else {
                 val builder = AlertDialog.Builder(this@BlockConferenceRoomActivity)
                 builder.setTitle(getString(R.string.blockingStatus))
                 val name = it.name
-                val purpose = it.purpose
                 builder.setMessage(
                     "Room is Booked by Employee '$name'.\nAre you sure the 'BLOCKING' is Necessary?"
                 )
@@ -166,7 +177,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
         })
 
         mBlockRoomViewModel.returnResponseErrorForConfirmation().observe(this, Observer {
-            progressDialog.dismiss()
+            hideProgressDialog()
             if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, BlockConferenceRoomActivity())
             } else {
@@ -182,10 +193,11 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
 
     @OnClick(R.id.block_conference)
     fun blockButton() {
+        HideSoftKeyboard.hideKeyboard(this)
         if (validateInput()) {
             validationOnDataEnteredByUser()
         }
-        //startActivity(Intent(this@BlockConferenceRoomActivity,BlockedDashboard::class.java))
+
     }
 
     /**
@@ -224,7 +236,10 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
 
     }
 
-    fun goToBlockDashBoardActivity() {
+    /**
+     * OnClick Block go On BlockDashBoard
+     */
+    private fun goToBlockDashBoardActivity() {
         val intent = Intent(this@BlockConferenceRoomActivity, BlockedDashboard::class.java)
         intent.putExtra(Constants.EXTRA_BUILDING_ID, room.bId.toString())
         startActivity(intent)
@@ -234,7 +249,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
      * function calls the ViewModel of blocking
      */
     private fun blocking(room: BlockRoom) {
-        progressDialog.show()
+        showProgressDialog(this)
         mBlockRoomViewModel.blockingStatus(room)
     }
 
@@ -242,7 +257,7 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
      * function calls the ViewModel of blockingConfirmed
      */
     private fun blockConfirmed(mRoom: BlockRoom) {
-        progressDialog.show()
+        showProgressDialog(this)
         mBlockRoomViewModel.blockRoom(mRoom)
     }
 
@@ -302,6 +317,9 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * validate inputs of all the EditText
+     */
     private fun validateInput(): Boolean {
         if (!validateFromTime() or !validateToTime() or !validateDate() or !validatePurpose()) {
             return false
@@ -342,11 +360,11 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
                 if (minmilliseconds <= elapsed) {
                     blockRoom()
                 } else {
-                    val builder = AlertDialog.Builder(this@BlockConferenceRoomActivity).also {
+                    val alertTimeDialog = AlertDialog.Builder(this@BlockConferenceRoomActivity).also {
                         it.setTitle(getString(R.string.check))
                         it.setMessage(getString(R.string.time_validation_message))
                     }
-                    builder.setPositiveButton(getString(R.string.ok_label)) { _, _ ->
+                    alertTimeDialog.setPositiveButton(getString(R.string.ok_label)) { _, _ ->
                     }
                     val dialog: AlertDialog = builder.create()
                     dialog.setCanceledOnTouchOutside(false)
@@ -375,7 +393,6 @@ class BlockConferenceRoomActivity : AppCompatActivity() {
         val blockBundle = Bundle()
         mFirebaseAnalytics.logEvent(getString(R.string.Block_Room), blockBundle)
         mFirebaseAnalytics.setAnalyticsCollectionEnabled(true)
-        mFirebaseAnalytics.setMinimumSessionDuration(5000)
         mFirebaseAnalytics.setSessionTimeoutDuration(1000000)
         mFirebaseAnalytics.setUserId(room.email)
         mFirebaseAnalytics.setUserProperty(

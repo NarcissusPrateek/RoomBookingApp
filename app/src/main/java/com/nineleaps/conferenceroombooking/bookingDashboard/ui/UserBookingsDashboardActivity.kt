@@ -1,43 +1,42 @@
 package com.nineleaps.conferenceroombooking.bookingDashboard.ui
 
 import android.annotation.SuppressLint
-import android.app.ProgressDialog
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import butterknife.BindView
-import butterknife.ButterKnife
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.material.navigation.NavigationView
+import com.nineleaps.conferenceroombooking.BaseActivity
 import com.nineleaps.conferenceroombooking.BaseApplication
 import com.nineleaps.conferenceroombooking.Helper.GoogleGSO
+import com.nineleaps.conferenceroombooking.Helper.NetworkState
 import com.nineleaps.conferenceroombooking.R
-import com.nineleaps.conferenceroombooking.SignIn
+import com.nineleaps.conferenceroombooking.signIn.ui.SignIn
 import com.nineleaps.conferenceroombooking.blockDashboard.ui.BlockedDashboard
 import com.nineleaps.conferenceroombooking.booking.ui.InputDetailsForBookingFragment
 import com.nineleaps.conferenceroombooking.bookingDashboard.repository.BookingDashboardRepository
 import com.nineleaps.conferenceroombooking.bookingDashboard.viewModel.BookingDashboardViewModel
+import com.nineleaps.conferenceroombooking.checkConnection.NoInternetConnectionActivity
 import com.nineleaps.conferenceroombooking.manageBuildings.ui.BuildingDashboard
 import com.nineleaps.conferenceroombooking.recurringMeeting.ui.CancelledBookingFragment
 import com.nineleaps.conferenceroombooking.recurringMeeting.ui.PreviousBookingFragment
 import com.nineleaps.conferenceroombooking.recurringMeeting.ui.RecurringBookingInputDetails
 import com.nineleaps.conferenceroombooking.recurringMeeting.ui.UpcomingBookingFragment
-import com.nineleaps.conferenceroombooking.splashScreen.ui.SplashScreen
 import com.nineleaps.conferenceroombooking.utils.*
 import com.orhanobut.hawk.Hawk
 import es.dmoral.toasty.Toasty
@@ -48,19 +47,33 @@ import kotlinx.android.synthetic.main.nav_header_main2.view.*
 import javax.inject.Inject
 
 
-@Suppress("DEPRECATION")
-class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class UserBookingsDashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    /**
+     * Declaring Global variables and binned view for using butter knife
+     */
     @Inject
     lateinit var mBookingDahBoardRepo: BookingDashboardRepository
+
     @BindView(R.id.user_booking_dashboard_progress_bar)
-    lateinit var mProgressBar:ProgressBar
+    lateinit var mProgressBar: ProgressBar
+
     private lateinit var acct: GoogleSignInAccount
+
     private lateinit var mBookingDashBoardViewModel: BookingDashboardViewModel
+
+    /**
+     * Passing the Layout Resource to the Base Activity
+     */
+    override fun getLayoutResource(): Int {
+        return R.layout.activity_main2
+    }
+
+    /**
+     * OnCreate Activity initialize related to the Adding Conference
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main2)
-        ButterKnife.bind(this)
         setNavigationViewItem()
         softKeyBoard()
         init()
@@ -90,11 +103,16 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
 
     }
 
+    /**
+     * Hide SoftKeyboard when onClick outside of EditText
+     */
     private fun softKeyBoard() {
         HideSoftKeyboard.hideKeyboard(this)
     }
 
-
+    /**
+     * initialize all lateinit variables
+     */
     private fun init() {
         initComponentForBookingDashBoard()
         mBookingDashBoardViewModel = ViewModelProviders.of(this).get(BookingDashboardViewModel::class.java)
@@ -103,18 +121,27 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
         observeData()
     }
 
+    /*
+   Dependency Injection of UserBooking Activity
+    */
     private fun initComponentForBookingDashBoard() {
         (application as BaseApplication).getmAppComponent()?.inject(this)
     }
 
+    /*
+        Get the Booking Repository instance from the View Model
+     */
     private fun initBookingDashBoardRepo() {
         mBookingDashBoardViewModel.setBookedRoomDashboardRepo(mBookingDahBoardRepo)
     }
 
 
+    /**
+     * Get Passcode Value
+     */
     private fun getPasscode() {
-        //progressDialog.show()
         mProgressBar.visibility = View.VISIBLE
+        disableClickListenerForProgressBar()
         mBookingDashBoardViewModel.getPasscode(false, acct.email!!)
     }
 
@@ -126,13 +153,13 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
          * observing data for booking list
          */
         mBookingDashBoardViewModel.returnPasscode().observe(this, androidx.lifecycle.Observer {
-            //progressDialog.dismiss()
             mProgressBar.visibility = View.GONE
+            enableClickListenerForProgressBar()
             showAlertForPasscode(it)
         })
         mBookingDashBoardViewModel.returnPasscodeFailed().observe(this, androidx.lifecycle.Observer {
-           // progressDialog.dismiss()
             mProgressBar.visibility = View.GONE
+            enableClickListenerForProgressBar()
             if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 showAlert()
             } else {
@@ -195,12 +222,27 @@ class UserBookingsDashboardActivity : AppCompatActivity(), NavigationView.OnNavi
                 startActivity(Intent(this@UserBookingsDashboardActivity, BuildingDashboard::class.java))
             }
             R.id.get_passcode -> {
-                getPasscode()
+                if (NetworkState.appIsConnectedToInternet(this))
+                    getPasscode()
+                else {
+                    val mIntent = Intent(this@UserBookingsDashboardActivity, NoInternetConnectionActivity::class.java)
+                    startActivityForResult(mIntent, Constants.RES_CODE2)
+                }
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+
+    /**
+     * on Activity Result when the Network State is available
+     */
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == Constants.RES_CODE2)
+            getPasscode()
+    }
+
 
     /**
      * deslect item in navigation drawer after selection

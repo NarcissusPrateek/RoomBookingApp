@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -154,7 +155,7 @@ class UpcomingBookingFragment : Fragment() {
     private fun signInAnalyticFirebase() {
         mFirebaseAnalytics.setAnalyticsCollectionEnabled(true)
         mFirebaseAnalytics.setUserId(email)
-        mFirebaseAnalytics.setUserProperty("Roll Id", GetPreference.getRoleIdFromPreference().toString())
+        mFirebaseAnalytics.setUserProperty(getString(R.string.Roll_Id), GetPreference.getRoleIdFromPreference().toString())
     }
 
     private fun initRecyclerView() {
@@ -264,7 +265,7 @@ class UpcomingBookingFragment : Fragment() {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())
             } else if (it == Constants.NO_CONTENT_FOUND && finalList.size == 0) {
                 upcoming_empty_view.visibility = View.VISIBLE
-                r1_dashboard.setBackgroundColor(Color.parseColor("#F7F7F7"))
+                r1_dashboard.setBackgroundColor(ContextCompat.getColor(activity!!,R.color.empty_upcoming_dashboard))
             } else {
                 ShowToast.show(activity!!, it as Int)
             }
@@ -284,7 +285,7 @@ class UpcomingBookingFragment : Fragment() {
             }
             if (finalList.size == 0) {
                 upcoming_empty_view.visibility = View.VISIBLE
-                r1_dashboard.setBackgroundColor(Color.parseColor("#F7F7F7"))
+                r1_dashboard.setBackgroundColor(ContextCompat.getColor(activity!!,R.color.empty_upcoming_dashboard))
             }
             dashBord_recyclerView1.adapter?.notifyDataSetChanged()
             progressDialog.dismiss()
@@ -324,7 +325,9 @@ class UpcomingBookingFragment : Fragment() {
             listItems
         ) { _, _ -> }
         val mDialog = builder.create()
+        mDialog.setOnShowListener { DialogInterface.OnShowListener { mDialog.show() } }
         mDialog.show()
+
     }
 
     private fun showDialogForMoreAminities(items: List<String>) {
@@ -337,12 +340,13 @@ class UpcomingBookingFragment : Fragment() {
         val listItems = arrayOfNulls<String>(arrayListOfItems.size)
         arrayListOfItems.toArray(listItems)
         val builder = AlertDialog.Builder(activity!!)
-        builder.setItems(
-            listItems
-        ) { _, _ -> }
+        builder.setTitle("Amenities:")
+        builder.setItems(listItems) { _, _ ->
+
+        }
         val mDialog = builder.create()
         mDialog.show()
-
+        mDialog.setCancelable(false)
 
     }
 

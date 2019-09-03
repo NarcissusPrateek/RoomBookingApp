@@ -29,5 +29,7 @@
     <color name="action_button_text_color">#006DBE</color>
     <color name="shadowColor">#66aff198</color>
     <color name="recycler_background">#F7F7F7</color>
-
+    <color name="empty_upcoming_dashboard">#E3E2E7</color>
+    <color name="empty_previous_dashboard">#EBEBED</color>
+    <color name="empty_cancelled_dashboard">#ECECEE</color>
 </resources>

@@ -1,16 +1,11 @@
-@file:Suppress("DEPRECATION")
-
 package com.nineleaps.conferenceroombooking.booking.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.Html.fromHtml
 import android.text.TextWatcher
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -18,16 +13,15 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import butterknife.BindView
-import butterknife.ButterKnife
 import butterknife.OnClick
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.chip.Chip
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.nineleaps.conferenceroombooking.BaseActivity
 import com.nineleaps.conferenceroombooking.BaseApplication
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
 import com.nineleaps.conferenceroombooking.Helper.SelectMembers
@@ -42,22 +36,23 @@ import com.nineleaps.conferenceroombooking.model.Booking
 import com.nineleaps.conferenceroombooking.model.EmployeeList
 import com.nineleaps.conferenceroombooking.model.GetIntentDataFromActvity
 import com.nineleaps.conferenceroombooking.utils.*
+import com.orhanobut.hawk.Hawk
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_select_meeting_members.*
 import java.util.regex.Pattern
 import javax.inject.Inject
 
-@Suppress("DEPRECATION")
-class SelectMeetingMembersActivity : AppCompatActivity() {
 
+class SelectMeetingMembersActivity : BaseActivity() {
+
+    /**
+     * Declaring Global variables and binned view for using butter knife
+     */
     @Inject
     lateinit var mSelectEmployeeRepo: EmployeeRepository
 
     @Inject
     lateinit var mBookingRepo: BookingRepository
-
-    @BindView(R.id.select_meeting_members_progress_bar)
-    lateinit var mProgressBar: ProgressBar
 
     @BindView(R.id.event_name_text_view)
     lateinit var purposeEditText: EditText
@@ -72,13 +67,15 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
 
     @BindView(R.id.search_edit_text)
     lateinit var searchEditText: EditText
-    @BindView(R.id.add_email)
 
+    @BindView(R.id.add_email)
     lateinit var addEmailButton: Button
+
+    @BindView(R.id.select_meeting_members_progress_bar)
+    lateinit var progressBar: ProgressBar
 
     private lateinit var mSelectMemberViewModel: SelectMemberViewModel
 
-    lateinit var progressDialog: ProgressDialog
 
     private lateinit var mBookingViewModel: BookingViewModel
 
@@ -98,10 +95,18 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
         var selectedCapacity = 0
     }
 
+    /**
+     * Passing the Layout Resource to the Base Activity
+     */
+    override fun getLayoutResource(): Int {
+        return R.layout.activity_select_meeting_members
+    }
+
+    /**
+     * OnCreate Activity initialize related to the Selecting Members
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_select_meeting_members)
-        ButterKnife.bind(this)
         init()
         observeData()
         setClickListenerOnEditText()
@@ -112,12 +117,9 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
 
     }
 
-    private fun initToolBar() {
-        val actionBar = supportActionBar
-        actionBar!!.title = fromHtml("<font color=\"#FFFFFF\">" + getString(R.string.select_participipants) + "</font>")
-
-    }
-
+    /**
+     * click on Add Email when the email is not present in the employee List
+     */
     @OnClick(R.id.add_email)
     fun checkSearchEditTextContent() {
         if (validateEmailFormat()) {
@@ -136,11 +138,12 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
      * initialize all lateinit fields
      */
     fun init() {
-        initToolBar()
+        initActionBar(getString(R.string.select_participipants))
         initComponentForSelectMembers()
         textChangeListenerOnPurposeEditText()
         initLateInitializerVariables()
         initSelectEmployeeRepo()
+        hideSoftKeyBoard()
         initBookingRepo()
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         if (NetworkState.appIsConnectedToInternet(this)) {
@@ -151,12 +154,24 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Get the Building Repository instance from the View Model
+     */
     private fun initBookingRepo() {
         mBookingViewModel.setBookingRepo(mBookingRepo)
     }
 
+    /**
+     * Hide SoftKeyBoard when onClick on the screen other than EditText
+     */
+    private fun hideSoftKeyBoard() {
+        HideSoftKeyboard.setUpUI(findViewById(R.id.relative_layout_of_manager_select_meeting_members), this)
+    }
+
+    /*
+    Inititlize View Model
+     */
     private fun initLateInitializerVariables() {
-        progressDialog = GetProgress.getProgressDialog(getString(R.string.progress_message), this)
         mGetIntentDataFromActivity = getIntentData()
         selectedCapacity = (mGetIntentDataFromActivity.capacity!!.toInt() + 1)
         mSelectMemberViewModel = ViewModelProviders.of(this).get(SelectMemberViewModel::class.java)
@@ -165,6 +180,9 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
         mBookingViewModel = ViewModelProviders.of(this).get(BookingViewModel::class.java)
     }
 
+    /**
+     * on Activity Result when the Network State is available
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.RES_CODE && resultCode == Activity.RESULT_OK) {
@@ -181,7 +199,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
     private fun observeData() {
         // positive response from server
         mSelectMemberViewModel.returnSuccessForEmployeeList().observe(this, Observer {
-            mProgressBar.visibility = View.GONE
+            progressBar.visibility = View.GONE
             employeeList.clear()
             employeeList.addAll(it)
             customAdapter = SelectMembers(it, object : SelectMembers.ItemClickListener {
@@ -194,7 +212,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
         })
         // Negative response from server
         mSelectMemberViewModel.returnFailureForEmployeeList().observe(this, Observer {
-            mProgressBar.visibility = View.GONE
+            progressBar.visibility = View.GONE
             if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, SelectMeetingMembersActivity())
             } else {
@@ -205,13 +223,13 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
 
         // positive response from server
         mBookingViewModel.returnSuccessForBooking().observe(this, Observer {
-            progressDialog.dismiss()
+            hideProgressDialog()
             Toasty.success(this, getString(R.string.booked_successfully), Toast.LENGTH_SHORT, true).show()
             goToBookingDashboard()
         })
         // negative response from server
         mBookingViewModel.returnFailureForBooking().observe(this, Observer {
-            progressDialog.dismiss()
+            hideProgressDialog()
             if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, SelectMeetingMembersActivity())
             } else {
@@ -224,7 +242,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
      *  calls the function of view model to get the data from server
      */
     private fun addBooking() {
-        progressDialog.show()
+        showProgressDialog(this)
         mBookingViewModel.addBookingDetails(mBooking)
     }
 
@@ -243,10 +261,16 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
         mBooking.toTime = FormatTimeAccordingToZone.formatDateAsUTC(mBookingDetails.toTime!!)
     }
 
+    /**
+     * Dependency Injection of Employee Members List
+     */
     private fun initComponentForSelectMembers() {
         (application as BaseApplication).getmAppComponent()?.inject(this)
     }
 
+    /**
+     * ViewModel of SelectEmployee
+     */
     private fun initSelectEmployeeRepo() {
         mSelectMemberViewModel.setEmployeeListRepo(mSelectEmployeeRepo)
     }
@@ -260,14 +284,20 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
         finish()
     }
 
-    // call function of ViewModel which will make API call
+    /**
+     *call function of ViewModel which will make API call
+     */
     private fun getViewModel() {
-        mProgressBar.visibility = View.VISIBLE
+        progressBar.visibility = View.VISIBLE
         mSelectMemberViewModel.getEmployeeList(acct.email!!)
     }
 
+    /**
+     * Booking the Room
+     */
     @OnClick(R.id.next_activity)
     fun onClick() {
+        hideSoftKeyBoard()
         purposeEditText.onEditorAction(EditorInfo.IME_ACTION_DONE)
         var emailString = ""
         val size = selectedName.size
@@ -278,7 +308,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
                 emailString += ","
             }
         }
-        if (!emailString.isEmpty())
+        if (emailString.isNotEmpty())
             attendee = emailString.split(",").toMutableList()
         else
             attendee = emptyList<String>().toMutableList()
@@ -297,21 +327,16 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * logging the event of booking event
+     */
     private fun bookingLogFirebaseAnalytics() {
-
-        FirebaseAnalytic.firebaseAnalytics(
-            mFirebaseAnalytics,
-            this,
-            getString(R.string.singleBooking),
-            mBooking.email!!
-        )
-//        val bookingBundle = Bundle()
-//        mFirebaseAnalytics.logEvent(getString(R.string.singleBooking),bookingBundle)
-//        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true)
-//        mFirebaseAnalytics.setMinimumSessionDuration(5000)
-//        mFirebaseAnalytics.setSessionTimeoutDuration(1000000)
-//        mFirebaseAnalytics.setUserId(mBooking.email)
-//        mFirebaseAnalytics.setUserProperty(getString(R.string.Roll_Id),GetPreference.getRoleIdFromPreference(this).toString())
+        val bookingBundle = Bundle()
+        mFirebaseAnalytics.logEvent(getString(R.string.singleBooking), bookingBundle)
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true)
+        mFirebaseAnalytics.setSessionTimeoutDuration(1000000)
+        mFirebaseAnalytics.setUserId(mBooking.email)
+        mFirebaseAnalytics.setUserProperty(getString(R.string.Roll_Id), Hawk.get<Int>(Constants.ROLE_CODE).toString())
     }
 
     /**
@@ -334,7 +359,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
             selectedEmail.add(email)
             count++
             scroll_view.post {
-                scroll_view.smoothScrollBy(0,chip_group.bottom)
+                scroll_view.smoothScrollBy(0, chip_group.bottom)
             }
         } else {
             Toast.makeText(this, getString(R.string.already_selected), Toast.LENGTH_SHORT).show()
@@ -364,13 +389,7 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
      * validate all input fields
      */
     private fun validatePurpose(): Boolean {
-        return if (purposeEditText.text.toString().trim().isEmpty()) {
-            purpose_layout.error = getString(R.string.field_cant_be_empty)
-            false
-        } else {
-            purpose_layout.error = null
-            true
-        }
+        return validateEditText(purposeEditText.text.toString().trim(), purpose_layout)
     }
 
     /**
@@ -450,7 +469,9 @@ class SelectMeetingMembersActivity : AppCompatActivity() {
     }
 
 
-    // function checks for correct email format
+    /**
+     * function checks for correct email format
+     */
     private fun validateEmailFormat(): Boolean {
         val email = searchEditText.text.toString().trim()
         val pat = Pattern.compile(Constants.MATCHER)

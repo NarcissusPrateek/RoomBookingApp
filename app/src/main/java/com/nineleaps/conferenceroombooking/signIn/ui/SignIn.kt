@@ -1,75 +1,77 @@
-package com.nineleaps.conferenceroombooking
+package com.nineleaps.conferenceroombooking.signIn.ui
 
 import android.app.Activity
-import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import android.view.View
-import android.widget.ProgressBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import butterknife.BindView
-import butterknife.ButterKnife
 import butterknife.OnClick
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.iid.FirebaseInstanceId
+import com.nineleaps.conferenceroombooking.BaseActivity
+import com.nineleaps.conferenceroombooking.BaseApplication
 import com.nineleaps.conferenceroombooking.Helper.GoogleGSO
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
+import com.nineleaps.conferenceroombooking.R
 import com.nineleaps.conferenceroombooking.bookingDashboard.ui.UserBookingsDashboardActivity
 import com.nineleaps.conferenceroombooking.checkConnection.NoInternetConnectionActivity
 import com.nineleaps.conferenceroombooking.model.SignIn
 import com.nineleaps.conferenceroombooking.signIn.repository.CheckRegistrationRepository
 import com.nineleaps.conferenceroombooking.signIn.viewModel.CheckRegistrationViewModel
-import com.nineleaps.conferenceroombooking.utils.*
+import com.nineleaps.conferenceroombooking.utils.Constants
+import com.nineleaps.conferenceroombooking.utils.GetAleretDialog
+import com.nineleaps.conferenceroombooking.utils.GetPreference
+import com.nineleaps.conferenceroombooking.utils.ShowToast
 import com.orhanobut.hawk.Hawk
 import javax.inject.Inject
 
-class SignIn : AppCompatActivity() {
+class SignIn : BaseActivity() {
 
+    /**
+     * Declaring Global variables and binned view for using butter knife
+     */
     @Inject
     lateinit var mCheckRegistrationRepo: CheckRegistrationRepository
-    @BindView(R.id.sin_in_progress_bar)
-    lateinit var mProgressBar: ProgressBar
+
     private val RC_SIGN_IN = 0
+
     private var mGoogleSignInClient: GoogleSignInClient? = null
-    private lateinit var prefs: SharedPreferences
+
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
-    private lateinit var progressDialog: ProgressDialog
+
     private lateinit var mCheckRegistrationViewModel: CheckRegistrationViewModel
+
     private lateinit var auth: FirebaseAuth
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_signin)
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
-        auth = FirebaseAuth.getInstance()
-        ButterKnife.bind(this)
-        initialize()
-        observeData()
-        Hawk.init(this).build()
-        Firebase.FirebaseDeviceId()
-        Firebase.FirebaseToken()
+    /**
+     * Passing the Layout Resource to the Base Activity
+     */
+    override fun getLayoutResource(): Int {
+        return R.layout.activity_signin
     }
 
+    /**
+     * OnCreate Activity initialize related to the SignIn
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
+        auth = FirebaseAuth.getInstance()
+        initialize()
+        observeData()
+    }
 
-
-
+    /**
+     * OnClick on SignIn Button
+     */
     @OnClick(R.id.sign_in_button)
     fun signIn() {
         startIntentToGoogleSignIn()
@@ -80,18 +82,22 @@ class SignIn : AppCompatActivity() {
      */
     fun initialize() {
         initComponentForSignIn()
-        prefs = getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE)
-        progressDialog = GetProgress.getProgressDialog(getString(R.string.progress_message_processing), this)
         mCheckRegistrationViewModel = ViewModelProviders.of(this).get(CheckRegistrationViewModel::class.java)
         initRegistrationRepo()
         initializeGoogleSignIn()
     }
 
 
+    /*
+    Dependency Injection of Sign
+     */
     private fun initComponentForSignIn() {
         (application as BaseApplication).getmAppComponent()?.inject(this)
     }
 
+    /**
+     *
+     */
     private fun initRegistrationRepo() {
         mCheckRegistrationViewModel.setCheckRegistrationRepo(mCheckRegistrationRepo)
     }
@@ -100,7 +106,7 @@ class SignIn : AppCompatActivity() {
      * function will starts a explict intent for the google sign in
      */
     private fun startIntentToGoogleSignIn() {
-        val signInIntent =mGoogleSignInClient!!.signInIntent
+        val signInIntent = mGoogleSignInClient!!.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
@@ -109,7 +115,7 @@ class SignIn : AppCompatActivity() {
      */
     private fun initializeGoogleSignIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("878830033208-04iofjt86ut811cfvvunr53enfo9n0bk.apps.googleusercontent.com")
+            .requestIdToken(getString(R.string.firebase_google_sigIn_oAuth_key))
             .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
@@ -145,12 +151,13 @@ class SignIn : AppCompatActivity() {
                 startActivityForResult(i, Constants.RES_CODE)
             }
         } catch (e: ApiException) {
-            Log.w(getString(R.string.sign_in_error), "signInResult:failed code=" + e.statusCode)
         }
     }
+
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-          setTokenToAccessToken(acct.idToken)
+        setTokenToAccessToken(acct.idToken)
     }
+
     /**
      * Sign out from application
      */
@@ -178,9 +185,9 @@ class SignIn : AppCompatActivity() {
      * if not registered than make an intent to registration activity
      */
     private fun checkRegistration() {
-        progressDialog.show()
-        Hawk.put("Device", FirebaseInstanceId.getInstance().token)
-        mCheckRegistrationViewModel.checkRegistration(Hawk.get("Device"))
+        showProgressDialog(this)
+        Hawk.put(getString(R.string.device_Id), FirebaseInstanceId.getInstance().token)
+        mCheckRegistrationViewModel.checkRegistration(Hawk.get(getString(R.string.device_Id)))
     }
 
     private fun setTokenToAccessToken(idToken: String?) {
@@ -193,14 +200,12 @@ class SignIn : AppCompatActivity() {
     private fun observeData() {
         //positive response from server
         mCheckRegistrationViewModel.returnSuccessCode().observe(this, Observer {
-            progressDialog.dismiss()
-            mProgressBar.visibility = View.GONE
+            hideProgressDialog()
             setValueForSharedPreference(it)
         })
         // Negative response from server
         mCheckRegistrationViewModel.returnFailureCode().observe(this, Observer {
-            progressDialog.dismiss()
-            mProgressBar.visibility = View.GONE
+            hideProgressDialog()
             ShowToast.show(this, it as Int)
             signOut()
         })

@@ -39,12 +39,8 @@
     <ImageView
             android:id="@+id/upcoming_empty_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:visibility="gone"
-            android:src="@drawable/emptystate1"
-            android:layout_marginTop="@dimen/dp_170"
-            android:layout_centerInParent="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerVertical="true"
-    />
+            android:layout_height="wrap_content"
+            android:src="@drawable/upcoming_empty_image"
+            android:layout_centerInParent="true"/>
 </RelativeLayout>

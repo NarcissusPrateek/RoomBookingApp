@@ -209,9 +209,35 @@
                     android:textSize="@dimen/sp_14"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/manager_filter_layout_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_below="@+id/manager_search_room"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"
+                    android:background="@color/white"
+                    app:errorEnabled="true"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/manager_filter_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/manager_search_room"
+                        android:maxLines="1"
+                        android:visibility="gone"
+                        android:paddingLeft="@dimen/dp_16"
+                        android:singleLine="true"
+                        android:hint="@string/search"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:drawableEnd="@drawable/ic_search"/>
+            </com.google.android.material.textfield.TextInputLayout>
             <androidx.recyclerview.widget.RecyclerView
                     android:background="@color/recycler_view_background"
-                    android:layout_below="@id/manager_suggestions"
+                    android:layout_below="@id/manager_filter_layout_edit_text"
                     android:visibility="visible"
                     android:layout_margin="@dimen/dp_2"
                     android:id="@+id/manager_recycler_view_room_list"

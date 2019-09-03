@@ -1,6 +1,7 @@
 package com.nineleaps.conferenceroombooking.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Building(
     @SerializedName("buildingId")
@@ -14,5 +15,5 @@ data class Building(
 
     @SerializedName("placeId")
     var locationId: Int? = null
-)
+):Serializable
 

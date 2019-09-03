@@ -1,55 +1,46 @@
 package com.nineleaps.conferenceroombooking.recurringMeeting.ui
 
-import android.app.Activity
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.Html.fromHtml
 import android.text.TextWatcher
-import android.util.Log
+import android.view.MotionEvent
 import android.view.View
-import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.EditText
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
-import butterknife.ButterKnife
 import butterknife.OnClick
-import ca.antonious.materialdaypicker.MaterialDayPicker
 import com.example.conferenceroomapp.model.ManagerConference
+import com.nineleaps.conferenceroombooking.BaseActivity
 import com.nineleaps.conferenceroombooking.BaseApplication
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
 import com.nineleaps.conferenceroombooking.Helper.RoomAdapter
 import com.nineleaps.conferenceroombooking.R
 import com.nineleaps.conferenceroombooking.ViewModel.ManagerConferenceRoomViewModel
 import com.nineleaps.conferenceroombooking.checkConnection.NoInternetConnectionActivity
-import com.nineleaps.conferenceroombooking.manageBuildings.repository.BuildingsRepository
 import com.nineleaps.conferenceroombooking.manageBuildings.viewModel.BuildingViewModel
-import com.nineleaps.conferenceroombooking.model.Building
 import com.nineleaps.conferenceroombooking.model.GetIntentDataFromActvity
 import com.nineleaps.conferenceroombooking.model.RoomDetails
 import com.nineleaps.conferenceroombooking.recurringMeeting.repository.ManagerConferenceRoomRepository
 import com.nineleaps.conferenceroombooking.utils.*
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_project_manager_input.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
+import kotlin.collections.ArrayList
 
-@Suppress("NAME_SHADOWING", "DEPRECATION")
-class RecurringBookingInputDetails : AppCompatActivity() {
+class RecurringBookingInputDetails : BaseActivity() {
 
+    /**
+     * Declaring Global variables and binned view for using butter knife
+     */
     @Inject
     lateinit var mManagerRoomRepo: ManagerConferenceRoomRepository
-
-    @Inject
-    lateinit var mBuildingRepo: BuildingsRepository
-
-    @BindView(R.id.project_manager_progress_bar)
-    lateinit var progressBar: ProgressBar
 
     @BindView(R.id.fromTime_manager)
     lateinit var fromTimeEditText: EditText
@@ -66,6 +57,8 @@ class RecurringBookingInputDetails : AppCompatActivity() {
     @BindView(R.id.manager_recycler_view_room_list)
     lateinit var mRecyclerView: RecyclerView
 
+    @BindView(R.id.manager_filter_edit_text)
+    lateinit var filterEditText: EditText
 
     @BindView(R.id.manager_room_capacity)
     lateinit var roomCapacityEditText: EditText
@@ -84,59 +77,107 @@ class RecurringBookingInputDetails : AppCompatActivity() {
 
     private var fromTimeList = ArrayList<String>()
 
+    private var mListOfRooms = ArrayList<RoomDetails>()
+
     private var toTimeList = ArrayList<String>()
 
-    var mRoom = ManagerConference()
+    private var mRoom = ManagerConference()
 
     private var dateFlag = 0
 
     var mSetIntentData = GetIntentDataFromActvity()
 
+    /**
+     * Passing the Layout Resource to the Base Activity
+     */
+    override fun getLayoutResource(): Int {
+        return R.layout.activity_project_manager_input
+    }
+
+    /**
+     * OnCreate Activity initialize related to the RecurringBookingInputDetails
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_project_manager_input)
-        ButterKnife.bind(this)
         init()
         observerData()
     }
 
+    /**
+     * Initialing of Components
+     */
     private fun init() {
-        initActionBar()
+        initActionBar(getString(R.string.Booking_Details))
         initComponentForManagerBooking()
         initLateInitVariables()
-        initBuildingRepo()
         initRoomRepo()
         setPickerToEditTexts()
         setTextChangeListener()
+        initRecyclerView()
+        setClickListenerOnEditText()
+        filterEditText.onRightDrawableClicked {
+            it.text.clear()
+        }
         hideSoftKeyBoard()
     }
 
+    /**
+     * Initializing of the RecyclerView
+     */
+    private fun initRecyclerView() {
+        customAdapter =
+            RoomAdapter(mListOfRooms , this, object : RoomAdapter.ItemClickListener {
+                override fun onItemClick(roomId: Int?, buidingId: Int?, roomName: String?, buildingName: String?) {
+                    mSetIntentData.fromTime = fromTimeEditText.text.toString()
+                    mSetIntentData.toTime = toTimeEditText.text.toString()
+                    mSetIntentData.date = dateFromEditText.text.toString()
+                    mSetIntentData.toDate = dateToEditText.text.toString()
+                    mSetIntentData.buildingName = buildingName
+                    mSetIntentData.roomName = roomName
+                    mSetIntentData.buildingId = buidingId
+                    mSetIntentData.roomId = roomId
+                    mSetIntentData.fromTimeList.clear()
+                    mSetIntentData.toTimeList.clear()
+                    mSetIntentData.fromTimeList.addAll(fromTimeList)
+                    mSetIntentData.toTimeList.addAll(toTimeList)
+                    mSetIntentData.capacity = roomCapacityEditText.text.toString()
+                    goToSelectMeetingMembersActivity()
+                }
+            }, object : RoomAdapter.MoreAminitiesListner {
+                override fun moreAmenities(position: Int) {
+                    showDialogForMoreAminities(mListOfRooms[position].amenities!!)
+
+                }
+
+            })
+        mRecyclerView.adapter = customAdapter
+    }
+
+    /**
+     * Hide SoftKeyboard when Onclick on the screen other than
+     */
     private fun hideSoftKeyBoard() {
         HideSoftKeyboard.setUpUI(findViewById(R.id.reurring_booking_scroll_view), this)
         HideSoftKeyboard.setUpUI(findViewById(R.id.manager_search_room), this)
     }
 
+    /**
+     *Dependency Injection of Manager Booking
+     */
     private fun initComponentForManagerBooking() {
         (application as BaseApplication).getmAppComponent()?.inject(this)
     }
 
+    /**
+     * Get the Conference Room for Recurring Rooms
+     */
     private fun initRoomRepo() {
         mManagerConferecneRoomViewModel.setManagerConferenceRoomRepo(mManagerRoomRepo)
     }
 
-    private fun initBuildingRepo() {
-        mBuildingsViewModel.setBuildingRepository(mBuildingRepo)
-    }
-
-
-    //set action bar properties
-    private fun initActionBar() {
-        val actionBar = supportActionBar
-        actionBar!!.title = fromHtml("<font color=\"#FFFFFF\">" + getString(R.string.Booking_Details) + "</font>")
-
-    }
-
-    // initialize late init properties
+    /**
+     * initialize late init properties
+     */
     private fun initLateInitVariables() {
         mBuildingsViewModel = ViewModelProviders.of(this)
             .get(BuildingViewModel::class.java)
@@ -155,6 +196,9 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         selectChangeListenerOnDaySlector()
     }
 
+    /**
+     * OnClick on Manager Search room Button
+     */
     @OnClick(R.id.manager_search_room)
     fun makeCallForRooms() {
         if (validate()) {
@@ -224,15 +268,30 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         }
     }
 
-    //observe data from view model
+    /**
+     * observe data from view model
+     */
     private fun observerData() {
         //positive response
         mManagerConferecneRoomViewModel.returnSuccess().observe(this, Observer {
-            checkForStatusOfRooms(it)
+            if (it.isEmpty()){
+                mListOfRooms.clear()
+                customAdapter.notifyDataSetChanged()
+                manager_horizontal_line_below_search_button.visibility = View.VISIBLE
+                manager_suggestions.text = getString(R.string.no_rooms_available)
+                manager_filter_edit_text.visibility = View.GONE
+                hideProgressDialog()
+            }else{
+                mListOfRooms.clear()
+                mListOfRooms.addAll(it)
+                manager_filter_edit_text.visibility = View.VISIBLE
+                customAdapter.notifyDataSetChanged()
+                hideProgressDialog()
+            }
         })
         // Negative response
         mManagerConferecneRoomViewModel.returnFailure().observe(this, Observer {
-            progressBar.visibility = View.GONE
+            hideProgressDialog()
             if ( it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(this, RecurringBookingInputDetails())
             }else{
@@ -242,41 +301,9 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         })
     }
 
-    private fun checkForStatusOfRooms(mListOfRooms: List<RoomDetails>?) {
-        setAdapter(mListOfRooms!!)
-    }
-
-    private fun setAdapter(mListOfRooms: List<RoomDetails>) {
-        progressBar.visibility = View.GONE
-        customAdapter =
-            RoomAdapter(mListOfRooms as ArrayList<RoomDetails>, this, object : RoomAdapter.ItemClickListener {
-                override fun onItemClick(roomId: Int?, buidingId: Int?, roomName: String?, buildingName: String?) {
-                    mSetIntentData.fromTime = fromTimeEditText.text.toString()
-                    mSetIntentData.toTime = toTimeEditText.text.toString()
-                    mSetIntentData.date = dateFromEditText.text.toString()
-                    mSetIntentData.toDate = dateToEditText.text.toString()
-                    mSetIntentData.buildingName = buildingName
-                    mSetIntentData.roomName = roomName
-                    mSetIntentData.buildingId = buidingId
-                    mSetIntentData.roomId = roomId
-                    mSetIntentData.fromTimeList.clear()
-                    mSetIntentData.toTimeList.clear()
-                    mSetIntentData.fromTimeList.addAll(fromTimeList)
-                    mSetIntentData.toTimeList.addAll(toTimeList)
-                    mSetIntentData.capacity = roomCapacityEditText.text.toString()
-                    goToSelectMeetingMembersActivity()
-                }
-            }, object : RoomAdapter.MoreAminitiesListner {
-                override fun moreAmenities(position: Int) {
-                    showDialogForMoreAminities(mListOfRooms[position].amenities!!)
-
-                }
-
-            })
-        mRecyclerView.adapter = customAdapter
-
-    }
-
+    /**
+     * Show alertDialog of List of Amenities when it contains more than 4 amenity
+     */
     private fun showDialogForMoreAminities(items: HashMap<Int, String>) {
         val arrayListOfItems = ArrayList<String>()
 
@@ -293,6 +320,9 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         mDialog.show()
     }
 
+    /**
+     * Go to the next Activity i.e ManagerSelectMeetingMembers
+     */
     private fun goToSelectMeetingMembersActivity() {
         val intent = Intent(this@RecurringBookingInputDetails, ManagerSelectMeetingMembers::class.java)
         intent.putExtra(Constants.EXTRA_INTENT_DATA, mSetIntentData)
@@ -499,9 +529,9 @@ class RecurringBookingInputDetails : AppCompatActivity() {
              */
 
             if (elapsed2 < 0) {
-                val builder =
+                val invalidbuilder =
                     GetAleretDialog.getDialog(this, getString(R.string.invalid), getString(R.string.invalid_fromtime))
-                builder.setPositiveButton(getString(R.string.ok)) { _, _ ->
+                invalidbuilder.setPositiveButton(getString(R.string.ok)) { _, _ ->
                 }
                 GetAleretDialog.showDialog(builder)
             } else if (minMilliseconds <= elapsed) {
@@ -516,13 +546,13 @@ class RecurringBookingInputDetails : AppCompatActivity() {
                 }
 
             } else {
-                val builder = GetAleretDialog.getDialog(
+                val invalidtimebuilder = GetAleretDialog.getDialog(
                     this,
                     getString(R.string.invalid),
                     getString(R.string.time_validation_message)
                 )
 
-                builder.setPositiveButton(getString(R.string.ok)) { _, _ ->
+                invalidtimebuilder.setPositiveButton(getString(R.string.ok)) { _, _ ->
                 }
                 val dialog = GetAleretDialog.showDialog(builder)
                 ColorOfDialogButton.setColorOfDialogButton(dialog)
@@ -564,7 +594,7 @@ class RecurringBookingInputDetails : AppCompatActivity() {
 
     private fun getConferenceRoomViewModel() {
         if (NetworkState.appIsConnectedToInternet(this)) {
-            progressBar.visibility = View.VISIBLE
+            showProgressDialog(this)
             mManagerConferecneRoomViewModel.getConferenceRoomList(mRoom)
         } else {
             val i = Intent(this@RecurringBookingInputDetails, NoInternetConnectionActivity::class.java)
@@ -669,6 +699,70 @@ class RecurringBookingInputDetails : AppCompatActivity() {
         }
 
     }
+
+    /**
+     * take input from edit text and set addTextChangedListener
+     */
+    private fun setClickListenerOnEditText() {
+        filterEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+                /**
+                 * Nothing Here
+                 */
+            }
+
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+                when {
+                    charSequence.isEmpty() -> filterEditText.setCompoundDrawablesWithIntrinsicBounds(
+                        0,
+                        0,
+                        R.drawable.ic_search,
+                        0
+                    )
+                    else -> filterEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
+                }
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+                filter(editable.toString())
+            }
+        })
+    }
+
+    /**
+     * filter matched data from employee list and set updated list to adapter
+     */
+    fun filter(text: String) {
+        val filterName = java.util.ArrayList<RoomDetails>()
+        for (s in mListOfRooms) {
+            if (s.roomName!!.toLowerCase().contains(text.toLowerCase()) || s.buildingName!!.toLowerCase().contains(text.toLowerCase())) {
+                filterName.add(s)
+            }
+        }
+        customAdapter.filterList(filterName)
+        // no items present in recyclerview than give option for add other emails
+        when {
+            customAdapter.itemCount == 0 -> manager_suggestions.visibility = View.VISIBLE
+            else -> manager_suggestions.visibility = View.GONE
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun EditText.onRightDrawableClicked(onClicked: (view: EditText) -> Unit) {
+        this.setOnTouchListener { v, event ->
+            var hasConsumed = false
+            when {
+                v is EditText && event.x >= v.width - v.totalPaddingRight -> {
+                    if (event.action == MotionEvent.ACTION_UP) {
+                        onClicked(this)
+                    }
+                    hasConsumed = true
+                }
+            }
+            hasConsumed
+        }
+    }
+
 
 }
 

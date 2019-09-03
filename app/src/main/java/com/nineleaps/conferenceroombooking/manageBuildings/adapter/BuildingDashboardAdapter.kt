@@ -11,7 +11,13 @@ import com.nineleaps.conferenceroombooking.R
 import com.nineleaps.conferenceroombooking.model.Building
 
 
-class BuildingDashboardAdapter(var mContext: Context, private val mBuildingList: List<Building>, private val btnListener: BtnClickListener, private val editListener: EditClickListener, private val deleteListener:DeleteClickListner) :
+class BuildingDashboardAdapter(
+    var mContext: Context,
+    private val mBuildingList: List<Building>,
+    private val btnListener: BtnClickListener,
+    private val editListener: EditClickListener,
+    private val deleteListener: DeleteClickListner
+) :
     androidx.recyclerview.widget.RecyclerView.Adapter<BuildingDashboardAdapter.ViewHolder>() {
 
 
@@ -62,7 +68,7 @@ class BuildingDashboardAdapter(var mContext: Context, private val mBuildingList:
             mClickListener?.onBtnClick(id, buildingName)
         }
         holder.delete.setOnClickListener {
-            Log.i("66666","Enter")
+            Log.i("66666", "Enter")
             deleteListener.onDeleteClick(position)
         }
     }
@@ -88,7 +94,7 @@ class BuildingDashboardAdapter(var mContext: Context, private val mBuildingList:
         fun onEditBtnClick(position: Int)
     }
 
-    interface  DeleteClickListner{
+    interface DeleteClickListner {
         fun onDeleteClick(position: Int)
     }
 }

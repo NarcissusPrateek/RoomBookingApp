@@ -28,10 +28,7 @@
         <item name="colorAccent">@color/colorPrimary1</item>
     </style>
 
-
-
-
-    <style name="sighin" parent="Theme.MaterialComponents.Light">
+    <style name="signIn" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorPrimary1</item>
     </style>
 

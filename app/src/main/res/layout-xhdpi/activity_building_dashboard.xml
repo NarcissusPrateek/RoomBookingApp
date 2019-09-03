@@ -13,6 +13,7 @@
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:elevation="@dimen/dp_24"
+            android:backgroundTint="@color/horizontal_view_color"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>

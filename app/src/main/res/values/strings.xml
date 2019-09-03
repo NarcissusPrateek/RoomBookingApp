@@ -258,5 +258,17 @@
     <string name="meeting_participants">Attendee</string>
     <string name="select_location">Select Location</string>
     <string name="no_location_available">No Locations Available</string>
+    <string name="invalid_starttime_and_endtime">Invalid Start Time and End Time</string>
+    <string name="building_present">Building already present with this Name and Place</string>
+    <string name="no_aminities">No Amenities</string>
+    <string name="firebase_google_sigIn_oAuth_key">
+        878830033208-04iofjt86ut811cfvvunr53enfo9n0bk.apps.googleusercontent.com
+    </string>
+    <string name="device_Id">Device</string>
+    <string name="block_dashboard">Block DashBoard</string>
+    <string name="recurring_meeting">Recurring Meeting</string>
+    <string name="manage_building">Manage Building</string>
+    <string name="passcode">Passcode</string>
+    <string name="nav_logout">Logout</string>
 
 </resources>

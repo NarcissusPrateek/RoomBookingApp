@@ -1,63 +1,71 @@
-@file:Suppress("DEPRECATION")
-
 package com.nineleaps.conferenceroombooking.splashScreen.ui
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import butterknife.BindView
 import com.crashlytics.android.Crashlytics
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.iid.FirebaseInstanceId
+import com.nineleaps.conferenceroombooking.BaseActivity
 import com.nineleaps.conferenceroombooking.BaseApplication
 import com.nineleaps.conferenceroombooking.Helper.NetworkState
 import com.nineleaps.conferenceroombooking.R
-import com.nineleaps.conferenceroombooking.SignIn
 import com.nineleaps.conferenceroombooking.bookingDashboard.ui.UserBookingsDashboardActivity
 import com.nineleaps.conferenceroombooking.checkConnection.NoInternetConnectionActivity
+import com.nineleaps.conferenceroombooking.signIn.ui.SignIn
 import com.nineleaps.conferenceroombooking.splashScreen.repository.GetRoleOfUser
 import com.nineleaps.conferenceroombooking.splashScreen.viewModel.GetRoleOfUserViewModel
-import com.nineleaps.conferenceroombooking.utils.*
+import com.nineleaps.conferenceroombooking.utils.Constants
+import com.nineleaps.conferenceroombooking.utils.ShowDialogForSessionExpired
+import com.nineleaps.conferenceroombooking.utils.ShowToast
 import com.orhanobut.hawk.Hawk
 import io.fabric.sdk.android.Fabric
 import javax.inject.Inject
 
 
-class SplashScreen : AppCompatActivity() {
+class SplashScreen : BaseActivity() {
+
 
     @Inject
     lateinit var mCheckegistationRepo: GetRoleOfUser
 
-    private lateinit var mProgressBar: ProgressBar
-    private lateinit var prefs: SharedPreferences
-    private lateinit var progressDialog: ProgressDialog
+    @BindView(R.id.splash_screen_progress_bar)
+    lateinit var mProgressBar: ProgressBar
+
     private lateinit var mGetRoleOfUserViewModel: GetRoleOfUserViewModel
+
     private var email = ""
+
+    /**
+     * Declaring Global variables and binned view for using butter knife
+     */
+    override fun getLayoutResource(): Int {
+        return R.layout.activity_splash_screen
+    }
+
+    /**
+     * Passing the Layout Resource to the Base Activity
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Fabric.with(this, Crashlytics())
-        setContentView(R.layout.activity_splash_screen)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        FirebaseAnalytic.firebaseAnalyticsReset(FirebaseAnalytics.getInstance(this))
         init()
         observeData()
         timeDelayForSplashScreen()
     }
 
+    /**
+     * TimeDelay for the Splash Screen
+     */
     private fun timeDelayForSplashScreen() {
         val logoHandler = Handler()
         val logoRunnable = Runnable {
@@ -80,6 +88,9 @@ class SplashScreen : AppCompatActivity() {
         logoHandler.postDelayed(logoRunnable, 3000)
     }
 
+    /**
+     * on Activity Result when the Network State is available
+     */
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.RES_CODE && resultCode == Activity.RESULT_OK) {
@@ -100,17 +111,20 @@ class SplashScreen : AppCompatActivity() {
      */
     fun init() {
         initComponentForSplashScreen()
-        mProgressBar = findViewById(R.id.splash_screen_progress_bar)
-        progressDialog = GetProgress.getProgressDialog(getString(R.string.progress_message), this)
-        prefs = getSharedPreferences(Constants.PREFERENCE, Context.MODE_PRIVATE)
         mGetRoleOfUserViewModel = ViewModelProviders.of(this).get(GetRoleOfUserViewModel::class.java)
         initGetRoleOfUserRepo()
     }
 
+    /**
+     * Dependency Injection of Splas
+     */
     private fun initComponentForSplashScreen() {
         (application as BaseApplication).getmAppComponent()?.inject(this)
     }
 
+    /**
+     *  Get the Role Repository instance from the View Model
+     */
     private fun initGetRoleOfUserRepo() {
         mGetRoleOfUserViewModel.setGetRoleOfUserRepo(mCheckegistationRepo)
     }
@@ -170,9 +184,6 @@ class SplashScreen : AppCompatActivity() {
      */
     private fun setValueForSharedPreference(it: Int) {
         Hawk.put(Constants.ROLE_CODE,it)
-//        val editor = prefs.edit()
-//        editor.putInt(Constants.ROLE_CODE, it)
-//        editor.apply()
         goToNextActivity(it)
     }
 }
