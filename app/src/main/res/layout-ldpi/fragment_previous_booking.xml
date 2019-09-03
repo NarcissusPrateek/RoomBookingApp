@@ -41,8 +41,7 @@
             android:visibility="gone"
             android:src="@drawable/previous_empty_image"
             android:layout_marginTop="@dimen/dp_170"
-            android:layout_centerInParent="true"
-            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
 </RelativeLayout>
 
