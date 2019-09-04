@@ -65,4 +65,4 @@ fastlane/test_output
 fastlane/readme.md
 
 #ConfigureFile
-/res/values/configuration.xml
+**/*/res/values/configuration.xml
