@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <?xml version="1.0" encoding="utf-8"?>
-    <resources>
-        <string name="firebase_google_sigIn_oAuth_key">
-            878830033208-04iofjt86ut811cfvvunr53enfo9n0bk.apps.googleusercontent.com
-        </string>
-    </resources>
-</resources>
