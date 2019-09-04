@@ -110,6 +110,7 @@ class PreviousBookingFragment : Fragment() {
     }
 
     private fun getViewModel() {
+        WindowManager.disableInteraction(activity!!)
         mProgressBar.visibility = View.VISIBLE
         mBookingDashBoardViewModel.getBookingList(
             mBookingDashboardInput
@@ -177,6 +178,7 @@ class PreviousBookingFragment : Fragment() {
         mBookingDashBoardViewModel.returnSuccess().observe(this, Observer {
             previous_progress_bar.visibility = View.GONE
             previous__booking_refresh_layout.isRefreshing = false
+            WindowManager.enableInteraction(activity!!)
             mProgressBar.visibility = View.GONE
             previous__empty_view.visibility = View.GONE
             hasMoreItem = it.paginationMetaData!!.nextPage!!
@@ -186,6 +188,7 @@ class PreviousBookingFragment : Fragment() {
         mBookingDashBoardViewModel.returnFailure().observe(this, Observer {
             previous_progress_bar.visibility = View.GONE
             previous__booking_refresh_layout.isRefreshing = false
+            WindowManager.enableInteraction(activity!!)
             mProgressBar.visibility = View.GONE
             if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
                 ShowDialogForSessionExpired.showAlert(activity!!, UserBookingsDashboardActivity())

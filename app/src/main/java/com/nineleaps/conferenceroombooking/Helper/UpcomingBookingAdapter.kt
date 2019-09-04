@@ -75,8 +75,10 @@ class UpcomingBookingAdapter(
             }
         }
 
-        if (dashboardItemList[position].amenities!!.isEmpty())
+        if (dashboardItemList[position].amenities!!.isEmpty()) {
             holder.aminityTitle.text = mContext.getString(R.string.no_aminities)
+            disableAmenitiesHolder(holder)
+        }
         else
             for (i in dashboardItemList[position].amenities!!.indices) {
                 getAmenitiesHolder(holder,i,position)
@@ -130,6 +132,16 @@ class UpcomingBookingAdapter(
             }
         }
 
+    }
+
+    /**
+     * Disable the View of the amenities
+     */
+    private fun disableAmenitiesHolder(holder:ViewHolder){
+        holder.amenity3.visibility = View.GONE
+        holder.amenity0.visibility = View.GONE
+        holder.amenity1.visibility = View.GONE
+        holder.amenity2.visibility = View.GONE
     }
 
     /**

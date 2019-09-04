@@ -2,14 +2,13 @@ package com.nineleaps.conferenceroombooking.recurringMeeting.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.AbsListView
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
@@ -52,7 +51,7 @@ class CancelledBookingFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         HideSoftKeyboard.hideKeyboard(activity!!)
-        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
+        activity!!.window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         return inflater.inflate(R.layout.fragment_cancelled_booking, container, false)
     }
 
@@ -109,6 +108,7 @@ class CancelledBookingFragment : Fragment() {
     }
 
     private fun getViewModel() {
+        com.nineleaps.conferenceroombooking.utils.WindowManager.disableInteraction(activity!!)
         mProgressBar.visibility = View.VISIBLE
         mBookingDashBoardViewModel.getBookingList(
             mBookingDashboardInput
@@ -177,6 +177,7 @@ class CancelledBookingFragment : Fragment() {
         mBookingDashBoardViewModel.returnSuccess().observe(this, Observer {
             cancelled_progress_bar.visibility = View.GONE
             cancelled_booking_refresh_layout.isRefreshing = false
+            com.nineleaps.conferenceroombooking.utils.WindowManager.enableInteraction(activity!!)
             mProgressBar.visibility = View.GONE
             currentPage = it.paginationMetaData!!.currentPage!!
             hasMoreItem = it.paginationMetaData!!.nextPage!!
@@ -185,6 +186,7 @@ class CancelledBookingFragment : Fragment() {
         })
         mBookingDashBoardViewModel.returnFailure().observe(this, Observer {
             cancelled_progress_bar.visibility = View.GONE
+            com.nineleaps.conferenceroombooking.utils.WindowManager.enableInteraction(activity!!)
             cancelled_booking_refresh_layout.isRefreshing = false
             mProgressBar.visibility = View.GONE
             if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {

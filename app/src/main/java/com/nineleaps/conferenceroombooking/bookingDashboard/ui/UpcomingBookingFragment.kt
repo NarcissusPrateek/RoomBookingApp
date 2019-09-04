@@ -1,6 +1,5 @@
 package com.nineleaps.conferenceroombooking.recurringMeeting.ui
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
@@ -144,6 +143,7 @@ class UpcomingBookingFragment : Fragment() {
     }
 
     private fun getViewModel() {
+        WindowManager.disableInteraction(activity!!)
         mProgressBar.visibility = View.VISIBLE
         mBookingDashBoardViewModel.getBookingList(
             mBookingDashboardInput
@@ -247,6 +247,7 @@ class UpcomingBookingFragment : Fragment() {
             upcoming_empty_view.visibility = View.GONE
             upcoming_booking_progress_bar.visibility = View.GONE
             booking_refresh_layout.isRefreshing = false
+            WindowManager.enableInteraction(activity!!)
             mProgressBar.visibility = View.GONE
             progressDialog.dismiss()
             hasMoreItem = it.paginationMetaData!!.nextPage!!
@@ -258,6 +259,7 @@ class UpcomingBookingFragment : Fragment() {
         mBookingDashBoardViewModel.returnFailure().observe(this, Observer {
             upcoming_booking_progress_bar.visibility = View.GONE
             booking_refresh_layout.isRefreshing = false
+            WindowManager.enableInteraction(activity!!)
             mProgressBar.visibility = View.GONE
             progressDialog.dismiss()
             if (it == Constants.UNPROCESSABLE || it == Constants.INVALID_TOKEN || it == Constants.FORBIDDEN) {
@@ -322,8 +324,6 @@ class UpcomingBookingFragment : Fragment() {
         }
         val mDialog = builder.create()
         mDialog.show()
-        mDialog.setCancelable(false)
-
     }
 
     /**
