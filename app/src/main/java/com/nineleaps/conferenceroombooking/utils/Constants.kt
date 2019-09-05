@@ -27,21 +27,10 @@ class Constants {
          */
         const val EXTRA_BUILDING_ID = "com.example.conferencerommapp.Activity.EXTRA_BUILDING_ID"
 
-        /**http://192.168.3.188/CRB/
-         * http://ec2-3-15-196-10.us-east-2.compute.amazonaws.com
-         * ip address for api call
-         */
-        var IP_ADDRESS = "http://192.168.3.189/CRB/"
-
 
         const val FLAG = "FLAG"
         const val DATE_FORMAAT_Y_D_M = "yyyy-MM-dd"
 
-        const val SELECT_BUILDING = "Select Building"
-
-        const val IS_PURPOSE_VISIBLE = "Purpose Visibility"
-
-        const val SELECT_FLOOR = "Select Floor"
         const val MIN_MEETING_DURATION: Long = 900000
 
         const val SOME_EXCEPTION = 400
@@ -67,8 +56,6 @@ class Constants {
         const val BOOKING_DASHBOARD_TYPE_PREVIOUS = "Previous"
 
         const val BOOKING_DASHBOARD_TYPE_CANCELLED = "Cancelled"
-
-        const val BOOKING_DASHBOARD_PENDING = "Pending"
 
         const val INVALID_TOKEN = 401
 
@@ -99,30 +86,7 @@ class Constants {
 
         const val RES_CODE2 = 201
 
-        const val RES_CODE3 = 202
-
-        const val RES_CODE4 = 203
-
-        const val PREFERENCE = "PREFERENCE"
-
-        const val TOKEN = "TOKEN"
-
-        const val DEVICE_ID = "DEVICE ID"
-
-
-        const val DEFAULT_INT_PREFERENCE_VALUE = -1
-
         const val ROLE_CODE = "Code"
-
-        const val PROJECTOR = "Projector"
-
-        const val MONITOR = "Monitor"
-
-        const val WHITEBOARD_MARKER = "WhiteBoard-Marker"
-
-        const val SPEAKER = "Speaker"
-
-        const val EXTENSION_BOARD = "Extension Board"
 
         const val BUILDING_ID = "buildingId"
 

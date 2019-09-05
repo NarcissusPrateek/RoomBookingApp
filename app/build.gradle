@@ -38,16 +38,37 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        applicationId "com.nineleaps.conferenceroombooking"
     }
     testOptions {
         unitTests.returnDefaultValues = true
     }
 
+    flavorDimensions "default"
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors{
+        development{
+            getProps('./config/development.props').each { p ->
+                buildConfigField  "String" ,p.key, p.value
+            }
+        }
+        staging{
+            getProps('./config/staging.props').each {p ->
+                buildConfigField 'String',p.key,p.value
+            }
+        }
+        production{
+            getProps('./config/production.props').each {p->
+                buildConfigField 'String',p.key,p.value
+            }
+
+        }
+
     }
     dataBinding {
         enabled = true
@@ -63,7 +84,11 @@ android {
 
 
 }
-
+def getProps(path) {
+    Properties props = new Properties()
+    props.load(new FileInputStream(file(path)))
+    return props
+}
 dependencies {
     def paging_version = "2.1.0"
 

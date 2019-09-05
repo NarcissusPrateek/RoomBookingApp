@@ -5,7 +5,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.nineleaps.conferenceroombooking.BaseApplication
-import com.nineleaps.conferenceroombooking.utils.Constants
+import com.nineleaps.conferenceroombooking.BuildConfig
 import com.nineleaps.conferenceroombooking.utils.GetPreference
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -43,7 +43,7 @@ class RestClient {
         }
         fun getWebServiceData(): ConferenceService? {
             val retrofit: Retrofit = Retrofit.Builder()
-                .baseUrl(Constants.IP_ADDRESS)
+                .baseUrl(BuildConfig.IP_ADDRESS)
                 .addConverterFactory(GsonConverterFactory.create(gson)).client(clientLogin.build())
                 .build()
             service = retrofit.create<ConferenceService>(ConferenceService::class.java)

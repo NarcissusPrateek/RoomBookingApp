@@ -4,6 +4,7 @@ import android.content.Context
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.nineleaps.conferenceroombooking.BaseApplication
+import com.nineleaps.conferenceroombooking.BuildConfig
 import com.nineleaps.conferenceroombooking.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -59,7 +60,7 @@ class AppModule(private val application: BaseApplication) {
         return Retrofit.Builder()
             .client(builder!!.build())
             .addConverterFactory(JacksonConverterFactory.create(providesJacksonFactoryInstance()))
-            .baseUrl(Constants.IP_ADDRESS)
+            .baseUrl(BuildConfig.IP_ADDRESS)
             .build()
 
     }
