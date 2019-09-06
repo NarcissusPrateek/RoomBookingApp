@@ -12,15 +12,6 @@ apply plugin: 'io.fabric'
 
 apply plugin: 'org.sonarqube'
 
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-    }
-}
-
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
