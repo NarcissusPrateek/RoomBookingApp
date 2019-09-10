@@ -38,7 +38,6 @@ class BaseApplication: Application(){
                 }
                 // Get new Instance ID token
                 Hawk.init(applicationContext).build()
-                val token = task.result?.token
             })
 
     }

@@ -2,6 +2,7 @@ package com.nineleaps.conferenceroombooking.signIn.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -162,6 +163,8 @@ class SignIn : BaseActivity() {
     }
 
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
+        Hawk.put(Constants.PHOTO_URI,acct.photoUrl)
+        Hawk.put(Constants.GOOGLE_EMAIL_ID,acct.email)
         setTokenToAccessToken(acct.idToken)
     }
 

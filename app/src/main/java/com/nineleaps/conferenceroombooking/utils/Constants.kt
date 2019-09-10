@@ -99,5 +99,9 @@ class Constants {
         const val BUILDING_PLACE = "buildingPlace"
 
         const val LOCATION_ID = "locationId"
+
+        const val PHOTO_URI = "photoUri"
+
+        const val GOOGLE_EMAIL_ID = "google_email_id"
     }
 }

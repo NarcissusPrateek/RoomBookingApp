@@ -142,7 +142,7 @@ class UserBookingsDashboardActivity : BaseActivity(), NavigationView.OnNavigatio
     private fun getPasscode() {
         mProgressBar.visibility = View.VISIBLE
         disableClickListenerForProgressBar()
-        mBookingDashBoardViewModel.getPasscode(false, acct.email!!)
+        mBookingDashBoardViewModel.getPasscode(false, Hawk.get(Constants.GOOGLE_EMAIL_ID))
     }
 
     /**
@@ -182,7 +182,7 @@ class UserBookingsDashboardActivity : BaseActivity(), NavigationView.OnNavigatio
         }
         dialog.setNeutralButton(getString(R.string.get_new_passcode)) { _, _ ->
             mProgressBar.visibility = View.VISIBLE
-            mBookingDashBoardViewModel.getPasscode(true, acct.email!!)
+            mBookingDashBoardViewModel.getPasscode(true, Hawk.get(Constants.GOOGLE_EMAIL_ID)!!)
         }
         val builder = GetAleretDialog.showDialog(dialog)
         ColorOfDialogButton.setColorOfDialogButton(builder)
@@ -292,7 +292,7 @@ class UserBookingsDashboardActivity : BaseActivity(), NavigationView.OnNavigatio
         val acct = GoogleSignIn.getLastSignedInAccount(this@UserBookingsDashboardActivity)
         viewH.nv_profile_name.text = "Hello, ${acct!!.displayName}"
         val personPhoto = acct.photoUrl
-        viewH.nv_profile_email.text = acct.email
+        viewH.nv_profile_email.text = Hawk.get(Constants.GOOGLE_EMAIL_ID)
         Glide.with(applicationContext).load(personPhoto).thumbnail(1.0f).into(viewH.nv_profile_image)
         setItemInDrawerByRole()
     }
