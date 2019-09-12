@@ -1,0 +1,69 @@
+[
+  {
+    "roomId": 2,
+    "buildingId": 1,
+    "capacity": 4,
+    "roomName": "Welcome 2nd Floor",
+    "status": "Available",
+    "buildingName": "Main Building",
+    "place": "Koramangala",
+    "amenities": {
+      "1": "Projector",
+      "2": "Speaker",
+      "3": "Monitor",
+      "4": "WhiteBoard Marker",
+      "5": "Extension Board"
+    },
+    "permission": false
+  },
+  {
+    "roomId": 3,
+    "buildingId": 1,
+    "capacity": 4,
+    "roomName": "Made 5th Floor",
+    "status": "Available",
+    "buildingName": "Main Building",
+    "place": "Koramangala",
+    "amenities": {},
+    "permission": false
+  },
+  {
+    "roomId": 6,
+    "buildingId": 3,
+    "capacity": 4,
+    "roomName": "wertyui 6 th Floor",
+    "status": "Available",
+    "buildingName": "Pasta Street",
+    "place": "Koramangala",
+    "amenities": {
+      "1": "Projector",
+      "2": "Speaker",
+      "3": "Monitor",
+      "4": "WhiteBoard Marker",
+      "5": "Extension Board"
+    },
+    "permission": false
+  },
+  {
+    "roomId": 9,
+    "buildingId": 1,
+    "capacity": 4,
+    "roomName": "Vkjpjoi 2nd Floor",
+    "status": "Available",
+    "buildingName": "Main Building",
+    "place": "Koramangala",
+    "amenities": {},
+    "permission": false
+  },
+  {
+    "roomId": 10,
+    "buildingId": 1,
+    "capacity": 2,
+    "roomName": "VYom 3rd Floor",
+    "status": "Available",
+    "buildingName": "Main Building",
+    "place": "Koramangala",
+    "amenities": {},
+    "permission": false
+  }
+]

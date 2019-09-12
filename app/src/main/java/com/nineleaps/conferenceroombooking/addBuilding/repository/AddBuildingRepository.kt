@@ -10,8 +10,6 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 
@@ -22,7 +20,7 @@ class AddBuildingRepository @Inject constructor(){
      */
     fun addBuildingDetails(mAddBuilding: AddBuilding, listener: ResponseListener) {
         val addBuildingRequestCall: Call<ResponseBody> = RestClient.getWebServiceData()?.addBuilding(mAddBuilding)!!
-        addBuildingRequestCall.enqueue(object : Callback<ResponseBody> {
+         addBuildingRequestCall.enqueue(object : Callback<ResponseBody> {
             // Negative response
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 listener.onFailure(ErrorException.error(t))

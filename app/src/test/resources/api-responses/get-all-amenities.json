@@ -1,0 +1,10 @@
+[
+  {
+    "amenityId": 1,
+    "amenityName": "Projector"
+  },
+  {
+    "amenityId": 2,
+    "amenityName": "Speaker"
+  }
+]
