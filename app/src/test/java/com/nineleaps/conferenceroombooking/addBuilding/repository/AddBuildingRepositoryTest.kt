@@ -1,148 +1,218 @@
 package com.nineleaps.conferenceroombooking.addBuilding.repository
 
-import com.google.gson.GsonBuilder
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doNothing
-import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import com.nineleaps.conferenceroombooking.model.AddBuilding
+import com.nineleaps.conferenceroombooking.model.Location
 import com.nineleaps.conferenceroombooking.services.ConferenceService
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.services.RestClient
+import com.nineleaps.conferenceroombooking.utils.Constants
+import okhttp3.MediaType
 import okhttp3.ResponseBody
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.*
-import org.mockito.Mockito.*
-import org.mockito.invocation.InvocationOnMock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.stubbing.Answer
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @RunWith(MockitoJUnitRunner::class)
 class AddBuildingRepositoryTest {
+    /**
+     * Initialization of Mock Object
+     */
+    @Captor
+    lateinit var argumentCaptor: ArgumentCaptor<Callback<ResponseBody>>
 
-
-
+    @Captor
+    lateinit var argumentCaptorForListOfLocation: ArgumentCaptor<Callback<List<Location>>>
 
     @Mock
-    val mRestClient = RestClient.getWebServiceData()
+    lateinit var callMock: Call<ResponseBody>
+
+    @Mock
+    lateinit var callMockForGetLocation: Call<List<Location>>
+
+    @Mock
+    lateinit var responseBody: ResponseBody
+
+    @Mock
+    lateinit var respone : List<Location>
+    @Mock
+    lateinit var conferenceService: ConferenceService
 
     @InjectMocks
     lateinit var mAddBuildingRepository: AddBuildingRepository
 
-    private lateinit var mockWebServer: MockWebServer
-    private lateinit var mConferenceService: ConferenceService
-
-    @Before
-    fun setup() {
-        mockWebServer = MockWebServer()
-        val gson = GsonBuilder().setLenient().create()
-
-        mConferenceService = Retrofit.Builder()
-            .baseUrl(mockWebServer.url("/ddd/"))
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-            .create(ConferenceService::class.java)
-
-    }
-
     @Mock
-    var listener: ResponseListener = object : ResponseListener {
-        override fun onSuccess(success: Any) {
+    lateinit var listener: ResponseListener
 
-        }
+    val addBuilding = AddBuilding()
 
-        override fun onFailure(failure: Any) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-    }
+    lateinit var t: Throwable
 
+
+    /**
+     *  AddingBuilding Success Response 200 OK
+     */
     @Test
-    fun addBuildingDetails() {
-        val addBuilding = AddBuilding()
-        doNothing().`when`(spy(mAddBuildingRepository)).addBuildingDetails(addBuilding, listener)
+    fun testSuccessResponseForAddBuilding() {
+        RestClient.setMockService(conferenceService)
+        Mockito.`when`(conferenceService.addBuilding(addBuilding)).thenReturn(callMock)
         mAddBuildingRepository.addBuildingDetails(addBuilding, listener)
+        verify(callMock).enqueue(argumentCaptor.capture())
+        argumentCaptor.value.onResponse(
+            callMock,
+            Response.success(ResponseBody.create(MediaType.get("text/html"), "content"))
+        )
+        verify(listener, Mockito.times(1)).onSuccess(200)
     }
 
+    /**
+     *  AddingBuilding Failure Response 500
+     */
     @Test
-    fun updateBuildingDetails() {
-        val addBuilding = AddBuilding()
-        doNothing().`when`(spy(mAddBuildingRepository)).updateBuildingDetails(addBuilding, listener)
+    fun testFailureResponseForAddBuilding() {
+        t = Throwable()
+        RestClient.setMockService(conferenceService)
+        Mockito.`when`(conferenceService.addBuilding(addBuilding)).thenReturn(callMock)
+        mAddBuildingRepository.addBuildingDetails(addBuilding, listener)
+        verify(callMock).enqueue(argumentCaptor.capture())
+        argumentCaptor.value.onFailure(callMock, t)
+        verify(listener, Mockito.times(1)).onFailure(500)
+    }
+
+    /**
+     *  AddingBuilding Success Response 201 OK
+     */
+    @Test
+    fun testSuccessResponseForAddingBuilding() {
+        RestClient.setMockService(conferenceService)
+        Mockito.`when`(conferenceService.addBuilding(addBuilding)).thenReturn(callMock)
+        mAddBuildingRepository.addBuildingDetails(addBuilding, listener)
+        verify(callMock).enqueue(argumentCaptor.capture())
+        argumentCaptor.value.onResponse(
+            callMock,
+            Response.success(201, responseBody)
+        )
+        verify(listener, Mockito.times(1)).onSuccess(Constants.SUCCESSFULLY_CREATED)
+    }
+
+    /**
+     *  AddingBuilding Success Response 204 OK
+     */
+    @Test
+    fun testSuccessResponseButFailureForAddingBuilding() {
+        RestClient.setMockService(conferenceService)
+        Mockito.`when`(conferenceService.addBuilding(addBuilding)).thenReturn(callMock)
+        mAddBuildingRepository.addBuildingDetails(addBuilding, listener)
+        verify(callMock).enqueue(argumentCaptor.capture())
+        argumentCaptor.value.onResponse(
+            callMock,
+            Response.success(204, responseBody)
+        )
+        verify(listener, Mockito.times(1)).onFailure(204)
+    }
+
+    /**
+     *  UpdateBuilding Success Response 201 OK
+     */
+    @Test
+    fun testSuccessForUpdateBuilding(){
+        RestClient.setMockService(conferenceService)
+        Mockito.`when`(conferenceService.updateBuilding(addBuilding)).thenReturn(callMock)
         mAddBuildingRepository.updateBuildingDetails(addBuilding, listener)
+        verify(callMock).enqueue(argumentCaptor.capture())
+        argumentCaptor.value.onResponse(
+            callMock,
+            Response.success(201, responseBody)
+        )
+        verify(listener, Mockito.times(1)).onSuccess(Constants.SUCCESSFULLY_CREATED)
     }
 
+    /**
+     *  UpdateBuilding Failure Response 500 OK
+     */
     @Test
-    fun getLocationDetails() {
-        doNothing().`when`(spy(mAddBuildingRepository)).getLocationDetails(listener)
+    fun testFailureForUdapteBuilding(){
+        t = Throwable()
+        RestClient.setMockService(conferenceService)
+        Mockito.`when`(conferenceService.updateBuilding(addBuilding)).thenReturn(callMock)
+        mAddBuildingRepository.updateBuildingDetails(addBuilding, listener)
+        verify(callMock).enqueue(argumentCaptor.capture())
+        argumentCaptor.value.onFailure(callMock, t)
+        verify(listener, Mockito.times(1)).onFailure(500)
+    }
+
+    /**
+     *  UpdateBuilding Success Response 202 OK
+     */
+    @Test
+    fun testSuccessButFailureForUpdateBuilding(){
+        RestClient.setMockService(conferenceService)
+        Mockito.`when`(conferenceService.updateBuilding(addBuilding)).thenReturn(callMock)
+        mAddBuildingRepository.updateBuildingDetails(addBuilding,listener)
+        verify(callMock).enqueue(argumentCaptor.capture())
+        argumentCaptor.value.onResponse(callMock,
+            Response.success(202,responseBody))
+        verify(listener,Mockito.times(1)).onFailure(202)
+    }
+
+    /**
+     *  UpdateBuilding Success Response 200 OK
+     */
+    @Test
+    fun testSuccessOkForUpdateBuilding(){
+        RestClient.setMockService(conferenceService)
+        Mockito.`when`(conferenceService.updateBuilding(addBuilding)).thenReturn(callMock)
+        mAddBuildingRepository.updateBuildingDetails(addBuilding,listener)
+        verify(callMock).enqueue(argumentCaptor.capture())
+        argumentCaptor.value.onResponse(callMock,
+            Response.success(200,responseBody))
+        verify(listener,Mockito.times(1)).onSuccess(200)
+    }
+
+    /**
+     *  GetLocation Success Response 200 OK
+     */
+    @Test
+    fun testSuccessForGetLocation(){
+        RestClient.setMockService(conferenceService)
+        Mockito.`when`(conferenceService.getAllLocation()).thenReturn(callMockForGetLocation)
         mAddBuildingRepository.getLocationDetails(listener)
+        verify(callMockForGetLocation).enqueue(argumentCaptorForListOfLocation.capture())
+        argumentCaptorForListOfLocation.value.onResponse(callMockForGetLocation, Response.success(200, respone))
+        verify(listener,Mockito.times(1)).onSuccess(respone)
     }
 
+    /**
+     *  GetLocation Failure Response 500
+     */
     @Test
-    fun sucessREsponseForAddBuilding() {
-        /* val mockedApiInterface = mRestClient
-
-         val mockedCall = mock(Call::class.java)
-         val addBuilding = AddBuilding()
-         `when`(mockedApiInterface!!.addBuilding(addBuilding)).thenReturn(mockedCall as Call<ResponseBody>)
-         try{
-         doAnswer { invocation ->
-              val callback:Callback<ResponseBody> = invocation!!.getArgument(0)
-              val getResponse = 200
-
-              callback.onResponse(mockedCall, Response.success(getResponse as ResponseBody))
-              null
-          }.`when`(mockedCall).enqueue(object: Callback<ResponseBody>{
-              override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                  TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-              }
-
-              override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                  TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-              }
-          })
-         }
-         catch (e:Exception){
-
-         }
-
-         mAddBuildingRepository.addBuildingDetails(addBuilding,listener)*/
+    fun testFailureForGetLocation(){
+        t = Throwable()
+        RestClient.setMockService(conferenceService)
+        Mockito.`when`(conferenceService.getAllLocation()).thenReturn(callMockForGetLocation)
+        mAddBuildingRepository.getLocationDetails(listener)
+        verify(callMockForGetLocation).enqueue(argumentCaptorForListOfLocation.capture())
+        argumentCaptorForListOfLocation.value.onFailure(callMockForGetLocation,t)
+        verify(listener,Mockito.times(1)).onFailure(500)
     }
 
-
+    /**
+     *  GetLocation Success Response 202 but failure
+     */
     @Test
-    fun sucessForAddingBuilding() {
-        val addBuilding = AddBuilding()
-        val conference = mock<ConferenceService>()
-        val mockedCall = mock<Call<ResponseBody>>()
-
-       // `when`(mockedCall).thenReturn()
-        `when`(conference.addBuilding(addBuilding)).thenReturn(mockedCall)
-
-        doAnswer { invocation ->
-            val callback: Callback<ResponseBody> = invocation!!.getArgument(0)
-            val getResponse = 200
-
-            callback.onResponse(mockedCall, Response.success(getResponse as ResponseBody))
-            null
-        }.`when`(mockedCall).enqueue(object : Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        })
-
-
-
-
-        mAddBuildingRepository.addBuildingDetails(addBuilding, listener)
+    fun testSuccessButFailureForGetLocation(){
+        RestClient.setMockService(conferenceService)
+        Mockito.`when`(conferenceService.getAllLocation()).thenReturn(callMockForGetLocation)
+        mAddBuildingRepository.getLocationDetails(listener)
+        verify(callMockForGetLocation).enqueue(argumentCaptorForListOfLocation.capture())
+        argumentCaptorForListOfLocation.value.onResponse(callMockForGetLocation,
+            Response.success(202,respone))
+        verify(listener,Mockito.times(1)).onFailure(202)
     }
+
+
 }

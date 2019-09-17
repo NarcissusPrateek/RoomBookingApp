@@ -103,8 +103,8 @@ class AddBuildingViewModel : ViewModel() {
      * function will initialize the repository object and calls the method of repository which will make the api call
      * and assign values to the live data objects
      */
-    fun getLocation(){
-        mAddBuildingRepository!!.getLocationDetails(object :ResponseListener{
+    fun getLocation() {
+        mAddBuildingRepository!!.getLocationDetails(object : ResponseListener {
             override fun onSuccess(success: Any) {
                 mGetLocationList.value = success as List<Location>
             }
@@ -116,11 +116,11 @@ class AddBuildingViewModel : ViewModel() {
         })
     }
 
-    fun returnMGetLocationList():MutableLiveData<List<Location>>{
+    fun returnMGetLocationList(): MutableLiveData<List<Location>> {
         return mGetLocationList
     }
 
-    fun returnMFailureForGetLocation():MutableLiveData<Any>{
+    fun returnMFailureForGetLocation(): MutableLiveData<Any> {
         return mFailureForGetLocation
     }
 }

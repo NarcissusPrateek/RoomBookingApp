@@ -27,8 +27,8 @@ class RestClient {
         init {
             try {
                 clientLogin.addInterceptor(logger)
-                clientLogin.readTimeout(60, TimeUnit.SECONDS)
-                    .connectTimeout(60, TimeUnit.SECONDS)
+                clientLogin.readTimeout(120, TimeUnit.SECONDS)
+                    .connectTimeout(120, TimeUnit.SECONDS)
                 clientLogin.addInterceptor { chain ->
                     var request = chain.request()
                     request = request.newBuilder()
@@ -42,12 +42,18 @@ class RestClient {
             }
         }
         fun getWebServiceData(): ConferenceService? {
-            val retrofit: Retrofit = Retrofit.Builder()
-                .baseUrl(BuildConfig.IP_ADDRESS)
-                .addConverterFactory(GsonConverterFactory.create(gson)).client(clientLogin.build())
-                .build()
-            service = retrofit.create<ConferenceService>(ConferenceService::class.java)
-            return service
+            if (service == null) {
+                val retrofit: Retrofit = Retrofit.Builder()
+                    .baseUrl(BuildConfig.IP_ADDRESS)
+                    .addConverterFactory(GsonConverterFactory.create(gson)).client(clientLogin.build())
+                    .build()
+                service = retrofit.create<ConferenceService>(ConferenceService::class.java)
+            }
+                return service
+        }
+
+        fun setMockService(mockRestService:ConferenceService){
+            service = mockRestService
         }
     }
 }
