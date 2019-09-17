@@ -38,6 +38,7 @@ class AddConferenceRepository @Inject constructor() {
     }
 
     // ------------------------------------------------update Room Details --------------------------------------
+
     //Passing the Context and model and call API, In return sends the status of LiveData
     fun updateConferenceDetails(mConferenceRoom: AddConferenceRoom, listener: ResponseListener) {
         //Retrofit Call
@@ -59,7 +60,8 @@ class AddConferenceRepository @Inject constructor() {
     }
 
 
-    // ------------------------------------------------update Room Details --------------------------------------
+    // ------------------------------------------------Get Amenities Details --------------------------------------
+
     //Passing the Context and model and call API, In return sends the status of LiveData
     fun getAmenitiesDetails(listener: ResponseListener) {
         val getAmenitiesRequestCall: Call<List<GetAllAmenities>> = RestClient.getWebServiceData()?.getAllAmenities()!!
