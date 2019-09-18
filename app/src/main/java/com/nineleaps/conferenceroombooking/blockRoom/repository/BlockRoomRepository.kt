@@ -41,39 +41,6 @@ class BlockRoomRepository @Inject constructor(){
     }
 
 
-
-    /**
-     * ---------------------------------------------------------------------------------------------------------------------------
-     */
-
-    /**
-     * function will initialize the MutableLivedata Object and than make API Call
-     * Passing the Context and model and call API, In return sends the status of LiveData
-     */
-    fun getRoomList(buildingId: Int, listener: ResponseListener) {
-
-        /**
-         *  api call using retrofit
-         */
-        val requestCall: Call<List<ConferenceList>> = RestClient.getWebServiceData()?.conferenceList(buildingId)!!
-        requestCall.enqueue(object : Callback<List<ConferenceList>> {
-            override fun onFailure(call: Call<List<ConferenceList>>, t: Throwable) {
-                listener.onFailure(ErrorException.error(t))
-            }
-
-            override fun onResponse(
-                call: Call<List<ConferenceList>>,
-                response: Response<List<ConferenceList>>
-            ) {
-                if (response.code() == Constants.OK_RESPONSE) {
-                    listener.onSuccess(response.body()!!)
-                } else {
-                    listener.onFailure(response.code())
-                }
-            }
-        })
-    }
-
     /**
      * ---------------------------------------------------------------------------------------------------------------------------
      */

@@ -16,11 +16,6 @@ class BlockRoomViewModel : ViewModel() {
     private var mBlockRoomRepository: BlockRoomRepository? = null
 
     /**
-     * a MutableLiveData variable which will hold the positive response from server for the list of rooms
-     */
-    var mConferenceRoomList = MutableLiveData<List<ConferenceList>>()
-
-    /**
      * a MutableLiveData variable which will hold the for positive response from server for the confirmation of blocking
      */
     var mConfirmation = MutableLiveData<BlockingConfirmation>()
@@ -29,11 +24,6 @@ class BlockRoomViewModel : ViewModel() {
      * a variable to hold positive response from backend for blocking room
      */
     var mSuccessForBlockRoom = MutableLiveData<Int>()
-
-    /**
-     * a variable to hold failure code from backend whenever unable to fetch the list of room from server
-     */
-    var mFailureCodeForRoom = MutableLiveData<Any>()
 
     /**
      * a variable to hold failure code from backend whenever unable to fetch the confirmation details from server
@@ -77,37 +67,6 @@ class BlockRoomViewModel : ViewModel() {
     /**
      * ----------------------------------------------------------------------------------------------------------------
      */
-
-    /**
-     * function will initialize the repository object and calls the method of repository which will make the api call
-     * and function will return the value for MutableLivedata
-     */
-    fun getRoomList(buildingId: Int) {
-        mBlockRoomRepository!!.getRoomList(buildingId, object :
-            ResponseListener {
-            override fun onSuccess(success: Any) {
-                mConferenceRoomList.value = success as List<ConferenceList>
-            }
-
-            override fun onFailure(failure: Any) {
-                mFailureCodeForRoom.value = failure
-            }
-
-        })
-    }
-
-    fun returnConferenceRoomList(): MutableLiveData<List<ConferenceList>> {
-        return mConferenceRoomList
-    }
-
-    fun returnResponseErrorForConferenceRoom(): MutableLiveData<Any> {
-        return mFailureCodeForRoom
-    }
-
-    /**
-     * ----------------------------------------------------------------------------------------------------------------
-     */
-
 
     /**
      * function will initialize the repository object and calls the method of repository which will make the api call

@@ -9,11 +9,12 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class BlockDashboardRepository @Inject constructor(){
+    /**
+     * Passing the Context and model and call API, In return sends the status of LiveData
+     */
     fun getBlockedList(listener: ResponseListener) {
         val requestCall: Call<List<Blocked>> = RestClient.getWebServiceData()?.getBlockedConference()!!
         requestCall.enqueue(object : Callback<List<Blocked>> {
