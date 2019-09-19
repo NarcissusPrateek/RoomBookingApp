@@ -10,18 +10,15 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.InjectMocks
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class AddConferenceRoomViewModelTest{
+class AddConferenceRoomViewModelTest {
 
-    @InjectMocks
-    lateinit var mAddConferenceRoomViewModel: AddConferenceRoomViewModel
-
-    @Rule @JvmField
+    @Rule
+    @JvmField
     var executor = InstantTaskExecutorRule()
 
     val list = emptyList<GetAllAmenities>()
@@ -32,62 +29,64 @@ class AddConferenceRoomViewModelTest{
     val conferenceRoom = AddConferenceRoom()
 
     @Before
-    fun setUp(){
+    fun setUp() {
         MockitoAnnotations.initMocks(this)
     }
 
     @Test
-    fun testReturnSuccessForAddingRoom(){
+    fun testReturnSuccessForAddingRoom() {
         lenient().doReturn(200).`when`(spy(viewModel.returnSuccessForAddingRoom())).value
     }
 
     @Test
-    fun testReturnFailureForAddingRoom(){
+    fun testReturnFailureForAddingRoom() {
         lenient().doReturn(500).`when`(spy(viewModel.returnFailureForAddingRoom())).value
     }
 
     @Test
-    fun testReturnSuccessForUpdateRoom(){
+    fun testReturnSuccessForUpdateRoom() {
         lenient().doReturn(200).`when`(spy(viewModel.returnSuccessForUpdateRoom())).value
     }
 
     @Test
-    fun testReturnFailureForUpdateRoom(){
+    fun testReturnFailureForUpdateRoom() {
         lenient().doReturn(500).`when`(spy(viewModel.returnFailureForUpdateRoom())).value
     }
 
     @Test
-    fun testReturnSuccessForGetAmenities(){
+    fun testReturnSuccessForGetAmenities() {
         lenient().doReturn("{}").`when`(spy(viewModel.returnSuccesForGetAmenitiesList())).value
     }
 
     @Test
-    fun testReturnFailureForGetAmenities(){
+    fun testReturnFailureForGetAmenities() {
         lenient().doReturn(500).`when`(spy(viewModel.returnFailureForGetAllAmeneties())).value
     }
 
     @Test
-    fun testForAddConferenceDetails(){
+    fun testForAddConferenceDetails() {
         viewModel.setAddingConferenceRoomRepo(repoMock)
-        doNothing().`when`(repoMock).addConferenceDetails(com.nhaarman.mockitokotlin2.any(),com.nhaarman.mockitokotlin2.any())
+        doNothing().`when`(repoMock)
+            .addConferenceDetails(com.nhaarman.mockitokotlin2.any(), com.nhaarman.mockitokotlin2.any())
         viewModel.addConferenceDetails(conferenceRoom)
-        verify(repoMock, times(1)).addConferenceDetails(com.nhaarman.mockitokotlin2.any(),listenerCaptor.capture())
+        verify(repoMock, times(1)).addConferenceDetails(com.nhaarman.mockitokotlin2.any(), listenerCaptor.capture())
         listenerCaptor.firstValue.onSuccess(200)
         listenerCaptor.firstValue.onFailure("failure")
     }
 
     @Test
-    fun testForUpdateConferenceDetails(){
+    fun testForUpdateConferenceDetails() {
         viewModel.setAddingConferenceRoomRepo(repoMock)
-        doNothing().`when`(repoMock).updateConferenceDetails(com.nhaarman.mockitokotlin2.any(),com.nhaarman.mockitokotlin2.any())
+        doNothing().`when`(repoMock)
+            .updateConferenceDetails(com.nhaarman.mockitokotlin2.any(), com.nhaarman.mockitokotlin2.any())
         viewModel.updateConferenceDetails(conferenceRoom)
-        verify(repoMock, times(1)).updateConferenceDetails(com.nhaarman.mockitokotlin2.any(),listenerCaptor.capture())
+        verify(repoMock, times(1)).updateConferenceDetails(com.nhaarman.mockitokotlin2.any(), listenerCaptor.capture())
         listenerCaptor.firstValue.onSuccess(200)
         listenerCaptor.firstValue.onFailure("failure")
     }
 
     @Test
-    fun testForGetAllAmenities(){
+    fun testForGetAllAmenities() {
         viewModel.setAddingConferenceRoomRepo(repoMock)
         doNothing().`when`(repoMock).getAmenitiesDetails(com.nhaarman.mockitokotlin2.any())
         viewModel.getAmenitiesList()

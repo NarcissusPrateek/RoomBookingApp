@@ -11,7 +11,7 @@ class AddConferenceRoomViewModel : ViewModel() {
     /**
      * a object which will hold the reference to the corresponding repository class
      */
-    var mAddConferenceRepository: AddConferenceRepository? = null
+    private var mAddConferenceRepository: AddConferenceRepository? = null
     /**
      * a MutableLivedata variable which will hold the Value for the Livedata
      */
