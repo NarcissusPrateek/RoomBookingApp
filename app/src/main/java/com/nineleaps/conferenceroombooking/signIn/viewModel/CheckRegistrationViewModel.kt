@@ -11,7 +11,7 @@ class CheckRegistrationViewModel : ViewModel() {
     /**
      * a object which will hold the reference to the corrosponding repository class
      */
-    var mCheckRegistrationRepository: CheckRegistrationRepository? = null
+    private var mCheckRegistrationRepository: CheckRegistrationRepository? = null
 
     /**
      * a MutableLivedata variable which will hold the Value for the Livedata
@@ -48,5 +48,5 @@ class CheckRegistrationViewModel : ViewModel() {
         return mFailureCode
     }
 
-    //-----------------------------------------------User Registration
+
 }

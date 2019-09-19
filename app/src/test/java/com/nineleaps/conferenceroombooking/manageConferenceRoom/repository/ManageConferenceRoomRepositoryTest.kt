@@ -21,6 +21,9 @@ import retrofit2.Response
 
 @RunWith(MockitoJUnitRunner::class)
 class ManageConferenceRoomRepositoryTest {
+    /**
+     * Initailization of Mock Objects
+     */
 
     @InjectMocks
     lateinit var managerConferenceRoomRepository: ManageConferenceRoomRepository
