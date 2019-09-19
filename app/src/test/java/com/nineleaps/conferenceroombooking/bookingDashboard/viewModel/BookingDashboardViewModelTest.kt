@@ -7,7 +7,6 @@ import com.nineleaps.conferenceroombooking.model.BookingDashboardInput
 import com.nineleaps.conferenceroombooking.model.DashboardDetails
 import com.nineleaps.conferenceroombooking.services.ResponseListener
 import com.nineleaps.conferenceroombooking.utils.Constants
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
