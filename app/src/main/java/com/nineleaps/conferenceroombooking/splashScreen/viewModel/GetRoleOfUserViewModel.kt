@@ -10,7 +10,7 @@ class GetRoleOfUserViewModel : ViewModel() {
     /**
      * a object which will hold the reference to the corrosponding repository class
      */
-    var mCheckUserRole: GetRoleOfUser? = null
+    private var mCheckUserRole: GetRoleOfUser? = null
 
     /**
      * a MutableLivedata variable which will hold the Value for the Livedata
