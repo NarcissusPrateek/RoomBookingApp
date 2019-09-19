@@ -42,7 +42,7 @@ class ConferenceServiceTest {
         val amenities = mConferenceService.getAllAmenities().execute().body()
         val recordedRequest = mockWebServer.takeRequest()
         assertEquals("GET", recordedRequest.method)
-        assertEquals("/api/v1/ame", recordedRequest.path)
+        assertEquals("/ddd/api/v1/amenities", recordedRequest.path)
         assertNotNull(amenities)
         assertEquals(2, amenities!!.size)
         val amenity = amenities[0]
