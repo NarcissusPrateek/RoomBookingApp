@@ -55,8 +55,8 @@ class SelectMembers(private var mEmployeeList: List<EmployeeList>, var listener:
     }
 
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-        val nameTextView: TextView = itemView.findViewById(R.id.add_member_checkbox)
-        val emailTextView: TextView = itemView.findViewById(R.id.add_member_email)
+        var nameTextView: TextView = itemView.findViewById(R.id.add_member_checkbox)
+        var emailTextView: TextView = itemView.findViewById(R.id.add_member_email)
 
     }
 
